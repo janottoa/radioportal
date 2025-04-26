@@ -1,0 +1,15 @@
+# Ignorer miljøvariabler
+.env
+config.env
+
+# Ignorer avhengigheter
+node_modules/
+
+# Ignorer midlertidige filer
+*.log
+*.tmp
+
+# Ignorer operativsystemfiler
+.DS_Store
+Thumbs.db
+

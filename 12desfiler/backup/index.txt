@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radioportal</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Toppmeny med logo, overskrift og undertekst */
+        .header {
+            background-color: #f0f0f0;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header-logo img {
+            height: 40px;
+        }
+        .header-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+        }
+        .header-subtitle {
+            font-size: 1em;
+            color: #666;
+        }
+        
+        /* Venstremeny med gråtone */
+        .container {
+            display: flex;
+            flex: 1;
+            width: 100%;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #f0f0f0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-sizing: border-box;
+        }
+        .sidebar h2 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .sidebar button {
+            background-color: #d3d3d3;
+            border: none;
+            padding: 20px;
+            font-size: 1em;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar button:hover {
+            background-color: #c0c0c0;
+        }
+
+        /* Hovedinnhold med radiostasjoner */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* 5 kolonner */
+            gap: 10px;
+            padding: 10px;
+        }
+        .station, .menu-item {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            text-align: center;
+            cursor: pointer;
+        }
+        .station:hover, .menu-item:hover {
+            background-color: #e0e0e0;
+        }
+        .station img, .menu-item img {
+            max-width: 50px;
+            margin-bottom: 10px;
+        }
+        .station h3, .menu-item h3 {
+            font-size: 1em;
+            margin: 10px 0;
+        }
+
+        /* Indikasjon på at en stasjon spiller */
+        .station.playing {
+            background-color: #d0e6f5; /* Lys blå bakgrunn for aktiv stasjon */
+            border-color: #007bff; /* Mørkere blå kant */
+        }
+    </style>
+</head>
+<body>
+    <!-- Toppmeny med logo, overskrift og undertekst -->
+    <div class="header">
+        <div class="header-logo">
+            <img src="logo.370a4318.svg" alt="Xpeng Logo">
+        </div>
+        <div class="header-title">RADIOPORTAL</div>
+        <div class="header-subtitle">av Jan Otto</div>
+    </div>
+
+    <!-- Hovedinnholdsområde med venstremeny og stasjoner -->
+    <div class="container">
+        <!-- Venstremeny -->
+        <div class="sidebar">
+            <h2>Valg</h2>
+            <button class="menu-item" onclick="showStations('NRK')">
+                <h3>NRK</h3>
+            </button>
+            <button class="menu-item" onclick="showStations('P4')">
+                <h3>P4</h3>
+            </button>
+            <button class="menu-item" onclick="showStations('Radio Norge')">
+                <h3>Radio Norge</h3>
+            </button>
+            <button class="menu-item" onclick="showStations('Hitlister')">
+                <h3>Hitlister</h3>
+            </button>
+            <button class="menu-item" onclick="showStations('Utenlandske')">
+                <h3>Utenlandske</h3>
+            </button>
+            <button class="menu-item" onclick="showStations('Lokale')">
+                <h3>Lokale</h3>
+            </button>
+            <button class="menu-item" onclick="showStations('Spesielle')">
+                <h3>Spesielle</h3>
+            </button>
+        </div>
+
+        <!-- Hovedinnhold -->
+        <div class="content">
+            <!-- Radiostasjoner -->
+            <div class="stations-grid" id="stations-grid">
+                <!-- Radiostasjoner blir lagt inn her med JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Eksempeldata for radiostasjoner
+        const stationsData = {
+            NRK: [
+                { name: "NRK P1 Sørlandet", url: "https://lyd.nrk.no/nrk_radio_p1_sorlandet_mp3_m.xspf", logo: "nrklogo/sorlandet.jpeg" },
+                { name: "NRK P1 Rogaland", url: "https://lyd.nrk.no/nrk_radio_p1_rogaland_mp3_h", logo: "nrklogo/rogaland.jpeg" },
+                { name: "NRK P1 Østfold", url: "https://lyd.nrk.no/nrk_radio_p1_ostfold_mp3_h", logo: "nrklogo/ostfold.jpeg" },                
+                { name: "NRK P2", url: "https://lyd.nrk.no/nrk_radio_p2_mp3_h", logo: "nrklogo/logo2.png" },
+                { name: "NRK P3", url: "https://lyd.nrk.no/nrk_radio_p3_mp3_h", logo: "nrklogo/logo3.png" },
+                { name: "NRK Alltid Nyheter", url: "https://lyd.nrk.no/nrk_radio_alltidnyheter_mp3_h", logo: "nrklogo/logo4.png" }
+            ],
+            P4: [
+                { name: "P4 Direkte", url: "https://p4-direkte-url", logo: "path/to/logo5.png" },
+                { name: "P4 Hits", url: "https://p4-hits-url", logo: "path/to/logo6.png" }
+            ]
+            // Legg til flere kategorier og stasjoner som ønsket
+        };
+
+        let currentAudio = null;
+        let currentlyPlayingUrl = null;
+
+        // Funksjon for å vise stasjoner basert på valgt kategori
+        function showStations(category) {
+            const stationsGrid = document.getElementById('stations-grid');
+            stationsGrid.innerHTML = ''; // Tømmer nåværende innhold
+            stationsData[category].forEach(station => {
+                const stationDiv = document.createElement('div');
+                stationDiv.classList.add('station');
+                stationDiv.onclick = () => togglePlayStation(station.url, stationDiv);
+
+                // Legg til logo
+                const logo = document.createElement('img');
+                logo.src = station.logo;
+                logo.alt = `${station.name} logo`;
+                stationDiv.appendChild(logo);
+
+                // Stasjonsnavn
+                const name = document.createElement('h3');
+                name.textContent = station.name;
+                stationDiv.appendChild(name);
+
+                stationsGrid.appendChild(stationDiv);
+            });
+        }
+
+        // Funksjon for å spille av eller stoppe en stasjon
+        function togglePlayStation(url, stationDiv) {
+            // Hvis vi trykker på samme stasjon som spiller, stopp avspillingen
+            if (currentAudio && url === currentlyPlayingUrl) {
+                currentAudio.pause();
+                currentlyPlayingUrl = null; // Nullstill for å indikere at ingenting spiller
+                stationDiv.classList.remove('playing'); // Fjern visuell indikasjon for aktiv stasjon
+            } else {
+                // Hvis en annen stasjon spiller, stopp den
+                if (currentAudio) {
+                    currentAudio.pause();
+                }
+
+                // Start den nye stasjonen
+                currentAudio = new Audio(url);
+                currentAudio.play();
+                currentlyPlayingUrl = url; // Sett den nye URL-en som aktiv
+
+                // Fjern 'playing'-klassen fra alle stasjonsbokser
+                document.querySelectorAll('.station').forEach(st => st.classList.remove('playing'));
+                stationDiv.classList.add('playing'); // Legg til visuell indikasjon for aktiv stasjon
+            }
+        }
+
+        // Last inn første kategori automatisk
+        showStations('NRK');
+    </script>
+</body>
+</html>

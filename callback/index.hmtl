@@ -1,0 +1,16 @@
+console.log("Callback-siden er lastet.");
+
+// Hent token fra URL
+const hash = window.location.hash.substring(1); // Alt etter #
+const params = new URLSearchParams(hash);
+const tokenFromUrl = params.get("access_token");
+
+if (tokenFromUrl) {
+    console.log("Token hentet fra URL:", tokenFromUrl);
+    localStorage.setItem("spotifyAccessToken", tokenFromUrl); // Lagre token i localStorage
+    console.log("Token lagret i localStorage.");
+    alert("Innlogging vellykket! Du kan nå gå tilbake til radioportalen.");
+} else {
+    console.error("Ingen token funnet i URL.");
+    alert("Kunne ikke hente token. Logg inn på nytt.");
+}

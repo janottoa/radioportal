@@ -1,0 +1,3573 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radioportal</title>
+    <style>
+        /* Nattdesign som standard */
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: black;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .header {
+            background-color: gray;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            box-sizing: border-box;
+            color: black;
+        }
+        .header-logo img {
+            height: 30px;
+        }
+        .header-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+        }
+        .switch-button {
+            background-color: #555;
+            color: white;
+            padding: 8px 16px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+        }
+        .switch-button:hover {
+            background-color: #666;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+            width: 100%;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 15%;
+            min-width: 200px;
+            background-color: #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            box-sizing: border-box;
+        }
+        .sidebar button {
+            background-color: #555;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .sidebar button:hover {
+            background-color: #666;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow-y: auto;
+            margin-left: 15%;
+            box-sizing: border-box;
+            align-items: center;
+        }
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .station {
+            padding: 10px;
+            border: 1px solid #888;
+            border-radius: 5px;
+            background-color: #444;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .station:hover {
+            background-color: #555;
+        }
+        .station.playing {
+            background-color: #666;
+            border-color: #888;
+        }
+        .station img {
+            max-width: 60px;
+            margin-bottom: 5px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: gray;
+            color: black;
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer .info {
+            font-size: 1em;
+        }
+        /* Dagfarger */
+        .day-mode {
+            background-color: white;
+        }
+        .day-mode .header {
+            background-color: #908962;
+            color: black;
+        }
+        .day-mode .sidebar {
+            background-color: #f0f0f0;
+        }
+        .day-mode .sidebar button {
+            background-color: #d3d3d3;
+            color: black;
+        }
+        .day-mode .station {
+            background-color: #f9f9f9;
+            color: black;
+        }
+        .day-mode .station:hover {
+            background-color: #e0e0e0;
+        }
+        .day-mode .footer {
+            background-color: #333;
+            color: white;
+        }
+        #screenshotResult img {
+            width: 75%;
+            margin: 0 auto;
+            display: block;
+            object-fit: cover;
+            margin-top: 10px;
+            transform: translateY(-10px);
+        }
+        #screenshotResult {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: calc(100vh - 200px);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+            <img src="logo.370a4318.svg" alt="Xpeng Logo">
+        </div>
+        <button class="switch-button" onclick="toggleDayMode()">Bytt design</button>
+        <button class="switch-button" onclick="refreshPage()">Radio</button>
+        
+        <div class="header-title">RADIOPORTAL</div>
+        <div class="header-subtitle">av: Moffa Jotto</div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar" id="sidebar"></div>
+
+        <div class="content">
+            <div class="stations-grid" id="stations-grid"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="info">
+            <img id="station-logo" src="" alt="Stasjonslogo" style="display:none; height: 30px; margin-right: 10px;">
+            <span id="channel-name">Velg en radiokanal</span> 
+            <span id="song-info"></span>
+        </div>
+    </div>
+
+    <script>
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        function toggleDayMode() {
+            document.body.classList.toggle('day-mode');
+        }
+
+        const sidebar = document.getElementById("sidebar");
+        const stationsGrid = document.getElementById("stations-grid");
+        const screenshotResultDiv = document.createElement('div');
+        screenshotResultDiv.id = 'screenshotResult';
+        stationsGrid.appendChild(screenshotResultDiv);
+
+        const menus = {
+            main: [
+                { label: "NRK", action: () => showStations("NRK") },
+                { label: "P4", action: () => showStations("P4") },
+                { label: "Radio Norge", action: () => showStations("Radio Norge") },
+                { label: "Metro", action: () => showStations("Metro") },
+                { label: "Lokale", action: () => showStations("Lokale") },
+                { label: "Internet", action: () => showStations("Internet") },
+                { label: "1fm", action: () => showStations("1fm") },
+                { label: "Latinske", action: () => showStations("Latinske") },
+                { label: "Mer...", action: () => loadMenu("extra") },
+                { label: "Tilbake", action: () => loadMenu("main") },
+            ],
+            extra: [
+                { label: "Klassisk", action: () => showStations("Klassisk") },
+                { label: "Rock", action: () => showStations("Rock") },
+                { label: "Jazz", action: () => showStations("Jazz") },
+                { label: "Pop", action: () => showStations("Pop") },
+                { label: "Tilbake", action: () => loadMenu("main") },
+            ],
+        };
+
+        function loadMenu(menuName) {
+            sidebar.innerHTML = "";
+            menus[menuName].forEach((item) => {
+                const button = document.createElement("button");
+                button.textContent = item.label;
+                button.onclick = item.action;
+                sidebar.appendChild(button);
+            });
+        }
+        
+        // Kall på loadMenu for å laste hovedmenyen ved start
+        loadMenu('main');
+
+        let stationsData = {};
+        let currentAudio = null;
+        let currentlyPlayingUrl = null;
+
+        // Definer URL basert på nettverkssituasjonen
+        let url;
+        if (window.location.hostname.startsWith('192.168.') || window.location.hostname === 'localhost') {
+            url = 'http://192.168.0.11/stations.json';
+        } else {
+            url = 'http://anthonsen.net:2222/stations.json';
+        }
+
+        // Last stationsData fra JSON-fil
+        fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+            })
+            .then(data => {
+                stationsData = data;
+                showStations('NRK'); // Viser NRK-stasjoner som standard
+            })
+            .catch(error => console.error('Fetch error:', error));
+
+        async function fetchScreenshot(channelUrl) {
+            try {
+                const apiKey = 'ccbafb090b785be9628134029e5d8fa4';
+                const timestamp = new Date().getTime(); // Legg til tidsstempel for å unngå caching
+                const screenshotUrl = `https://api.screenshotlayer.com/api/capture?access_key=${apiKey}&url=${encodeURIComponent(channelUrl)}&timestamp=${timestamp}`;
+                return screenshotUrl;
+            } catch (error) {
+                console.error('Feil ved henting av skjermbilde:', error);
+                return null;
+            }
+        }
+
+        async function showIframeScreenshot(channelUrl) {
+            screenshotResultDiv.innerHTML = ''; // Tøm eksisterende skjermbilde
+
+            const screenshotUrl = await fetchScreenshot(channelUrl);
+            if (screenshotUrl) {
+                const img = document.createElement('img');
+                img.src = screenshotUrl;
+                img.alt = 'Skjermbilde av kanalen';
+                screenshotResultDiv.appendChild(img);
+                screenshotResultDiv.style.display = 'flex';
+            } else {
+                screenshotResultDiv.style.display = 'none';
+            }
+        }
+
+        function showStations(category, selectedStation = null) {
+            stationsGrid.innerHTML = ''; // Tøm tidligere innhold
+            stationsGrid.appendChild(screenshotResultDiv); // Legg tilbake screenshot-diven
+
+            // Vis alle stasjoner i valgt kategori
+            if (!selectedStation && stationsData[category]) {
+                stationsData[category].forEach(station => {
+                    const stationDiv = document.createElement('div');
+                    stationDiv.classList.add('station');
+                    stationDiv.setAttribute("data-category", category);
+                    stationDiv.setAttribute("data-url", station.url);
+                    stationDiv.onclick = () => {
+                        showStations(category, station);
+                    };
+
+                    const logo = document.createElement('img');
+                    logo.src = station.logo;
+                    logo.alt = `${station.name} logo`;
+                    stationDiv.appendChild(logo);
+
+                    const name = document.createElement('h3');
+                    name.textContent = station.name;
+                    stationDiv.appendChild(name);
+
+                    stationsGrid.appendChild(stationDiv);
+                });
+            }
+
+            // Hvis en stasjon er valgt
+            if (selectedStation) {
+                initializeAudio(selectedStation.url);
+
+                // Oppdater footer med stasjonsinformasjon
+                updateFooter(selectedStation);
+
+                // Hvis kanalen har en nettside, vis skjermbilde
+                if (selectedStation.channelUrl) {
+                    showIframeScreenshot(selectedStation.channelUrl);
+                } else {
+                    screenshotResultDiv.innerHTML = ''; // Fjern skjermbilde hvis ikke tilgjengelig
+                    screenshotResultDiv.style.display = 'none';
+                }
+            }
+        }
+
+        async function initializeAudio(url) {
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+
+            currentAudio = new Audio(url);
+            currentAudio.muted = true;
+            currentlyPlayingUrl = url;
+
+            currentAudio.addEventListener('canplay', () => {
+                currentAudio.muted = false;
+                currentAudio.play().catch(error => {
+                    console.error("Automatisk avspilling ble blokkert:", error);
+                });
+            });
+
+            setupWebSocket(url);
+        }
+
+        function setupWebSocket(url) {
+            if (window.ws) {
+                window.ws.close();
+            }
+
+            window.ws = new WebSocket('ws://anthonsen.net:8080');
+            window.ws.onopen = () => {
+                window.ws.send(JSON.stringify({ action: 'start', streamUrl: url }));
+            };
+            window.ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                updateSongInfo(data.StreamTitle, data.imageUrl);
+            };
+            window.ws.onerror = (error) => {
+                console.error("WebSocket-feil:", error);
+                updateSongInfo("Ingen metadata tilgjengelig");
+            };
+            window.ws.onclose = () => {
+                console.log("WebSocket-tilkobling lukket");
+            };
+        }
+
+        function updateSongInfo(songTitle, imageUrl) {
+            const songInfoElement = document.getElementById('song-info');
+            const channelNameElement = document.getElementById('channel-name');
+            if (songTitle) {
+                songInfoElement.textContent = ` - ${songTitle}`;
+            } else {
+                songInfoElement.textContent = "";
+            }
+            if (imageUrl) {
+                const logoElement = document.getElementById('station-logo');
+                logoElement.src = imageUrl;
+                logoElement.style.display = "inline";
+            }
+            document.title = `${channelNameElement.textContent} ${songInfoElement.textContent}`;
+        }
+
+        function updateFooter(station) {
+            const logoElement = document.getElementById('station-logo');
+            const channelNameElement = document.getElementById('channel-name');
+            const songInfoElement = document.getElementById('song-info');
+
+            if (station) {
+                logoElement.src = station.logo;
+                logoElement.style.display = "inline";
+                channelNameElement.textContent = station.name;
+                songInfoElement.textContent = station.songInfo || "";
+            } else {
+                logoElement.style.display = "none";
+                channelNameElement.textContent = "Velg en radiokanal";
+                songInfoElement.textContent = "";
+            }
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radioportal</title>
+    <style>
+        /* Nattdesign som standard */
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: black;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .header {
+            background-color: gray;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            box-sizing: border-box;
+            color: black;
+        }
+        .header-logo img {
+            height: 30px;
+        }
+        .header-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+        }
+        .switch-button {
+            background-color: #555;
+            color: white;
+            padding: 8px 16px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+        }
+        .switch-button:hover {
+            background-color: #666;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+            width: 100%;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 15%;
+            min-width: 200px;
+            background-color: #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            box-sizing: border-box;
+        }
+        .sidebar button {
+            background-color: #555;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .sidebar button:hover {
+            background-color: #666;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow-y: auto;
+            margin-left: 15%;
+            box-sizing: border-box;
+            align-items: center;
+        }
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .station {
+            padding: 10px;
+            border: 1px solid #888;
+            border-radius: 5px;
+            background-color: #444;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .station:hover {
+            background-color: #555;
+        }
+        .station.playing {
+            background-color: #666;
+            border-color: #888;
+        }
+        .station img {
+            max-width: 60px;
+            margin-bottom: 5px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: gray;
+            color: black;
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer .info {
+            font-size: 1em;
+        }
+        /* Dagfarger */
+        .day-mode {
+            background-color: white;
+        }
+        .day-mode .header {
+            background-color: #908962;
+            color: black;
+        }
+        .day-mode .sidebar {
+            background-color: #f0f0f0;
+        }
+        .day-mode .sidebar button {
+            background-color: #d3d3d3;
+            color: black;
+        }
+        .day-mode .station {
+            background-color: #f9f9f9;
+            color: black;
+        }
+        .day-mode .station:hover {
+            background-color: #e0e0e0;
+        }
+        .day-mode .footer {
+            background-color: #333;
+            color: white;
+        }
+        #screenshotResult img {
+            width: 75%;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+            object-fit: cover;
+            transform: translateY(-10px);
+        }
+        #screenshotResult {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 75%;
+            height: 75%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+            <img src="logo.370a4318.svg" alt="Xpeng Logo">
+        </div>
+        <button class="switch-button" onclick="toggleDayMode()">Bytt design</button>
+        <button class="switch-button" onclick="refreshPage()">Radio</button>
+        
+        <div class="header-title">RADIOPORTAL</div>
+        <div class="header-subtitle">av: Moffa Jotto</div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar" id="sidebar"></div>
+
+        <div class="content">
+            <div class="stations-grid" id="stations-grid"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="info">
+            <img id="station-logo" src="" alt="Stasjonslogo" style="display:none; height: 30px; margin-right: 10px;">
+            <span id="channel-name">Velg en radiokanal</span> 
+            <span id="song-info"></span>
+        </div>
+    </div>
+
+    <script>
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        function toggleDayMode() {
+            document.body.classList.toggle('day-mode');
+        }
+
+        const sidebar = document.getElementById("sidebar");
+        const stationsGrid = document.getElementById("stations-grid");
+        const screenshotResultDiv = document.createElement('div');
+        screenshotResultDiv.id = 'screenshotResult';
+        stationsGrid.appendChild(screenshotResultDiv);
+
+        const menus = {
+            main: [
+                { label: "NRK", action: () => showStations("NRK") },
+                { label: "P4", action: () => showStations("P4") },
+                { label: "Radio Norge", action: () => showStations("Radio Norge") },
+                { label: "Metro", action: () => showStations("Metro") },
+                { label: "Lokale", action: () => showStations("Lokale") },
+                { label: "Internet", action: () => showStations("Internet") },
+                { label: "1fm", action: () => showStations("1fm") },
+                { label: "Latinske", action: () => showStations("Latinske") },
+                { label: "Mer...", action: () => loadMenu("extra") },
+                { label: "Tilbake", action: () => loadMenu("main") },
+            ],
+            extra: [
+                { label: "Klassisk", action: () => showStations("Klassisk") },
+                { label: "Rock", action: () => showStations("Rock") },
+                { label: "Jazz", action: () => showStations("Jazz") },
+                { label: "Pop", action: () => showStations("Pop") },
+                { label: "Tilbake", action: () => loadMenu("main") },
+            ],
+        };
+
+        function loadMenu(menuName) {
+            sidebar.innerHTML = "";
+            menus[menuName].forEach((item) => {
+                const button = document.createElement("button");
+                button.textContent = item.label;
+                button.onclick = item.action;
+                sidebar.appendChild(button);
+            });
+        }
+        
+        // Kall på loadMenu for å laste hovedmenyen ved start
+        loadMenu('main');
+
+        let stationsData = {};
+        let currentAudio = null;
+        let currentlyPlayingUrl = null;
+
+        // Definer URL basert på nettverkssituasjonen
+        let url;
+        if (window.location.hostname.startsWith('192.168.') || window.location.hostname === 'localhost') {
+            url = 'http://192.168.0.11/stations.json';
+        } else {
+            url = 'http://anthonsen.net:2222/stations.json';
+        }
+
+        // Last stationsData fra JSON-fil
+        fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+            })
+            .then(data => {
+                stationsData = data;
+                showStations('NRK'); // Viser NRK-stasjoner som standard
+            })
+            .catch(error => console.error('Fetch error:', error));
+
+        async function fetchScreenshot(channelUrl) {
+            try {
+                const apiKey = 'ccbafb090b785be9628134029e5d8fa4';
+                const timestamp = new Date().getTime(); // Legg til tidsstempel for å unngå caching
+                const screenshotUrl = `https://api.screenshotlayer.com/api/capture?access_key=${apiKey}&url=${encodeURIComponent(channelUrl)}&timestamp=${timestamp}`;
+                return screenshotUrl;
+            } catch (error) {
+                console.error('Feil ved henting av skjermbilde:', error);
+                return null;
+            }
+        }
+
+        async function showIframeScreenshot(channelUrl) {
+            screenshotResultDiv.innerHTML = ''; // Tøm eksisterende skjermbilde
+
+            const screenshotUrl = await fetchScreenshot(channelUrl);
+            if (screenshotUrl) {
+                const img = document.createElement('img');
+                img.src = screenshotUrl;
+                img.alt = 'Skjermbilde av kanalen';
+                screenshotResultDiv.appendChild(img);
+                screenshotResultDiv.style.display = 'flex';
+            } else {
+                screenshotResultDiv.style.display = 'none';
+            }
+        }
+
+        function showStations(category, selectedStation = null) {
+            stationsGrid.innerHTML = ''; screenshotResultDiv.innerHTML = ''; screenshotResultDiv.style.display = 'none'; // Tøm tidligere innhold
+            stationsGrid.appendChild(screenshotResultDiv); // Legg tilbake screenshot-diven
+
+            // Vis alle stasjoner i valgt kategori
+            if (!selectedStation && stationsData[category]) {
+                stationsData[category].forEach(station => {
+                    const stationDiv = document.createElement('div');
+                    stationDiv.classList.add('station');
+                    stationDiv.setAttribute("data-category", category);
+                    stationDiv.setAttribute("data-url", station.url);
+                    stationDiv.addEventListener('click', () => { showStations(category, station); });
+
+                    const logo = document.createElement('img');
+                    logo.src = station.logo;
+                    logo.alt = `${station.name} logo`;
+                    stationDiv.appendChild(logo);
+
+                    const name = document.createElement('h3');
+                    name.textContent = station.name;
+                    stationDiv.appendChild(name);
+
+                    stationsGrid.appendChild(stationDiv);
+                });
+            }
+
+            // Hvis en stasjon er valgt
+            if (selectedStation) {
+                initializeAudio(selectedStation.url);
+
+                // Oppdater footer med stasjonsinformasjon
+                updateFooter(selectedStation);
+
+                // Hvis kanalen har en nettside, vis skjermbilde
+                if (selectedStation.channelUrl) {
+                    showIframeScreenshot(selectedStation.channelUrl);
+                } else {
+                    screenshotResultDiv.innerHTML = ''; // Fjern skjermbilde hvis ikke tilgjengelig
+                    screenshotResultDiv.style.display = 'none';
+                }
+            }
+        }
+
+        async function initializeAudio(url) {
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+
+            currentAudio = new Audio(url);
+            currentAudio.muted = true;
+            currentlyPlayingUrl = url;
+
+            currentAudio.addEventListener('canplay', () => {
+                currentAudio.muted = false;
+                currentAudio.play().catch(error => {
+                    console.error("Automatisk avspilling ble blokkert:", error);
+                });
+            });
+
+            setupWebSocket(url);
+        }
+
+        function setupWebSocket(url) {
+            if (window.ws) {
+                window.ws.close();
+            }
+
+            window.ws = new WebSocket('ws://anthonsen.net:8080');
+            window.ws.onopen = () => {
+                window.ws.send(JSON.stringify({ action: 'start', streamUrl: url }));
+            };
+            window.ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                updateSongInfo(data.StreamTitle, data.imageUrl);
+            };
+            window.ws.onerror = (error) => {
+                console.error("WebSocket-feil:", error);
+                updateSongInfo("Ingen metadata tilgjengelig");
+            };
+            window.ws.onclose = () => {
+                console.log("WebSocket-tilkobling lukket");
+            };
+        }
+
+        function updateSongInfo(songTitle, imageUrl) {
+            const songInfoElement = document.getElementById('song-info');
+            const channelNameElement = document.getElementById('channel-name');
+            if (songTitle) {
+                songInfoElement.textContent = ` - ${songTitle}`;
+            } else {
+                songInfoElement.textContent = "";
+            }
+            if (imageUrl) {
+                const logoElement = document.getElementById('station-logo');
+                logoElement.src = imageUrl;
+                logoElement.style.display = "inline";
+            }
+            document.title = `${channelNameElement.textContent} ${songInfoElement.textContent}`;
+        }
+
+        function updateFooter(station) {
+            const logoElement = document.getElementById('station-logo');
+            const channelNameElement = document.getElementById('channel-name');
+            const songInfoElement = document.getElementById('song-info');
+
+            if (station) {
+                logoElement.src = station.logo;
+                logoElement.style.display = "inline";
+                channelNameElement.textContent = station.name;
+                songInfoElement.textContent = station.songInfo || "";
+            } else {
+                logoElement.style.display = "none";
+                channelNameElement.textContent = "Velg en radiokanal";
+                songInfoElement.textContent = "";
+            }
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radioportal</title>
+    <style>
+        /* Nattdesign som standard */
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: black;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .header {
+            background-color: gray;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            box-sizing: border-box;
+            color: black;
+        }
+        .header-logo img {
+            height: 30px;
+        }
+        .header-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+        }
+        .switch-button {
+            background-color: #555;
+            color: white;
+            padding: 8px 16px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+        }
+        .switch-button:hover {
+            background-color: #666;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+            width: 100%;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 15%;
+            min-width: 200px;
+            background-color: #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            box-sizing: border-box;
+        }
+        .sidebar button {
+            background-color: #555;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .sidebar button:hover {
+            background-color: #666;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow-y: auto;
+            margin-left: 15%;
+            box-sizing: border-box;
+            align-items: center;
+        }
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .station {
+            padding: 10px;
+            border: 1px solid #888;
+            border-radius: 5px;
+            background-color: #444;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .station:hover {
+            background-color: #555;
+        }
+        .station.playing {
+            background-color: #666;
+            border-color: #888;
+        }
+        .station img {
+            max-width: 60px;
+            margin-bottom: 5px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: gray;
+            color: black;
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .footer .info {
+            font-size: 1em;
+        }
+        /* Dagfarger */
+        .day-mode {
+            background-color: white;
+        }
+        .day-mode .header {
+            background-color: #908962;
+            color: black;
+        }
+        .day-mode .sidebar {
+            background-color: #f0f0f0;
+        }
+        .day-mode .sidebar button {
+            background-color: #d3d3d3;
+            color: black;
+        }
+        .day-mode .station {
+            background-color: #f9f9f9;
+            color: black;
+        }
+        .day-mode .station:hover {
+            background-color: #e0e0e0;
+        }
+        .day-mode .footer {
+            background-color: #333;
+            color: white;
+        }
+        #screenshotResult img {
+            width: 75%;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+            object-fit: cover;
+            transform: translateY(-10px);
+        }
+        #screenshotResult {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 75%;
+            height: 75%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+            <img src="logo.370a4318.svg" alt="Xpeng Logo">
+        </div>
+        <button class="switch-button" onclick="toggleDayMode()">Bytt design</button>
+        <button class="switch-button" onclick="refreshPage()">Radio</button>
+        
+        <div class="header-title">RADIOPORTAL</div>
+        <div class="header-subtitle">av: Moffa Jotto</div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar" id="sidebar"></div>
+
+        <div class="content">
+            <div class="stations-grid" id="stations-grid"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="info">
+            <img id="station-logo" src="" alt="Stasjonslogo" style="display:none; height: 30px; margin-right: 10px;">
+            <span id="channel-name">Velg en radiokanal</span> 
+            <span id="song-info"></span>
+        </div>
+    </div>
+
+    <script>
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        function toggleDayMode() {
+            document.body.classList.toggle('day-mode');
+        }
+
+        const sidebar = document.getElementById("sidebar");
+        const stationsGrid = document.getElementById("stations-grid");
+        const screenshotResultDiv = document.createElement('div');
+        screenshotResultDiv.id = 'screenshotResult';
+        stationsGrid.appendChild(screenshotResultDiv);
+
+        const menus = {
+            main: [
+                { label: "NRK", action: () => showStations("NRK") },
+                { label: "P4", action: () => showStations("P4") },
+                { label: "Radio Norge", action: () => showStations("Radio Norge") },
+                { label: "Metro", action: () => showStations("Metro") },
+                { label: "Lokale", action: () => showStations("Lokale") },
+                { label: "Internet", action: () => showStations("Internet") },
+                { label: "1fm", action: () => showStations("1fm") },
+                { label: "Latinske", action: () => showStations("Latinske") },
+                { label: "Mer...", action: () => loadMenu("extra") },
+                { label: "Tilbake", action: () => loadMenu("main") },
+            ],
+            extra: [
+                { label: "Klassisk", action: () => showStations("Klassisk") },
+                { label: "Rock", action: () => showStations("Rock") },
+                { label: "Jazz", action: () => showStations("Jazz") },
+                { label: "Pop", action: () => showStations("Pop") },
+                { label: "Tilbake", action: () => loadMenu("main") },
+            ],
+        };
+
+        function loadMenu(menuName) {
+            sidebar.innerHTML = "";
+            menus[menuName].forEach((item) => {
+                const button = document.createElement("button");
+                button.textContent = item.label;
+                button.onclick = item.action;
+                sidebar.appendChild(button);
+            });
+        }
+        
+        // Kall på loadMenu for å laste hovedmenyen ved start
+        loadMenu('main');
+
+        let stationsData = {};
+        let currentAudio = null;
+        let currentlyPlayingUrl = null;
+
+        // Definer URL basert på nettverkssituasjonen
+        let url;
+        if (window.location.hostname.startsWith('192.168.') || window.location.hostname === 'localhost') {
+            url = 'http://192.168.0.11/stations.json';
+        } else {
+            url = 'http://anthonsen.net:2222/stations.json';
+        }
+
+        // Last stationsData fra JSON-fil
+        fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+            })
+            .then(data => {
+                stationsData = data;
+                showStations('NRK'); // Viser NRK-stasjoner som standard
+            })
+            .catch(error => console.error('Fetch error:', error));
+
+        async function fetchScreenshot(channelUrl) {
+            try {
+                const apiKey = 'ccbafb090b785be9628134029e5d8fa4';
+                const timestamp = new Date().getTime(); // Legg til tidsstempel for å unngå caching
+                const screenshotUrl = `https://api.screenshotlayer.com/api/capture?access_key=${apiKey}&url=${encodeURIComponent(channelUrl)}&timestamp=${timestamp}`;
+                return screenshotUrl;
+            } catch (error) {
+                console.error('Feil ved henting av skjermbilde:', error);
+                return null;
+            }
+        }
+
+        async function showIframeScreenshot(channelUrl) {
+            screenshotResultDiv.innerHTML = ''; // Tøm eksisterende skjermbilde
+
+            const screenshotUrl = await fetchScreenshot(channelUrl);
+            if (screenshotUrl) {
+                const img = document.createElement('img');
+                img.src = screenshotUrl;
+                img.alt = 'Skjermbilde av kanalen';
+                screenshotResultDiv.appendChild(img);
+                screenshotResultDiv.style.display = 'flex';
+            } else {
+                screenshotResultDiv.style.display = 'none';
+            }
+        }
+
+        function showStations(category, selectedStation = null) {
+            stationsGrid.innerHTML = ''; screenshotResultDiv.innerHTML = ''; screenshotResultDiv.style.display = 'none'; // Tøm tidligere innhold
+            stationsGrid.appendChild(screenshotResultDiv); // Legg tilbake screenshot-diven
+
+            // Vis alle stasjoner i valgt kategori
+            if (!selectedStation && stationsData[category]) {
+                stationsData[category].forEach(station => {
+                    const stationDiv = document.createElement('div');
+                    stationDiv.classList.add('station');
+                    stationDiv.setAttribute("data-category", category);
+                    stationDiv.setAttribute("data-url", station.url);
+                    stationDiv.addEventListener('click', () => { showStations(category, station); });
+
+                    const logo = document.createElement('img');
+                    logo.src = station.logo;
+                    logo.alt = `${station.name} logo`;
+                    stationDiv.appendChild(logo);
+
+                    const name = document.createElement('h3');
+                    name.textContent = station.name;
+                    stationDiv.appendChild(name);
+
+                    stationsGrid.appendChild(stationDiv);
+                });
+            }
+
+            // Hvis en stasjon er valgt
+            if (selectedStation) {
+                initializeAudio(selectedStation.url);
+
+                // Oppdater footer med stasjonsinformasjon
+                updateFooter(selectedStation);
+
+                // Hvis kanalen har en nettside, vis skjermbilde
+                if (selectedStation.channelUrl) {
+                    showIframeScreenshot(selectedStation.channelUrl);
+                } else {
+                    screenshotResultDiv.innerHTML = ''; // Fjern skjermbilde hvis ikke tilgjengelig
+                    screenshotResultDiv.style.display = 'none';
+                }
+            }
+        }
+
+        async function initializeAudio(url) {
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+
+            currentAudio = new Audio(url);
+            currentAudio.muted = true;
+            currentlyPlayingUrl = url;
+
+            currentAudio.addEventListener('canplay', () => {
+                currentAudio.muted = false;
+                currentAudio.play().catch(error => {
+                    console.error("Automatisk avspilling ble blokkert:", error);
+                });
+            });
+
+            setupWebSocket(url);
+        }
+
+        function setupWebSocket(url) {
+            if (window.ws) {
+                window.ws.close();
+            }
+
+            window.ws = new WebSocket('ws://anthonsen.net:8080');
+            window.ws.onopen = () => {
+                window.ws.send(JSON.stringify({ action: 'start', streamUrl: url }));
+            };
+            window.ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                updateSongInfo(data.StreamTitle, data.imageUrl);
+            };
+            window.ws.onerror = (error) => {
+                console.error("WebSocket-feil:", error);
+                updateSongInfo("Ingen metadata tilgjengelig");
+            };
+            window.ws.onclose = () => {
+                console.log("WebSocket-tilkobling lukket");
+            };
+        }
+
+        function updateSongInfo(songTitle, imageUrl) {
+            const songInfoElement = document.getElementById('song-info');
+            const channelNameElement = document.getElementById('channel-name');
+            if (songTitle) {
+                songInfoElement.textContent = ` - ${songTitle}`;
+            } else {
+                songInfoElement.textContent = "";
+            }
+            if (imageUrl) {
+                const logoElement = document.getElementById('station-logo');
+                logoElement.src = imageUrl;
+                logoElement.style.display = "inline";
+            }
+            document.title = `${channelNameElement.textContent} ${songInfoElement.textContent}`;
+        }
+
+        function updateFooter(station) {
+            const logoElement = document.getElementById('station-logo');
+            const channelNameElement = document.getElementById('channel-name');
+            const songInfoElement = document.getElementById('song-info');
+
+            if (station) {
+                logoElement.src = station.logo;
+                logoElement.style.display = "inline";
+                channelNameElement.textContent = station.name;
+                songInfoElement.textContent = station.songInfo || "";
+            } else {
+                logoElement.style.display = "none";
+                channelNameElement.textContent = "Velg en radiokanal";
+                songInfoElement.textContent = "";
+            }
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radioportal</title>
+    <style>
+        /* Nattdesign som standard */
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: black;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .header {
+            background-color: gray;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            box-sizing: border-box;
+            color: black;
+        }
+        .header-logo img {
+            height: 30px;
+        }
+        .header-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+        }
+        .switch-button {
+            background-color: #555;
+            color: white;
+            padding: 8px 16px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+        }
+        .switch-button:hover {
+            background-color: #666;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+            width: 100%;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 15%;
+            min-width: 200px;
+            background-color: #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            box-sizing: border-box;
+        }
+        .sidebar button {
+            background-color: #555;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .sidebar button:hover {
+            background-color: #666;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow-y: auto;
+            margin-left: 15%;
+            box-sizing: border-box;
+            align-items: center;
+        }
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .station {
+            padding: 10px;
+            border: 1px solid #888;
+            border-radius: 5px;
+            background-color: #444;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .station:hover {
+            background-color: #555;
+        }
+        .station.playing {
+            background-color: #666;
+            border-color: #888;
+        }
+        .station img {
+            max-width: 60px;
+            margin-bottom: 5px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: gray;
+            color: black;
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            z-index: 20;
+        }
+        .footer .info {
+            font-size: 1em;
+        }
+        /* Dagfarger */
+        .day-mode {
+            background-color: white;
+        }
+        .day-mode .header {
+            background-color: #908962;
+            color: black;
+        }
+        .day-mode .sidebar {
+            background-color: #f0f0f0;
+        }
+        .day-mode .sidebar button {
+            background-color: #d3d3d3;
+            color: black;
+        }
+        .day-mode .station {
+            background-color: #f9f9f9;
+            color: black;
+        }
+        .day-mode .station:hover {
+            background-color: #e0e0e0;
+        }
+        .day-mode .footer {
+            background-color: #333;
+            color: white;
+        }
+        #screenshotResult img {
+            width: 75%;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+            object-fit: cover;
+            transform: translateY(-10px);
+        }
+        #screenshotResult {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 75%;
+            height: 75%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+            <img src="logo.370a4318.svg" alt="Xpeng Logo">
+        </div>
+        <button class="switch-button" onclick="toggleDayMode()">Bytt design</button>
+        <button class="switch-button" onclick="refreshPage()">Radio</button>
+        
+        <div class="header-title">RADIOPORTAL</div>
+        <div class="header-subtitle">av: Moffa Jotto</div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar" id="sidebar"></div>
+
+        <div class="content">
+            <div class="stations-grid" id="stations-grid"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="info">
+            <img id="station-logo" src="" alt="Stasjonslogo" style="display:none; height: 30px; margin-right: 10px;">
+            <span id="channel-name">Velg en radiokanal</span> 
+            <span id="song-info"></span>
+        </div>
+    </div>
+
+    <script>
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        function toggleDayMode() {
+            document.body.classList.toggle('day-mode');
+        }
+
+        const sidebar = document.getElementById("sidebar");
+        const stationsGrid = document.getElementById("stations-grid");
+        const screenshotResultDiv = document.createElement('div');
+        screenshotResultDiv.id = 'screenshotResult';
+        stationsGrid.appendChild(screenshotResultDiv);
+
+        const menus = {
+            main: [
+                { label: "NRK", action: () => showStations("NRK") },
+                { label: "P4", action: () => showStations("P4") },
+                { label: "Radio Norge", action: () => showStations("Radio Norge") },
+                { label: "Metro", action: () => showStations("Metro") },
+                { label: "Lokale", action: () => showStations("Lokale") },
+                { label: "Internet", action: () => showStations("Internet") },
+                { label: "1fm", action: () => showStations("1fm") },
+                { label: "Latinske", action: () => showStations("Latinske") },
+                { label: "Mer...", action: () => loadMenu("extra") },
+                { label: "Tilbake", action: () => loadMenu("main") },
+            ],
+            extra: [
+                { label: "Klassisk", action: () => showStations("Klassisk") },
+                { label: "Rock", action: () => showStations("Rock") },
+                { label: "Jazz", action: () => showStations("Jazz") },
+                { label: "Pop", action: () => showStations("Pop") },
+                { label: "Tilbake", action: () => loadMenu("main") },
+            ],
+        };
+
+        function loadMenu(menuName) {
+            sidebar.innerHTML = "";
+            menus[menuName].forEach((item) => {
+                const button = document.createElement("button");
+                button.textContent = item.label;
+                button.onclick = item.action;
+                sidebar.appendChild(button);
+            });
+        }
+        
+        // Kall på loadMenu for å laste hovedmenyen ved start
+        loadMenu('main');
+
+        let stationsData = {};
+        let currentAudio = null;
+        let currentlyPlayingUrl = null;
+
+        // Definer URL basert på nettverkssituasjonen
+        let url;
+        if (window.location.hostname.startsWith('192.168.') || window.location.hostname === 'localhost') {
+            url = 'http://192.168.0.11/stations.json';
+        } else {
+            url = 'http://anthonsen.net:2222/stations.json';
+        }
+
+        // Last stationsData fra JSON-fil
+        fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+            })
+            .then(data => {
+                stationsData = data;
+                showStations('NRK'); // Viser NRK-stasjoner som standard
+            })
+            .catch(error => console.error('Fetch error:', error));
+
+        async function fetchScreenshot(channelUrl) {
+            try {
+                const apiKey = 'ccbafb090b785be9628134029e5d8fa4';
+                const timestamp = new Date().getTime(); // Legg til tidsstempel for å unngå caching
+                const screenshotUrl = `https://api.screenshotlayer.com/api/capture?access_key=${apiKey}&url=${encodeURIComponent(channelUrl)}&timestamp=${timestamp}`;
+                return screenshotUrl;
+            } catch (error) {
+                console.error('Feil ved henting av skjermbilde:', error);
+                return null;
+            }
+        }
+
+        async function showIframeScreenshot(channelUrl) {
+            screenshotResultDiv.innerHTML = ''; // Tøm eksisterende skjermbilde
+
+            const screenshotUrl = await fetchScreenshot(channelUrl);
+            if (screenshotUrl) {
+                const img = document.createElement('img');
+                img.src = screenshotUrl;
+                img.alt = 'Skjermbilde av kanalen';
+                screenshotResultDiv.appendChild(img);
+                screenshotResultDiv.style.display = 'flex';
+            } else {
+                screenshotResultDiv.style.display = 'none';
+            }
+        }
+
+        function showStations(category, selectedStation = null) {
+            stationsGrid.innerHTML = ''; screenshotResultDiv.innerHTML = ''; screenshotResultDiv.style.display = 'none'; // Tøm tidligere innhold
+            stationsGrid.appendChild(screenshotResultDiv); // Legg tilbake screenshot-diven
+
+            // Vis alle stasjoner i valgt kategori
+            if (!selectedStation && stationsData[category]) {
+                stationsData[category].forEach(station => {
+                    const stationDiv = document.createElement('div');
+                    stationDiv.classList.add('station');
+                    stationDiv.setAttribute("data-category", category);
+                    stationDiv.setAttribute("data-url", station.url);
+                    stationDiv.addEventListener('click', () => { showStations(category, station); });
+
+                    const logo = document.createElement('img');
+                    logo.src = station.logo;
+                    logo.alt = `${station.name} logo`;
+                    stationDiv.appendChild(logo);
+
+                    const name = document.createElement('h3');
+                    name.textContent = station.name;
+                    stationDiv.appendChild(name);
+
+                    stationsGrid.appendChild(stationDiv);
+                });
+            }
+
+            // Hvis en stasjon er valgt
+            if (selectedStation) {
+                initializeAudio(selectedStation.url);
+
+                // Oppdater footer med stasjonsinformasjon
+                updateFooter(selectedStation);
+
+                // Hvis kanalen har en nettside, vis skjermbilde
+                if (selectedStation.channelUrl) {
+                    showIframeScreenshot(selectedStation.channelUrl);
+                } else {
+                    screenshotResultDiv.innerHTML = ''; // Fjern skjermbilde hvis ikke tilgjengelig
+                    screenshotResultDiv.style.display = 'none';
+                }
+            }
+        }
+
+        async function initializeAudio(url) {
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+
+            currentAudio = new Audio(url);
+            currentAudio.muted = true;
+            currentlyPlayingUrl = url;
+
+            currentAudio.addEventListener('canplay', () => {
+                currentAudio.muted = false;
+                currentAudio.play().catch(error => {
+                    console.error("Automatisk avspilling ble blokkert:", error);
+                });
+            });
+
+            setupWebSocket(url);
+        }
+
+        function setupWebSocket(url) {
+            if (window.ws) {
+                window.ws.close();
+            }
+
+            window.ws = new WebSocket('ws://anthonsen.net:8080');
+            window.ws.onopen = () => {
+                window.ws.send(JSON.stringify({ action: 'start', streamUrl: url }));
+            };
+            window.ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                updateSongInfo(data.StreamTitle, data.imageUrl);
+            };
+            window.ws.onerror = (error) => {
+                console.error("WebSocket-feil:", error);
+                updateSongInfo("Ingen metadata tilgjengelig");
+            };
+            window.ws.onclose = () => {
+                console.log("WebSocket-tilkobling lukket");
+            };
+        }
+
+        function updateSongInfo(songTitle, imageUrl) {
+            const songInfoElement = document.getElementById('song-info');
+            const channelNameElement = document.getElementById('channel-name');
+            if (songTitle) {
+                songInfoElement.textContent = ` - ${songTitle}`;
+            } else {
+                songInfoElement.textContent = "";
+            }
+            if (imageUrl) {
+                const logoElement = document.getElementById('station-logo');
+                logoElement.src = imageUrl;
+                logoElement.style.display = "inline";
+            }
+            document.title = `${channelNameElement.textContent} ${songInfoElement.textContent}`;
+        }
+
+        function updateFooter(station) {
+            const logoElement = document.getElementById('station-logo');
+            const channelNameElement = document.getElementById('channel-name');
+            const songInfoElement = document.getElementById('song-info');
+
+            if (station) {
+                logoElement.src = station.logo;
+                logoElement.style.display = "inline";
+                channelNameElement.textContent = station.name;
+                songInfoElement.textContent = station.songInfo || "";
+            } else {
+                logoElement.style.display = "none";
+                channelNameElement.textContent = "Velg en radiokanal";
+                songInfoElement.textContent = "";
+            }
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radioportal</title>
+    <style>
+        /* Nattdesign som standard */
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: black;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .header {
+            background-color: gray;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            box-sizing: border-box;
+            color: black;
+        }
+        .header-logo img {
+            height: 30px;
+        }
+        .header-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+        }
+        .switch-button {
+            background-color: #555;
+            color: white;
+            padding: 8px 16px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+        }
+        .switch-button:hover {
+            background-color: #666;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+            width: 100%;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 15%;
+            min-width: 200px;
+            background-color: #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            box-sizing: border-box;
+        }
+        .sidebar button {
+            background-color: #555;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .sidebar button:hover {
+            background-color: #666;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow-y: auto;
+            margin-left: 15%;
+            box-sizing: border-box;
+            align-items: center;
+        }
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .station {
+            padding: 10px;
+            border: 1px solid #888;
+            border-radius: 5px;
+            background-color: #444;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .station:hover {
+            background-color: #555;
+        }
+        .station.playing {
+            background-color: #666;
+            border-color: #888;
+        }
+        .station img {
+            max-width: 60px;
+            margin-bottom: 5px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: gray;
+            color: black;
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            z-index: 30;
+        }
+        .footer .info {
+            font-size: 1em;
+        }
+        /* Dagfarger */
+        .day-mode {
+            background-color: white;
+        }
+        .day-mode .header {
+            background-color: #908962;
+            color: black;
+        }
+        .day-mode .sidebar {
+            background-color: #f0f0f0;
+        }
+        .day-mode .sidebar button {
+            background-color: #d3d3d3;
+            color: black;
+        }
+        .day-mode .station {
+            background-color: #f9f9f9;
+            color: black;
+        }
+        .day-mode .station:hover {
+            background-color: #e0e0e0;
+        }
+        .day-mode .footer {
+            background-color: #333;
+            color: white;
+        }
+        #screenshotResult img {
+            width: 75%;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+            object-fit: cover;
+            clip-path: inset(10px 0px 10px 0px); /* Fjern 10 linjer på toppen og bunnen av bildet */
+        }
+        #screenshotResult {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 75%;
+            height: 75%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+            <img src="logo.370a4318.svg" alt="Xpeng Logo">
+        </div>
+        <button class="switch-button" onclick="toggleDayMode()">Bytt design</button>
+        <button class="switch-button" onclick="refreshPage()">Radio</button>
+        
+        <div class="header-title">RADIOPORTAL</div>
+        <div class="header-subtitle">av: Moffa Jotto</div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar" id="sidebar"></div>
+
+        <div class="content">
+            <div class="stations-grid" id="stations-grid"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="info">
+            <img id="station-logo" src="" alt="Stasjonslogo" style="display:none; height: 30px; margin-right: 10px;">
+            <span id="channel-name">Velg en radiokanal</span> 
+            <span id="song-info"></span>
+        </div>
+    </div>
+
+    <script>
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        function toggleDayMode() {
+            document.body.classList.toggle('day-mode');
+        }
+
+        const sidebar = document.getElementById("sidebar");
+        const stationsGrid = document.getElementById("stations-grid");
+        const screenshotResultDiv = document.createElement('div');
+        screenshotResultDiv.id = 'screenshotResult';
+        stationsGrid.appendChild(screenshotResultDiv);
+
+        const menus = {
+            main: [
+                { label: "NRK", action: () => showStations("NRK") },
+                { label: "P4", action: () => showStations("P4") },
+                { label: "Radio Norge", action: () => showStations("Radio Norge") },
+                { label: "Metro", action: () => showStations("Metro") },
+                { label: "Lokale", action: () => showStations("Lokale") },
+                { label: "Internet", action: () => showStations("Internet") },
+                { label: "1fm", action: () => showStations("1fm") },
+                { label: "Latinske", action: () => showStations("Latinske") },
+                { label: "Mer...", action: () => loadMenu("extra") },
+                { label: "Tilbake", action: () => loadMenu("main") },
+            ],
+            extra: [
+                { label: "Klassisk", action: () => showStations("Klassisk") },
+                { label: "Rock", action: () => showStations("Rock") },
+                { label: "Jazz", action: () => showStations("Jazz") },
+                { label: "Pop", action: () => showStations("Pop") },
+                { label: "Tilbake", action: () => loadMenu("main") },
+            ],
+        };
+
+        function loadMenu(menuName) {
+            sidebar.innerHTML = "";
+            menus[menuName].forEach((item) => {
+                const button = document.createElement("button");
+                button.textContent = item.label;
+                button.onclick = item.action;
+                sidebar.appendChild(button);
+            });
+        }
+        
+        // Kall på loadMenu for å laste hovedmenyen ved start
+        loadMenu('main');
+
+        let stationsData = {};
+        let currentAudio = null;
+        let currentlyPlayingUrl = null;
+
+        // Definer URL basert på nettverkssituasjonen
+        let url;
+        if (window.location.hostname.startsWith('192.168.') || window.location.hostname === 'localhost') {
+            url = 'http://192.168.0.11/stations.json';
+        } else {
+            url = 'http://anthonsen.net:2222/stations.json';
+        }
+
+        // Last stationsData fra JSON-fil
+        fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+            })
+            .then(data => {
+                stationsData = data;
+                showStations('NRK'); // Viser NRK-stasjoner som standard
+            })
+            .catch(error => console.error('Fetch error:', error));
+
+        async function fetchScreenshot(channelUrl) {
+            try {
+                const apiKey = 'ccbafb090b785be9628134029e5d8fa4';
+                const timestamp = new Date().getTime(); // Legg til tidsstempel for å unngå caching
+                const screenshotUrl = `https://api.screenshotlayer.com/api/capture?access_key=${apiKey}&url=${encodeURIComponent(channelUrl)}&timestamp=${timestamp}`;
+                return screenshotUrl;
+            } catch (error) {
+                console.error('Feil ved henting av skjermbilde:', error);
+                return null;
+            }
+        }
+
+        async function showIframeScreenshot(channelUrl) {
+            screenshotResultDiv.innerHTML = ''; // Tøm eksisterende skjermbilde
+
+            const screenshotUrl = await fetchScreenshot(channelUrl);
+            if (screenshotUrl) {
+                const img = document.createElement('img');
+                img.src = screenshotUrl;
+                img.alt = 'Skjermbilde av kanalen';
+                screenshotResultDiv.appendChild(img);
+                screenshotResultDiv.style.display = 'flex';
+            } else {
+                screenshotResultDiv.style.display = 'none';
+            }
+        }
+
+        function showStations(category, selectedStation = null) {
+            stationsGrid.innerHTML = ''; screenshotResultDiv.innerHTML = ''; screenshotResultDiv.style.display = 'none'; // Tøm tidligere innhold
+            stationsGrid.appendChild(screenshotResultDiv); // Legg tilbake screenshot-diven
+
+            // Vis alle stasjoner i valgt kategori
+            if (stationsData[category]) {
+                stationsData[category].forEach(station => {
+                    const stationDiv = document.createElement('div');
+                    stationDiv.classList.add('station');
+                    stationDiv.setAttribute("data-category", category);
+                    stationDiv.setAttribute("data-url", station.url);
+                    stationDiv.onclick = () => {
+                        togglePlayStation(station.url, stationDiv);
+                        if (station.channelUrl) {
+                            showIframeScreenshot(station.channelUrl);
+                        }
+                    };
+
+                    const logo = document.createElement('img');
+                    logo.src = station.logo;
+                    logo.alt = `${station.name} logo`;
+                    stationDiv.appendChild(logo);
+
+                    const name = document.createElement('h3');
+                    name.textContent = station.name;
+                    stationDiv.appendChild(name);
+
+                    stationsGrid.appendChild(stationDiv);
+                });
+            }
+
+            // Hvis en stasjon er valgt
+            if (selectedStation) {
+                initializeAudio(selectedStation.url);
+                updateFooter(selectedStation);
+                if (selectedStation.channelUrl) {
+                    showIframeScreenshot(selectedStation.channelUrl);
+                } else {
+                    screenshotResultDiv.innerHTML = ''; // Fjern skjermbilde hvis ikke tilgjengelig
+                    screenshotResultDiv.style.display = 'none';
+                }
+            }
+        }
+
+            // Vis alle stasjoner i valgt kategori
+            if (stationsData[category]) {
+                stationsData[category].forEach(station => {
+                    const stationDiv = document.createElement('div');
+                    stationDiv.classList.add('station');
+                    stationDiv.setAttribute("data-category", category);
+                    stationDiv.setAttribute("data-url", station.url);
+                    stationDiv.onclick = () => togglePlayStation(station.url, stationDiv);
+
+                    const logo = document.createElement('img');
+                    logo.src = station.logo;
+                    logo.alt = `${station.name} logo`;
+                    stationDiv.appendChild(logo);
+
+                    const name = document.createElement('h3');
+                    name.textContent = station.name;
+                    stationDiv.appendChild(name);
+
+                    stationsGrid.appendChild(stationDiv);
+                });
+            }
+
+            // Hvis en stasjon er valgt
+            if (selectedStation) {
+                initializeAudio(selectedStation.url);
+
+                // Oppdater footer med stasjonsinformasjon
+                updateFooter(selectedStation);
+
+                // Hvis kanalen har en nettside, vis skjermbilde
+                if (selectedStation.channelUrl) {
+                    showIframeScreenshot(selectedStation.channelUrl);
+                } else {
+                    screenshotResultDiv.innerHTML = ''; // Fjern skjermbilde hvis ikke tilgjengelig
+                    screenshotResultDiv.style.display = 'none';
+                }
+            }
+        }
+
+        async function initializeAudio(url) {
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+
+            currentAudio = new Audio(url);
+            currentAudio.muted = true;
+            currentlyPlayingUrl = url;
+
+            currentAudio.addEventListener('canplay', () => {
+                currentAudio.muted = false;
+                currentAudio.play().catch(error => {
+                    console.error("Automatisk avspilling ble blokkert:", error);
+                });
+            });
+
+            setupWebSocket(url);
+        }
+
+        function setupWebSocket(url) {
+            if (window.ws) {
+                window.ws.close();
+            }
+
+            window.ws = new WebSocket('ws://anthonsen.net:8080');
+            window.ws.onopen = () => {
+                window.ws.send(JSON.stringify({ action: 'start', streamUrl: url }));
+            };
+            window.ws.onmessage = (event) => { const data = JSON.parse(event.data); updateSongInfo(data.StreamTitle, data.imageUrl); updateFooter(currentlyPlayingStation); };
+            window.ws.onerror = (error) => {
+                console.error("WebSocket-feil:", error);
+                updateSongInfo("Ingen metadata tilgjengelig");
+            };
+            window.ws.onclose = () => {
+                console.log("WebSocket-tilkobling lukket");
+            };
+        }
+
+        function updateSongInfo(songTitle, imageUrl) {
+            const songInfoElement = document.getElementById('song-info');
+            const channelNameElement = document.getElementById('channel-name');
+            if (songTitle) {
+                songInfoElement.textContent = ` - ${songTitle}`;
+            } else {
+                songInfoElement.textContent = "";
+            }
+            if (imageUrl) {
+                const logoElement = document.getElementById('station-logo');
+                logoElement.src = imageUrl;
+                logoElement.style.display = "inline";
+            }
+            document.title = `${channelNameElement.textContent} ${songInfoElement.textContent}`;
+        }
+
+        function updateFooter(station) {
+            const logoElement = document.getElementById('station-logo');
+            const channelNameElement = document.getElementById('channel-name');
+            const songInfoElement = document.getElementById('song-info');
+
+            if (station) {
+                logoElement.src = station.logo;
+                logoElement.style.display = "inline";
+                channelNameElement.textContent = station.name;
+                songInfoElement.textContent = station.songInfo || "";
+            } else {
+                logoElement.style.display = "none";
+                channelNameElement.textContent = "Velg en radiokanal";
+                songInfoElement.textContent = "";
+            }
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radioportal</title>
+    <style>
+        /* Nattdesign som standard */
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: black;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .header {
+            background-color: gray;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            box-sizing: border-box;
+            color: black;
+        }
+        .header-logo img {
+            height: 30px;
+        }
+        .header-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+        }
+        .switch-button {
+            background-color: #555;
+            color: white;
+            padding: 8px 16px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+        }
+        .switch-button:hover {
+            background-color: #666;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+            width: 100%;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 15%;
+            min-width: 200px;
+            background-color: #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            box-sizing: border-box;
+        }
+        .sidebar button {
+            background-color: #555;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .sidebar button:hover {
+            background-color: #666;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow-y: auto;
+            margin-left: 15%;
+            box-sizing: border-box;
+            align-items: center;
+        }
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .station {
+            padding: 10px;
+            border: 1px solid #888;
+            border-radius: 5px;
+            background-color: #444;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .station:hover {
+            background-color: #555;
+        }
+        .station.playing {
+            background-color: #666;
+            border-color: #888;
+        }
+        .station img {
+            max-width: 60px;
+            margin-bottom: 5px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: gray;
+            color: black;
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .footer .info {
+            font-size: 1em;
+        }
+        /* Dagfarger */
+        .day-mode {
+            background-color: white;
+        }
+        .day-mode .header {
+            background-color: #908962;
+            color: black;
+        }
+        .day-mode .sidebar {
+            background-color: #f0f0f0;
+        }
+        .day-mode .sidebar button {
+            background-color: #d3d3d3;
+            color: black;
+        }
+        .day-mode .station {
+            background-color: #f9f9f9;
+            color: black;
+        }
+        .day-mode .station:hover {
+            background-color: #e0e0e0;
+        }
+        .day-mode .footer {
+            background-color: #333;
+            color: white;
+        }
+        #screenshotResult img {
+            width: 75%;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+            object-fit: cover;
+            transform: translateY(-10px);
+        }
+        #screenshotResult {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 75%;
+            height: 75%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+            <img src="logo.370a4318.svg" alt="Xpeng Logo">
+        </div>
+        <button class="switch-button" onclick="toggleDayMode()">Bytt design</button>
+        <button class="switch-button" onclick="refreshPage()">Radio</button>
+        
+        <div class="header-title">RADIOPORTAL</div>
+        <div class="header-subtitle">av: Moffa Jotto</div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar" id="sidebar"></div>
+
+        <div class="content">
+            <div class="stations-grid" id="stations-grid"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="info">
+            <img id="station-logo" src="" alt="Stasjonslogo" style="display:none; height: 30px; margin-right: 10px;">
+            <span id="channel-name">Velg en radiokanal</span> 
+            <span id="song-info"></span>
+        </div>
+    </div>
+
+    <script>
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        function toggleDayMode() {
+            document.body.classList.toggle('day-mode');
+        }
+
+        const sidebar = document.getElementById("sidebar");
+        const stationsGrid = document.getElementById("stations-grid");
+        const screenshotResultDiv = document.createElement('div');
+        screenshotResultDiv.id = 'screenshotResult';
+        stationsGrid.appendChild(screenshotResultDiv);
+
+        const menus = {
+            main: [
+                { label: "NRK", action: () => showStations("NRK") },
+                { label: "P4", action: () => showStations("P4") },
+                { label: "Radio Norge", action: () => showStations("Radio Norge") },
+                { label: "Metro", action: () => showStations("Metro") },
+                { label: "Lokale", action: () => showStations("Lokale") },
+                { label: "Internet", action: () => showStations("Internet") },
+                { label: "1fm", action: () => showStations("1fm") },
+                { label: "Latinske", action: () => showStations("Latinske") },
+                { label: "Mer...", action: () => loadMenu("extra") },
+                { label: "Tilbake", action: () => loadMenu("main") },
+            ],
+            extra: [
+                { label: "Klassisk", action: () => showStations("Klassisk") },
+                { label: "Rock", action: () => showStations("Rock") },
+                { label: "Jazz", action: () => showStations("Jazz") },
+                { label: "Pop", action: () => showStations("Pop") },
+                { label: "Tilbake", action: () => loadMenu("main") },
+            ],
+        };
+
+        function loadMenu(menuName) {
+            sidebar.innerHTML = "";
+            menus[menuName].forEach((item) => {
+                const button = document.createElement("button");
+                button.textContent = item.label;
+                button.onclick = item.action;
+                sidebar.appendChild(button);
+            });
+        }
+        
+        // Kall på loadMenu for å laste hovedmenyen ved start
+        loadMenu('main');
+
+        let stationsData = {};
+        let currentAudio = null;
+        let currentlyPlayingUrl = null;
+
+        // Definer URL basert på nettverkssituasjonen
+        let url;
+        if (window.location.hostname.startsWith('192.168.') || window.location.hostname === 'localhost') {
+            url = 'http://192.168.0.11/stations.json';
+        } else {
+            url = 'http://anthonsen.net:2222/stations.json';
+        }
+
+        // Last stationsData fra JSON-fil
+        fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+            })
+            .then(data => {
+                stationsData = data;
+                showStations('NRK'); // Viser NRK-stasjoner som standard
+            })
+            .catch(error => console.error('Fetch error:', error));
+
+        async function fetchScreenshot(channelUrl) {
+            try {
+                const apiKey = 'ccbafb090b785be9628134029e5d8fa4';
+                const timestamp = new Date().getTime(); // Legg til tidsstempel for å unngå caching
+                const screenshotUrl = `https://api.screenshotlayer.com/api/capture?access_key=${apiKey}&url=${encodeURIComponent(channelUrl)}&timestamp=${timestamp}`;
+                return screenshotUrl;
+            } catch (error) {
+                console.error('Feil ved henting av skjermbilde:', error);
+                return null;
+            }
+        }
+
+        async function showIframeScreenshot(channelUrl) {
+            screenshotResultDiv.innerHTML = ''; // Tøm eksisterende skjermbilde
+
+            const screenshotUrl = await fetchScreenshot(channelUrl);
+            if (screenshotUrl) {
+                const img = document.createElement('img');
+                img.src = screenshotUrl;
+                img.alt = 'Skjermbilde av kanalen';
+                screenshotResultDiv.appendChild(img);
+                screenshotResultDiv.style.display = 'flex';
+            } else {
+                screenshotResultDiv.style.display = 'none';
+            }
+        }
+
+        function showStations(category, selectedStation = null) {
+            stationsGrid.innerHTML = ''; screenshotResultDiv.innerHTML = ''; screenshotResultDiv.style.display = 'none'; // Tøm tidligere innhold
+            stationsGrid.appendChild(screenshotResultDiv); // Legg tilbake screenshot-diven
+
+            // Vis alle stasjoner i valgt kategori
+            if (!selectedStation && stationsData[category]) {
+                stationsData[category].forEach(station => {
+                    const stationDiv = document.createElement('div');
+                    stationDiv.classList.add('station');
+                    stationDiv.setAttribute("data-category", category);
+                    stationDiv.setAttribute("data-url", station.url);
+                    stationDiv.addEventListener('click', () => { showStations(category, station); });
+
+                    const logo = document.createElement('img');
+                    logo.src = station.logo;
+                    logo.alt = `${station.name} logo`;
+                    stationDiv.appendChild(logo);
+
+                    const name = document.createElement('h3');
+                    name.textContent = station.name;
+                    stationDiv.appendChild(name);
+
+                    stationsGrid.appendChild(stationDiv);
+                });
+            }
+
+            // Hvis en stasjon er valgt
+            if (selectedStation) {
+                initializeAudio(selectedStation.url);
+
+                // Oppdater footer med stasjonsinformasjon
+                updateFooter(selectedStation);
+
+                // Hvis kanalen har en nettside, vis skjermbilde
+                if (selectedStation.channelUrl) {
+                    showIframeScreenshot(selectedStation.channelUrl);
+                } else {
+                    screenshotResultDiv.innerHTML = ''; // Fjern skjermbilde hvis ikke tilgjengelig
+                    screenshotResultDiv.style.display = 'none';
+                }
+            }
+        }
+
+        async function initializeAudio(url) {
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+
+            currentAudio = new Audio(url);
+            currentAudio.muted = true;
+            currentlyPlayingUrl = url;
+
+            currentAudio.addEventListener('canplay', () => {
+                currentAudio.muted = false;
+                currentAudio.play().catch(error => {
+                    console.error("Automatisk avspilling ble blokkert:", error);
+                });
+            });
+
+            setupWebSocket(url);
+        }
+
+        function setupWebSocket(url) {
+            if (window.ws) {
+                window.ws.close();
+            }
+
+            window.ws = new WebSocket('ws://anthonsen.net:8080');
+            window.ws.onopen = () => {
+                window.ws.send(JSON.stringify({ action: 'start', streamUrl: url }));
+            };
+            window.ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                updateSongInfo(data.StreamTitle, data.imageUrl);
+            };
+            window.ws.onerror = (error) => {
+                console.error("WebSocket-feil:", error);
+                updateSongInfo("Ingen metadata tilgjengelig");
+            };
+            window.ws.onclose = () => {
+                console.log("WebSocket-tilkobling lukket");
+            };
+        }
+
+        function updateSongInfo(songTitle, imageUrl) {
+            const songInfoElement = document.getElementById('song-info');
+            const channelNameElement = document.getElementById('channel-name');
+            if (songTitle) {
+                songInfoElement.textContent = ` - ${songTitle}`;
+            } else {
+                songInfoElement.textContent = "";
+            }
+            if (imageUrl) {
+                const logoElement = document.getElementById('station-logo');
+                logoElement.src = imageUrl;
+                logoElement.style.display = "inline";
+            }
+            document.title = `${channelNameElement.textContent} ${songInfoElement.textContent}`;
+        }
+
+        function updateFooter(station) {
+            const logoElement = document.getElementById('station-logo');
+            const channelNameElement = document.getElementById('channel-name');
+            const songInfoElement = document.getElementById('song-info');
+
+            if (station) {
+                logoElement.src = station.logo;
+                logoElement.style.display = "inline";
+                channelNameElement.textContent = station.name;
+                songInfoElement.textContent = station.songInfo || "";
+            } else {
+                logoElement.style.display = "none";
+                channelNameElement.textContent = "Velg en radiokanal";
+                songInfoElement.textContent = "";
+            }
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radioportal</title>
+    <style>
+        /* Nattdesign som standard */
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: black;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .header {
+            background-color: gray;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            box-sizing: border-box;
+            color: black;
+        }
+        .header-logo img {
+            height: 30px;
+        }
+        .header-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+        }
+        .switch-button {
+            background-color: #555;
+            color: white;
+            padding: 8px 16px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+        }
+        .switch-button:hover {
+            background-color: #666;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+            width: 100%;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 15%;
+            min-width: 200px;
+            background-color: #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            box-sizing: border-box;
+        }
+        .sidebar button {
+            background-color: #555;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .sidebar button:hover {
+            background-color: #666;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow-y: auto;
+            margin-left: 15%;
+            box-sizing: border-box;
+            align-items: center;
+        }
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .station {
+            padding: 10px;
+            border: 1px solid #888;
+            border-radius: 5px;
+            background-color: #444;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .station:hover {
+            background-color: #555;
+        }
+        .station.playing {
+            background-color: #666;
+            border-color: #888;
+        }
+        .station img {
+            max-width: 60px;
+            margin-bottom: 5px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: gray;
+            color: black;
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            z-index: 20;
+        }
+        .footer .info {
+            font-size: 1em;
+        }
+        /* Dagfarger */
+        .day-mode {
+            background-color: white;
+        }
+        .day-mode .header {
+            background-color: #908962;
+            color: black;
+        }
+        .day-mode .sidebar {
+            background-color: #f0f0f0;
+        }
+        .day-mode .sidebar button {
+            background-color: #d3d3d3;
+            color: black;
+        }
+        .day-mode .station {
+            background-color: #f9f9f9;
+            color: black;
+        }
+        .day-mode .station:hover {
+            background-color: #e0e0e0;
+        }
+        .day-mode .footer {
+            background-color: #333;
+            color: white;
+        }
+        #screenshotResult img {
+            width: 75%;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+            object-fit: cover;
+            transform: translateY(-10px);
+        }
+        #screenshotResult {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 75%;
+            height: 75%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+            <img src="logo.370a4318.svg" alt="Xpeng Logo">
+        </div>
+        <button class="switch-button" onclick="toggleDayMode()">Bytt design</button>
+        <button class="switch-button" onclick="refreshPage()">Radio</button>
+        
+        <div class="header-title">RADIOPORTAL</div>
+        <div class="header-subtitle">av: Moffa Jotto</div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar" id="sidebar"></div>
+
+        <div class="content">
+            <div class="stations-grid" id="stations-grid"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="info">
+            <img id="station-logo" src="" alt="Stasjonslogo" style="display:none; height: 30px; margin-right: 10px;">
+            <span id="channel-name">Velg en radiokanal</span> 
+            <span id="song-info"></span>
+        </div>
+    </div>
+
+    <script>
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        function toggleDayMode() {
+            document.body.classList.toggle('day-mode');
+        }
+
+        const sidebar = document.getElementById("sidebar");
+        const stationsGrid = document.getElementById("stations-grid");
+        const screenshotResultDiv = document.createElement('div');
+        screenshotResultDiv.id = 'screenshotResult';
+        stationsGrid.appendChild(screenshotResultDiv);
+
+        const menus = {
+            main: [
+                { label: "NRK", action: () => showStations("NRK") },
+                { label: "P4", action: () => showStations("P4") },
+                { label: "Radio Norge", action: () => showStations("Radio Norge") },
+                { label: "Metro", action: () => showStations("Metro") },
+                { label: "Lokale", action: () => showStations("Lokale") },
+                { label: "Internet", action: () => showStations("Internet") },
+                { label: "1fm", action: () => showStations("1fm") },
+                { label: "Latinske", action: () => showStations("Latinske") },
+                { label: "Mer...", action: () => loadMenu("extra") },
+                { label: "Tilbake", action: () => loadMenu("main") },
+            ],
+            extra: [
+                { label: "Klassisk", action: () => showStations("Klassisk") },
+                { label: "Rock", action: () => showStations("Rock") },
+                { label: "Jazz", action: () => showStations("Jazz") },
+                { label: "Pop", action: () => showStations("Pop") },
+                { label: "Tilbake", action: () => loadMenu("main") },
+            ],
+        };
+
+        function loadMenu(menuName) {
+            sidebar.innerHTML = "";
+            menus[menuName].forEach((item) => {
+                const button = document.createElement("button");
+                button.textContent = item.label;
+                button.onclick = item.action;
+                sidebar.appendChild(button);
+            });
+        }
+        
+        // Kall på loadMenu for å laste hovedmenyen ved start
+        loadMenu('main');
+
+        let stationsData = {};
+        let currentAudio = null;
+        let currentlyPlayingUrl = null;
+
+        // Definer URL basert på nettverkssituasjonen
+        let url;
+        if (window.location.hostname.startsWith('192.168.') || window.location.hostname === 'localhost') {
+            url = 'http://192.168.0.11/stations.json';
+        } else {
+            url = 'http://anthonsen.net:2222/stations.json';
+        }
+
+        // Last stationsData fra JSON-fil
+        fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+            })
+            .then(data => {
+                stationsData = data;
+                showStations('NRK'); // Viser NRK-stasjoner som standard
+            })
+            .catch(error => console.error('Fetch error:', error));
+
+        async function fetchScreenshot(channelUrl) {
+            try {
+                const apiKey = 'ccbafb090b785be9628134029e5d8fa4';
+                const timestamp = new Date().getTime(); // Legg til tidsstempel for å unngå caching
+                const screenshotUrl = `https://api.screenshotlayer.com/api/capture?access_key=${apiKey}&url=${encodeURIComponent(channelUrl)}&timestamp=${timestamp}`;
+                return screenshotUrl;
+            } catch (error) {
+                console.error('Feil ved henting av skjermbilde:', error);
+                return null;
+            }
+        }
+
+        async function showIframeScreenshot(channelUrl) {
+            screenshotResultDiv.innerHTML = ''; // Tøm eksisterende skjermbilde
+
+            const screenshotUrl = await fetchScreenshot(channelUrl);
+            if (screenshotUrl) {
+                const img = document.createElement('img');
+                img.src = screenshotUrl;
+                img.alt = 'Skjermbilde av kanalen';
+                screenshotResultDiv.appendChild(img);
+                screenshotResultDiv.style.display = 'flex';
+            } else {
+                screenshotResultDiv.style.display = 'none';
+            }
+        }
+
+        function showStations(category, selectedStation = null) {
+            stationsGrid.innerHTML = ''; screenshotResultDiv.innerHTML = ''; screenshotResultDiv.style.display = 'none'; // Tøm tidligere innhold
+            stationsGrid.appendChild(screenshotResultDiv); // Legg tilbake screenshot-diven
+
+            // Vis alle stasjoner i valgt kategori
+            if (!selectedStation && stationsData[category]) {
+                stationsData[category].forEach(station => {
+                    const stationDiv = document.createElement('div');
+                    stationDiv.classList.add('station');
+                    stationDiv.setAttribute("data-category", category);
+                    stationDiv.setAttribute("data-url", station.url);
+                    stationDiv.addEventListener('click', () => { showStations(category, station); });
+
+                    const logo = document.createElement('img');
+                    logo.src = station.logo;
+                    logo.alt = `${station.name} logo`;
+                    stationDiv.appendChild(logo);
+
+                    const name = document.createElement('h3');
+                    name.textContent = station.name;
+                    stationDiv.appendChild(name);
+
+                    stationsGrid.appendChild(stationDiv);
+                });
+            }
+
+            // Hvis en stasjon er valgt
+            if (selectedStation) {
+                initializeAudio(selectedStation.url);
+
+                // Oppdater footer med stasjonsinformasjon
+                updateFooter(selectedStation);
+
+                // Hvis kanalen har en nettside, vis skjermbilde
+                if (selectedStation.channelUrl) {
+                    showIframeScreenshot(selectedStation.channelUrl);
+                } else {
+                    screenshotResultDiv.innerHTML = ''; // Fjern skjermbilde hvis ikke tilgjengelig
+                    screenshotResultDiv.style.display = 'none';
+                }
+            }
+        }
+
+        async function initializeAudio(url) {
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+
+            currentAudio = new Audio(url);
+            currentAudio.muted = true;
+            currentlyPlayingUrl = url;
+
+            currentAudio.addEventListener('canplay', () => {
+                currentAudio.muted = false;
+                currentAudio.play().catch(error => {
+                    console.error("Automatisk avspilling ble blokkert:", error);
+                });
+            });
+
+            setupWebSocket(url);
+        }
+
+        function setupWebSocket(url) {
+            if (window.ws) {
+                window.ws.close();
+            }
+
+            window.ws = new WebSocket('ws://anthonsen.net:8080');
+            window.ws.onopen = () => {
+                window.ws.send(JSON.stringify({ action: 'start', streamUrl: url }));
+            };
+            window.ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                updateSongInfo(data.StreamTitle, data.imageUrl);
+            };
+            window.ws.onerror = (error) => {
+                console.error("WebSocket-feil:", error);
+                updateSongInfo("Ingen metadata tilgjengelig");
+            };
+            window.ws.onclose = () => {
+                console.log("WebSocket-tilkobling lukket");
+            };
+        }
+
+        function updateSongInfo(songTitle, imageUrl) {
+            const songInfoElement = document.getElementById('song-info');
+            const channelNameElement = document.getElementById('channel-name');
+            if (songTitle) {
+                songInfoElement.textContent = ` - ${songTitle}`;
+            } else {
+                songInfoElement.textContent = "";
+            }
+            if (imageUrl) {
+                const logoElement = document.getElementById('station-logo');
+                logoElement.src = imageUrl;
+                logoElement.style.display = "inline";
+            }
+            document.title = `${channelNameElement.textContent} ${songInfoElement.textContent}`;
+        }
+
+        function updateFooter(station) {
+            const logoElement = document.getElementById('station-logo');
+            const channelNameElement = document.getElementById('channel-name');
+            const songInfoElement = document.getElementById('song-info');
+
+            if (station) {
+                logoElement.src = station.logo;
+                logoElement.style.display = "inline";
+                channelNameElement.textContent = station.name;
+                songInfoElement.textContent = station.songInfo || "";
+            } else {
+                logoElement.style.display = "none";
+                channelNameElement.textContent = "Velg en radiokanal";
+                songInfoElement.textContent = "";
+            }
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radioportal</title>
+    <style>
+        /* Nattdesign som standard */
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: black;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .header {
+            background-color: gray;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            box-sizing: border-box;
+            color: black;
+        }
+        .header-logo img {
+            height: 30px;
+        }
+        .header-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+        }
+        .switch-button {
+            background-color: #555;
+            color: white;
+            padding: 8px 16px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+        }
+        .switch-button:hover {
+            background-color: #666;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+            width: 100%;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 15%;
+            min-width: 200px;
+            background-color: #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            box-sizing: border-box;
+        }
+        .sidebar button {
+            background-color: #555;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .sidebar button:hover {
+            background-color: #666;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow-y: auto;
+            margin-left: 15%;
+            box-sizing: border-box;
+            align-items: center;
+        }
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .station {
+            padding: 10px;
+            border: 1px solid #888;
+            border-radius: 5px;
+            background-color: #444;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .station:hover {
+            background-color: #555;
+        }
+        .station.playing {
+            background-color: #666;
+            border-color: #888;
+        }
+        .station img {
+            max-width: 60px;
+            margin-bottom: 5px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: gray;
+            color: black;
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            z-index: 30;
+        }
+        .footer .info {
+            font-size: 1em;
+        }
+        /* Dagfarger */
+        .day-mode {
+            background-color: white;
+        }
+        .day-mode .header {
+            background-color: #908962;
+            color: black;
+        }
+        .day-mode .sidebar {
+            background-color: #f0f0f0;
+        }
+        .day-mode .sidebar button {
+            background-color: #d3d3d3;
+            color: black;
+        }
+        .day-mode .station {
+            background-color: #f9f9f9;
+            color: black;
+        }
+        .day-mode .station:hover {
+            background-color: #e0e0e0;
+        }
+        .day-mode .footer {
+            background-color: #333;
+            color: white;
+        }
+        #screenshotResult img {
+            width: 75%;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+            object-fit: cover;
+            clip-path: inset(10px 0px 10px 0px); /* Fjern 10 linjer på toppen og bunnen av bildet */
+        }
+        #screenshotResult {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 75%;
+            height: 75%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+            <img src="logo.370a4318.svg" alt="Xpeng Logo">
+        </div>
+        <button class="switch-button" onclick="toggleDayMode()">Bytt design</button>
+        <button class="switch-button" onclick="refreshPage()">Radio</button>
+        
+        <div class="header-title">RADIOPORTAL</div>
+        <div class="header-subtitle">av: Moffa Jotto</div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar" id="sidebar"></div>
+
+        <div class="content">
+            <div class="stations-grid" id="stations-grid"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="info">
+            <img id="station-logo" src="" alt="Stasjonslogo" style="display:none; height: 30px; margin-right: 10px;">
+            <span id="channel-name">Velg en radiokanal</span> 
+            <span id="song-info"></span>
+        </div>
+    </div>
+
+    <script>
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        function toggleDayMode() {
+            document.body.classList.toggle('day-mode');
+        }
+
+        const sidebar = document.getElementById("sidebar");
+        const stationsGrid = document.getElementById("stations-grid");
+        const screenshotResultDiv = document.createElement('div');
+        screenshotResultDiv.id = 'screenshotResult';
+        stationsGrid.appendChild(screenshotResultDiv);
+
+        const menus = {
+            main: [
+                { label: "NRK", action: () => showStations("NRK") },
+                { label: "P4", action: () => showStations("P4") },
+                { label: "Radio Norge", action: () => showStations("Radio Norge") },
+                { label: "Metro", action: () => showStations("Metro") },
+                { label: "Lokale", action: () => showStations("Lokale") },
+                { label: "Internet", action: () => showStations("Internet") },
+                { label: "1fm", action: () => showStations("1fm") },
+                { label: "Latinske", action: () => showStations("Latinske") },
+                { label: "Mer...", action: () => loadMenu("extra") },
+                { label: "Tilbake", action: () => loadMenu("main") },
+            ],
+            extra: [
+                { label: "Klassisk", action: () => showStations("Klassisk") },
+                { label: "Rock", action: () => showStations("Rock") },
+                { label: "Jazz", action: () => showStations("Jazz") },
+                { label: "Pop", action: () => showStations("Pop") },
+                { label: "Tilbake", action: () => loadMenu("main") },
+            ],
+        };
+
+        function loadMenu(menuName) {
+            sidebar.innerHTML = "";
+            menus[menuName].forEach((item) => {
+                const button = document.createElement("button");
+                button.textContent = item.label;
+                button.onclick = item.action;
+                sidebar.appendChild(button);
+            });
+        }
+        
+        // Kall på loadMenu for å laste hovedmenyen ved start
+        loadMenu('main');
+
+        let stationsData = {};
+        let currentAudio = null;
+        let currentlyPlayingUrl = null;
+
+        // Definer URL basert på nettverkssituasjonen
+        let url;
+        if (window.location.hostname.startsWith('192.168.') || window.location.hostname === 'localhost') {
+            url = 'http://192.168.0.11/stations.json';
+        } else {
+            url = 'http://anthonsen.net:2222/stations.json';
+        }
+
+        // Last stationsData fra JSON-fil
+        fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+            })
+            .then(data => {
+                stationsData = data;
+                showStations('NRK'); // Viser NRK-stasjoner som standard
+            })
+            .catch(error => console.error('Fetch error:', error));
+
+        async function fetchScreenshot(channelUrl) {
+            try {
+                const apiKey = 'ccbafb090b785be9628134029e5d8fa4';
+                const timestamp = new Date().getTime(); // Legg til tidsstempel for å unngå caching
+                const screenshotUrl = `https://api.screenshotlayer.com/api/capture?access_key=${apiKey}&url=${encodeURIComponent(channelUrl)}&timestamp=${timestamp}`;
+                return screenshotUrl;
+            } catch (error) {
+                console.error('Feil ved henting av skjermbilde:', error);
+                return null;
+            }
+        }
+
+        async function showIframeScreenshot(channelUrl) {
+            screenshotResultDiv.innerHTML = ''; // Tøm eksisterende skjermbilde
+
+            const screenshotUrl = await fetchScreenshot(channelUrl);
+            if (screenshotUrl) {
+                const img = document.createElement('img');
+                img.src = screenshotUrl;
+                img.alt = 'Skjermbilde av kanalen';
+                screenshotResultDiv.appendChild(img);
+                screenshotResultDiv.style.display = 'flex';
+            } else {
+                screenshotResultDiv.style.display = 'none';
+            }
+        }
+
+        function showStations(category, selectedStation = null) {
+            stationsGrid.innerHTML = ''; screenshotResultDiv.innerHTML = ''; screenshotResultDiv.style.display = 'none'; // Tøm tidligere innhold
+            stationsGrid.appendChild(screenshotResultDiv); // Legg tilbake screenshot-diven
+
+            // Vis alle stasjoner i valgt kategori
+            if (stationsData[category]) {
+                stationsData[category].forEach(station => {
+                    const stationDiv = document.createElement('div');
+                    stationDiv.classList.add('station');
+                    stationDiv.setAttribute("data-category", category);
+                    stationDiv.setAttribute("data-url", station.url);
+                    stationDiv.onclick = () => {
+                        togglePlayStation(station.url, stationDiv);
+                        if (station.channelUrl) {
+                            showIframeScreenshot(station.channelUrl);
+                        }
+                    };
+
+                    const logo = document.createElement('img');
+                    logo.src = station.logo;
+                    logo.alt = `${station.name} logo`;
+                    stationDiv.appendChild(logo);
+
+                    const name = document.createElement('h3');
+                    name.textContent = station.name;
+                    stationDiv.appendChild(name);
+
+                    stationsGrid.appendChild(stationDiv);
+                });
+            }
+
+            // Hvis en stasjon er valgt
+            if (selectedStation) {
+                initializeAudio(selectedStation.url);
+                updateFooter(selectedStation);
+                if (selectedStation.channelUrl) {
+                    showIframeScreenshot(selectedStation.channelUrl);
+                } else {
+                    screenshotResultDiv.innerHTML = ''; // Fjern skjermbilde hvis ikke tilgjengelig
+                    screenshotResultDiv.style.display = 'none';
+                }
+            }
+        }
+
+            // Vis alle stasjoner i valgt kategori
+            if (stationsData[category]) {
+                stationsData[category].forEach(station => {
+                    const stationDiv = document.createElement('div');
+                    stationDiv.classList.add('station');
+                    stationDiv.setAttribute("data-category", category);
+                    stationDiv.setAttribute("data-url", station.url);
+                    stationDiv.onclick = () => togglePlayStation(station.url, stationDiv);
+
+                    const logo = document.createElement('img');
+                    logo.src = station.logo;
+                    logo.alt = `${station.name} logo`;
+                    stationDiv.appendChild(logo);
+
+                    const name = document.createElement('h3');
+                    name.textContent = station.name;
+                    stationDiv.appendChild(name);
+
+                    stationsGrid.appendChild(stationDiv);
+                });
+            }
+
+            // Hvis en stasjon er valgt
+            if (selectedStation) {
+                initializeAudio(selectedStation.url);
+
+                // Oppdater footer med stasjonsinformasjon
+                updateFooter(selectedStation);
+
+                // Hvis kanalen har en nettside, vis skjermbilde
+                if (selectedStation.channelUrl) {
+                    showIframeScreenshot(selectedStation.channelUrl);
+                } else {
+                    screenshotResultDiv.innerHTML = ''; // Fjern skjermbilde hvis ikke tilgjengelig
+                    screenshotResultDiv.style.display = 'none';
+                }
+            }
+        }
+
+        async function initializeAudio(url) {
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+
+            currentAudio = new Audio(url);
+            currentAudio.muted = true;
+            currentlyPlayingUrl = url;
+
+            currentAudio.addEventListener('canplay', () => {
+                currentAudio.muted = false;
+                currentAudio.play().catch(error => {
+                    console.error("Automatisk avspilling ble blokkert:", error);
+                });
+            });
+
+            setupWebSocket(url);
+        }
+
+        function setupWebSocket(url) {
+            if (window.ws) {
+                window.ws.close();
+            }
+
+            window.ws = new WebSocket('ws://anthonsen.net:8080');
+            window.ws.onopen = () => {
+                window.ws.send(JSON.stringify({ action: 'start', streamUrl: url }));
+            };
+            window.ws.onmessage = (event) => { const data = JSON.parse(event.data); updateSongInfo(data.StreamTitle, data.imageUrl); updateFooter(currentlyPlayingStation); };
+            window.ws.onerror = (error) => {
+                console.error("WebSocket-feil:", error);
+                updateSongInfo("Ingen metadata tilgjengelig");
+            };
+            window.ws.onclose = () => {
+                console.log("WebSocket-tilkobling lukket");
+            };
+        }
+
+        function updateSongInfo(songTitle, imageUrl) {
+            const songInfoElement = document.getElementById('song-info');
+            const channelNameElement = document.getElementById('channel-name');
+            if (songTitle) {
+                songInfoElement.textContent = ` - ${songTitle}`;
+            } else {
+                songInfoElement.textContent = "";
+            }
+            if (imageUrl) {
+                const logoElement = document.getElementById('station-logo');
+                logoElement.src = imageUrl;
+                logoElement.style.display = "inline";
+            }
+            document.title = `${channelNameElement.textContent} ${songInfoElement.textContent}`;
+        }
+
+        function updateFooter(station) {
+            const logoElement = document.getElementById('station-logo');
+            const channelNameElement = document.getElementById('channel-name');
+            const songInfoElement = document.getElementById('song-info');
+
+            if (station) {
+                logoElement.src = station.logo;
+                logoElement.style.display = "inline";
+                channelNameElement.textContent = station.name;
+                songInfoElement.textContent = station.songInfo || "";
+            } else {
+                logoElement.style.display = "none";
+                channelNameElement.textContent = "Velg en radiokanal";
+                songInfoElement.textContent = "";
+            }
+        }
+    </script>
+</body>
+</html>

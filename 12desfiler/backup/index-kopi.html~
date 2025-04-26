@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radioportal</title>
+    <style>
+        /* Stilene her er som tidligere */
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            background-color: #f0f0f0;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .header-logo img {
+            height: 30px;
+        }
+        .header-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+        }
+
+
+
+        .container {
+            display: flex;
+            flex: 1;
+            width: 75%; 
+   
+            }
+            
+        .sidebar {
+            width: 200px;
+            background-color: #f0f0f0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .sidebar button {
+            background-color: #d3d3d3;
+            border: none;
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .sidebar button:hover {
+            background-color: #c0c0c0;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        .station {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .station:hover {
+            background-color: #e0e0e0;
+        }
+        .station.playing {
+            background-color: #c0c0c0;
+            border-color: #888;
+        }
+        .station img {
+            max-width: 60px;
+            margin-bottom: 5px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer .info {
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+            <img src="logo.370a4318.svg" alt="Xpeng Logo">
+        </div>
+        <div class="header-title">RADIOPORTAL</div>
+        <div class="header-subtitle">av Jan Otto</div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <h2>Valg</h2>
+            <button onclick="showStations('NRK')">NRK</button>
+            <button onclick="showStations('P4')">P4</button>
+            <button onclick="showStations('Radio Norge')">Radio Norge</button>
+            <button onclick="showStations('Metro')">Metro</button>
+            <button onclick="showStations('Lokale')">Lokale</button>
+            <button onclick="showStations('Internet')">Internet</button>
+            <button onclick="showStations('Utenlandske')">Utenlandske</button>
+            <button onclick="showStations('Spanske')">Spanske</button>
+            <button onclick="showStations('Spesielle')">Spesielle</button>
+        </div>
+        <div class="content">
+            <div class="stations-grid" id="stations-grid"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="info">
+            <img id="station-logo" src="" alt="Stasjonslogo" style="display:none; height: 30px; margin-right: 10px;">
+            <span id="channel-name">Velg en radiokanal</span> 
+            <span id="song-info"></span>
+        </div>
+    </div>
+
+    <script>
+    const stationsData = {
+        "NRK": [
+            { name: "NRK P1 Sørlandet", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p1_dk10_mp3_h", logo: "nrklogo/sor.jpeg" },
+            { name: "NRK P1 Rogaland", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p1_dk9_mp3_h", logo: "nrklogo/rogaland.jpeg" },
+            { name: "NRK P1 Østfold", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p1_dk15_mp3_h", logo: "nrklogo/ostfold.jpeg" },
+            { name: "NRK P1+", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p1pluss_aac_h", logo: "nrklogo/p1pluss.png"   } ,          
+            { name: "NRK P2", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p2_mp3_h", logo: "nrklogo/p2.png" },
+            { name: "NRK P3", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p3_mp3_h", logo: "nrklogo/p3.png"  },
+            { name: "NRK MP3", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/mp3_mp3_h", logo: "nrklogo/mp3.png"  },
+            { name: "NRK Alltid Nyheter", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/nyheter_mp3_h", logo: "nrklogo/nyheter.jpeg", songInfo: "Nyheter døgnet rundt" },
+            { name: "NRK P13", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p13_mp3_h", logo: "nrklogo/p13.png"  },
+            { name: "NRK Sport", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/sport_mp3_h", logo: "nrklogo/sport.png"  },
+            { name: "NRK Jazz", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/jazz_mp3_h", logo: "nrklogo/jazz.png"  },
+            { name: "NRK Klassisk", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/klassisk_mp3_h", logo: "nrklogo/klassisk.png" },
+            { name: "NRK P1+", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p1pluss_aac_h", logo: "nrklogo/p1pluss.png"  },
+            { name: "NRK P3 Urørt", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/urort_mp3_h", logo: "nrklogo/urort.png"  },
+            { name: "NRK P3 X", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p3x_mp3_h", logo: "nrklogo/p3x.png"  },
+            { name: "NRK Folkemusikk", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/folkemusikk_mp3_h", logo: "nrklogo/folkemusikk.png"  }
+        ],
+         "P4": [
+            { name: "P4 Direkte", url: "https://p4.p4groupaudio.com/P04_AH", logo: "p4logo/p4.jpeg", songInfo: "Hør P4 Direkte" },
+            { name: "P5 Nonstop", url: "https://p5n.p4groupaudio.com/P05AAH", logo: "p4logo/p5nonstop.png" },
+            { name: "P6 Rock", url: "https://p6.p4groupaudio.com/P06_MH", logo: "p4logo/p6.png" },
+            { name: "P7 Klem", url: "https://p7.p4groupaudio.com/P07_AH", logo: "p4logo/p7.jpeg" },
+            { name: "P8 Pop", url: "https://p8.p4groupaudio.com/P08_AH", logo: "p4logo/p8.jpeg" },
+            { name: "P9 Retro", url: "https://p9.p4groupaudio.com/P09_AH", logo: "p4logo/p9.jpeg" },
+            { name: "P10 Country", url: "https://p10.p4groupaudio.com/P10_AH", logo: "p4logo/p10country.jpeg" },
+            { name: "P11 Bandit", url: "https://p12.p4groupaudio.com/BAN_MM?args=3rdparty_01&distributor=radioplayer", logo: "p4logo/p11.jpeg" },
+            { name: "P12 Dance", url: "https://p12.p4groupaudio.com/P12_AH", logo: "p4logo/p12.png" },
+            { name: "NRJ", url: "https://nrj.p4groupaudio.com/NRJ_MH", logo: "p4logo/nrj.png" }
+        ],
+         "Radio Norge": [
+            { name: "Radio Norge", url: "https://live-bauerno.sharp-stream.com/radionorge_no_mp3", logo: "norgelogo/norge.png" },
+            { name: "P24/7 Mix", url: "https://p4.p4groupaudio.com/P04_AH", logo: "norgelogo/p24-7mix.png" },
+            { name: "p24/7 Kos", url: "https://p4.p4groupaudio.com/P04_AH", logo: "norgelogo/p24-7kos.png" },
+            { name: "p24/7 Fun", url: "https://p4.p4groupaudio.com/P04_AH", logo: "norgelogo/p24-7fun.png" },
+            { name: "p24/7 Norsk", url: "https://p4.p4groupaudio.com/P04_AH", logo: "norgelogo/p24-7norsk.jpg" },
+            { name: "Kiss", url: "https://live-bauerno.sharp-stream.com/kiss_no_mp3", logo: "norgelogo/kiss.png", songInfo: "Club og Dance" },
+            { name: "Topp 40", url: "https://edge-bauerno-03-gos2.sharp-stream.com/top40_no_mp3 ", logo: "norgelogo/topp40.png", songInfo: "Spiller dagens hits" },
+            { name: "Rock", url: "https://p4.p4groupaudio.com/P04_AH", logo: "norgelogo/rock.png" }, 
+           
+            { name: "Radio 1", url: "https://live-bauerno.sharp-stream.com/radio1_no_mp3", logo: "norgelogo/radio1.png" }
+
+            // Fortsett å legge til stasjoner om nødvendig
+        ],
+         "Metro": [
+            { name: "Metro Sørlandet", url: "https://stream.oneplay.no/sorlandet128", logo: "metrologo/metro.png", songInfo: "Radio Metro Sørlandet" },
+            { name: "The Beat", url: "https://stream.oneplay.no/beatsor128", logo: "metrologo/beat.png" },
+            { name: "Radio Rox", url: "https://stream.radiometro.no/rox128", logo: "metrologo/rox.jpg" },
+            { name: "Metro Oldies", url: "https://stream.oneplay.no/radioclassic128", logo: "metrologo/klassisk.png" },
+            { name: "Dansband", url: "https://radio.hm24.no/listen/dansband/db128", logo: "metrologo/dansband.png" },
+            { name: "LatinAmerika Oslo", url: "https://stream.radiolatinamerika.no/latam_mq?_ic2=1730456890618", logo: "metrologo/latin.png", songInfo: "Club og Dance" }
+             
+            // Fortsett å legge til stasjoner om nødvendig
+        ],
+         "Lokale": [
+            { name: "Atlantic", url: "https://audio.clasico.no/atlantic_mq?_ic2=1730460090341", logo: "lokallogo/atlantic.png", songInfo: "Radio Atlantic, Stavangers Nærradio" },
+            { name: "Duen Radio", url: "https://streams.radio.co/s07e510a23/listen", logo: "lokallogo/duen.png" },
+            { name: "Kos Sandnes", url: "http://radioip.no:443/kos", logo: "lokallogo/kos.png" },
+            { name: "Radio 102", url: "https://stream.radio102.no/radio102_hq?_ic2=1730461835852", logo: "lokallogo/102.png", songInfo: "Lokalradion Haugarlandet" },
+            { name: "Radio L", url: "http://stream.radio-l.no:5100/radiol128", logo: "lokallogo/lillesand.png", songInfo: "Lokalradion Lillesand" },
+            { name: "Radio Tønsberg", url: "https://audio.jaerradiogruppen.no/tonsberg_hq?_ic2=1730463092659", logo: "lokallogo/tonsberg.png", songInfo: "Lokalradio Vestfold" },
+            { name: "Radio Vest", url: "http://radiovest.eu:8000/radiovest", logo: "lokallogo/vest.png", songInfo: "Sørvestlandet" },
+            { name: "Sørlandsradion", url: "http://stream.radiololand.no:5000/sorlandsradioen_hq", logo: "lokallogo/sorlandsradioen.png", songInfo: "Grimstad" },
+            { name: "5000 Bergen", url: "https://bergen5000.radioca.st/stream", logo: "lokallogo/5000.png" }
+            // Fortsett å legge til stasjoner om nødvendig
+        ],   
+ "Internet": [
+            { name: "Like it a Lot", url: "https://lial.radioca.st/stream", logo: "internettlogo/likeitalot.png" },
+            { name: "Ordentlig Radio", url: "https://lyd.hjalar.no/oradio_hq?_ic2=1730461590919", logo: "internettlogo/ordentlig.png" },
+            { name: "Radio Nano Hits", url: "https://s2.yesstreaming.net:7157/streamStream", logo: "internettlogo/nano.png", songInfo: "Dance og hits" },
+            { name: "Scansat", url: "https://audio.clasico.no/scansat_hq?_ic2=1730463516438", logo: "internettlogo/scansat.png" },
+            { name: "Ikke klar", url: "https://p4.p4groupaudio.com/P04_AH", logo: "norgelogo/p24-7norsk.jpg" },
+            { name: "Ikke klar", url: "https://live-bauerno.sharp-stream.com/kiss_no_mp3", logo: "norgelogo/kiss.png", songInfo: "Club og Dance" },
+            { name: "Ikke klar", url: "https://edge-bauerno-03-gos2.sharp-stream.com/top40_no_mp3 ", logo: "norgelogo/topp40.png", songInfo: "Spiller dagens hits" },
+            { name: "Ikke klar", url: "https://p4.p4groupaudio.com/P04_AH", logo: "norgelogo/rock.png" },
+            { name: "Gylne Hit", url: "http://comet.shoutca.st:8692/;", logo: "internettlogo/gylne.png" }
+            // Fortsett å legge til stasjoner om nødvendig
+        ],   
+"Spanske": [      
+        { name: "LatinAmerika Oslo", url: "https://stream.radiolatinamerika.no/latam_mq?_ic2=1730456890618", logo: "metrologo/latin.png", songInfo: "Club og Dance" }
+        ],     
+    };
+
+    let currentAudio = null;
+    let currentlyPlayingUrl = null;
+
+    async function fetchStreamUrlFromXSPF(xspfUrl) {
+        try {
+            const response = await fetch(xspfUrl);
+            const xspfContent = await response.text();
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xspfContent, 'application/xml');
+            const locationElement = xmlDoc.querySelector('location');
+            return locationElement ? locationElement.textContent.trim() : null;
+        } catch (error) {
+            console.error('Feil ved henting av XSPF-URL:', error);
+            return null;
+        }
+    }
+
+    async function togglePlayStation(url, stationDiv) {
+        const category = stationDiv.getAttribute("data-category");
+        const station = stationsData[category].find(s => s.url === url);
+
+        if (currentAudio && url === currentlyPlayingUrl) {
+            currentAudio.pause();
+            currentlyPlayingUrl = null;
+            stationDiv.classList.remove('playing');
+            updateFooter(null);
+        } else {
+            if (currentAudio) currentAudio.pause();
+
+            let actualStreamUrl = url.endsWith('.xspf') ? await fetchStreamUrlFromXSPF(url) : url;
+            if (!actualStreamUrl) {
+                alert("Strømmen er ikke tilgjengelig.");
+                return;
+            }
+
+            currentAudio = new Audio(actualStreamUrl);
+            currentAudio.play();
+            currentlyPlayingUrl = url;
+
+            document.querySelectorAll('.station').forEach(st => st.classList.remove('playing'));
+            stationDiv.classList.add('playing');
+            updateFooter(station);
+        }
+    }
+
+    function updateFooter(station) {
+        const logoElement = document.getElementById('station-logo');
+        const channelNameElement = document.getElementById('channel-name');
+        const songInfoElement = document.getElementById('song-info');
+
+        if (station) {
+            logoElement.src = station.logo;
+            logoElement.style.display = "inline";
+            channelNameElement.textContent = station.name;
+            songInfoElement.textContent = station.songInfo || "";
+        } else {
+            logoElement.style.display = "none";
+            channelNameElement.textContent = "Velg en radiokanal";
+            songInfoElement.textContent = "";
+        }
+    }
+
+    function showStations(category) {
+        const stationsGrid = document.getElementById('stations-grid');
+        stationsGrid.innerHTML = '';
+        stationsData[category].forEach(station => {
+            const stationDiv = document.createElement('div');
+            stationDiv.classList.add('station');
+            stationDiv.setAttribute("data-category", category);
+            stationDiv.onclick = () => togglePlayStation(station.url, stationDiv);
+
+            const logo = document.createElement('img');
+            logo.src = station.logo;
+            logo.alt = `${station.name} logo`;
+            stationDiv.appendChild(logo);
+
+            const name = document.createElement('h3');
+            name.textContent = station.name;
+            stationDiv.appendChild(name);
+
+            stationsGrid.appendChild(stationDiv);
+        });
+    }
+
+    showStations('NRK');
+    </script>
+</body>
+</html>

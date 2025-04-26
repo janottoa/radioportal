@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radioportal</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+            <img src="moffaradio.png" alt="Moffa Logo">
+        </div>
+        <div class="header-title">RADIOPORTAL</div>
+        <div class="header-buttons">
+            <button class="switch-button" onclick="toggleDayMode()">Bytt design</button>
+            <button class="switch-button" onclick="refreshPage()">Refresh</button>
+        </div>
+    </div>
+    <div class="container">
+        <div class="sidebar" id="sidebar"></div>
+        <div class="content">
+            <div class="stations-grid" id="stations-grid"></div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="info">
+            <img id="station-logo" src="" alt="Stasjonslogo" style="display:none;">
+            <span id="channel-name"></span>
+            <span id="song-info"></span>
+        </div>
+    </div>
+    <script src="js/main.js"></script>
+</body>
+</html>

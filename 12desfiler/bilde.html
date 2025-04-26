@@ -1,0 +1,13 @@
+import requests
+
+def duckduckgo_image_search(query):
+    search_url = f"https://duckduckgo.com/?q={query}&t=h_&iar=images&iax=images&ia=images"
+    response = requests.get(search_url)
+    if response.ok:
+        return response.url
+    return None
+
+query = "Ellie Goulding - Love Me Like You Do"
+result_url = duckduckgo_image_search(query)
+print(result_url)
+

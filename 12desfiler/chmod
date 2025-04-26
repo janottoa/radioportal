@@ -1,0 +1,12 @@
+[Unit]
+Description=Spotify Fetcher Service
+After=network.target
+
+[Service]
+User=janotto
+WorkingDirectory=/var/www/radioportal
+ExecStart=/bin/bash /var/www/radioportal/start_spotify_fetcher.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

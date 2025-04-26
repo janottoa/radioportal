@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innlogging vellykket</title>
+</head>
+<body>
+    <h1>Innlogging vellykket</h1>
+    <p>Du kan nå gå tilbake til <a href="http://anthonsen.net:2222">radioportalen</a>.</p>
+
+    <script>
+        console.log("Callback-side lastet.");
+
+        // Funksjon for å hente token fra URL
+        function handleAccessTokenFromUrl() {
+            const hash = window.location.hash.substring(1); // Hent hash-delen av URL
+            const params = new URLSearchParams(hash);
+            const accessToken = params.get("access_token");
+            const expiresIn = params.get("expires_in");
+
+            if (accessToken && expiresIn) {
+                // Lagre token og utløpstid i localStorage
+                const expiryTime = Date.now() + parseInt(expiresIn, 10) * 1000;
+                localStorage.setItem("spotifyAccessToken", accessToken);
+                localStorage.setItem("spotifyTokenExpiry", expiryTime);
+
+                console.log("Token lagret i localStorage.");
+                console.log("Tilbake til hovedsiden: http://anthonsen.net:2222");
+
+                // Fjern hash fra URL for å unngå problemer senere
+                window.history.replaceState({}, document.title, window.location.pathname);
+
+                // Redirect til hovedsiden
+                window.location.href = "http://anthonsen.net:2222";
+            } else {
+                console.error("Ingen token funnet i URL.");
+                alert("Kunne ikke hente token. Prøv igjen.");
+            }
+        }
+
+        // Kjør funksjonen ved sideinnlasting
+        handleAccessTokenFromUrl();
+    </script>
+</body>
+</html>

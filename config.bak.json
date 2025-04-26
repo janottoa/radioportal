@@ -1,0 +1,17 @@
+{
+  "spotify": {
+    "client_id": "aa4223881242a0950b6b988147b572",
+    "client_secret": "9cb6fb7ac80944f6a55cbf38aebb9833",
+    "redirect_uri": "http://anthonsen.net:2222/callback",
+    "playlist_id": "7nV8hxgQTSweEWo3TWWkON",
+    "scopes": "playlist-modify-public playlist-modify-private",
+     "refresh_token": "AQCWW3T3udNN1xT4sPwNAEepJ74KBHWdguy-O_XvhfuIXGc8DwWIw7_RSqOWwZ44fy6MosxLSu7zqOQIwK-ZVRDTFxytmofg1SwjdrxTe9jzqIMnOwiLOqLDniDwBqspwgQ"
+  },
+  "api": {
+    "key": "8bcaf7854583e9509b0f1e05db9e149774397ff164704f7a1ede6624ba3cd576"
+  },
+  "server": {
+    "port": 3085
+  }
+}
+

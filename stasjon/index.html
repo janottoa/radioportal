@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrer Radiostasjoner</title>
+    <style>x
+        label, input, button { 
+            display: block; 
+            margin-top: 10px; 
+            margin-left: 20px; /* Innrykk på 20 piksler */
+        }
+        .category-header { 
+            font-size: 1.2em; 
+            font-weight: bold; 
+            margin-top: 20px; 
+        }
+        .station-item { 
+            margin-left: 20px; /* Innrykk for stasjonslinjer */
+        }
+        .category-list { 
+            margin-left: 20px; /* Innrykk for hele kategori-listen */
+        }
+        .button-container {
+            display: flex;
+            gap: 10px; /* Juster avstanden mellom knappene etter behov */
+            margin-bottom: 20px; /* Juster verdien etter behov */
+        }
+    </style>
+</head>
+<body>
+
+<h1>Administrer Radiostasjoner</h1>
+
+<form id="stationForm">
+    <input type="hidden" id="stationIndex" value="-1">
+    
+    <label for="stationCategory">Kategori:</label>
+    <input type="text" id="stationCategoryInput" required>
+
+    <label for="stationName">Navn:</label>
+    <input type="text" id="stationName" required>
+
+    <label for="stationUrl">URL:</label>
+    <input type="text" id="stationUrl" required>
+
+    <label for="stationFfmpegUrl">FFmpeg URL:</label>
+    <input type="text" id="stationFfmpegUrl"> <!-- Nytt felt for FFmpeg URL -->
+
+    <label for="stationLogo">Logo (URL til katalog eller bilde):</label>
+    <input type="text" id="stationLogo" value="/logo/">
+
+    <label for="stationInfo">Informasjon:</label>
+    <input type="text" id="stationInfo">
+
+    <label for="stationChannelUrl">Kanalens URL:</label>
+    <input type="text" id="stationChannelUrl">
+
+    <button type="button" onclick="addOrUpdateStation()">Legg til / Oppdater</button>
+</form>
+
+<h2>Stasjonsliste</h2>
+<div id="stationList"></div>
+
+<script>
+    let stations = {};
+
+    async function loadStations() {
+        try {
+            const response = await fetch('http://anthonsen.net:3030/stations');
+            if (!response.ok) throw new Error('Network response was not ok');
+            stations = await response.json();
+            displayStations();
+        } catch (error) {
+            console.error('Feil ved innlasting av stasjoner:', error);
+            alert('Kunne ikke laste stasjoner fra stations.json');
+        }
+    }
+
+    async function saveStationsToFile() {
+        try {
+            const response = await fetch('http://anthonsen.net:3030/stations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(stations)
+            });
+            const message = await response.text();
+            console.log(message); // Bekreftelse på at lagring er vellykket
+        } catch (error) {
+            console.error('Kunne ikke lagre til fil:', error);
+        }
+    }
+
+    function displayStations() {
+        const stationList = document.getElementById('stationList');
+        stationList.innerHTML = '';
+
+        // Vis stasjoner gruppert etter kategori
+        for (const [category, stationsInCategory] of Object.entries(stations)) {
+            const categoryHeader = document.createElement('div');
+            categoryHeader.className = 'category-header';
+            categoryHeader.textContent = category;
+            stationList.appendChild(categoryHeader);
+
+            const categoryList = document.createElement('ul');
+            categoryList.className = 'category-list'; // Gir kategori-listen innrykk
+
+            stationsInCategory.forEach((station, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'station-item'; // Gir stasjonslinjen innrykk
+                listItem.innerHTML = `
+                    <strong>${station.name}</strong>
+                    <br>URL: ${station.url}
+                    <br>FFmpeg URL: ${station.ffmpegUrl || 'Ingen info tilgjengelig'}
+                    <br>Logo: ${station.logo}
+                    <br>Informasjon: ${station.songInfo || 'Ingen info tilgjengelig'}
+                    <br>Kanalens URL: ${station.channelUrl || 'Ingen info tilgjengelig'}
+                    <br>
+                    <div class="button-container">
+                        <button onclick="editStation('${category}', ${index})">Endre</button>
+                        <button onclick="deleteStation('${category}', ${index})">Slett</button>
+                        <button onclick="moveStation('${category}', ${index}, -1)">Flytt opp</button>
+                        <button onclick="moveStation('${category}', ${index}, 1)">Flytt ned</button>
+                        <button onclick="setFfmpegUrlFromUrl('${station.url}', '${category}', ${index})">Sett URL til FFmpeg URL</button>
+                    </div>
+                `;
+                categoryList.appendChild(listItem);
+            });
+            stationList.appendChild(categoryList);
+        }
+    }
+
+     // Funksjon for å sette URL til FFmpeg URL og oppdatere JSON
+     function setFfmpegUrlFromUrl(url, category, index) {
+        // Oppdaterer FFmpeg URL-feltet med verdien fra URL
+        if (stations[category][index]) {
+            stations[category][index].ffmpegUrl = url; // Setter ffmpegUrl
+            document.getElementById('stationFfmpegUrl').value = url; // Oppdaterer HTML-feltet med ny FFmpeg URL
+            displayStations(); // Oppdaterer visningen
+            saveStationsToFile(); // Lagre den oppdaterte stasjonen til disken
+        }
+    }
+    function addOrUpdateStation() {
+        const category = document.getElementById('stationCategoryInput').value;
+        const name = document.getElementById('stationName').value;
+        const url = document.getElementById('stationUrl').value;
+        const ffmpegUrl = document.getElementById('stationFfmpegUrl').value; // Legg til ffmpegUrl
+        const logo = document.getElementById('stationLogo').value;
+        const info = document.getElementById('stationInfo').value;
+        const channelUrl = document.getElementById('stationChannelUrl').value;
+
+        // Lag datamatrisen for stasjonen
+        const stationData = { name, url, ffmpegUrl, logo, songInfo: info, channelUrl };
+
+        if (!stations[category]) stations[category] = [];
+        const index = parseInt(document.getElementById('stationIndex').value, 10);
+        if (index === -1) {
+            stations[category].push(stationData); // Legg til ny stasjon
+        } else {
+            stations[category][index] = stationData; // Oppdater eksisterende stasjon
+        }
+
+        displayStations();
+        resetForm();
+
+        // Lagre til fil
+        saveStationsToFile();
+    }
+
+    function editStation(category, index) {
+        const station = stations[category][index];
+        
+        document.getElementById('stationCategoryInput').value = category;
+        document.getElementById('stationName').value = station.name;
+        document.getElementById('stationUrl').value = station.url;
+        document.getElementById('stationFfmpegUrl').value = station.ffmpegUrl; // For redigering av ffmpegUrl
+        document.getElementById('stationLogo').value = station.logo;
+        document.getElementById('stationInfo').value = station.songInfo;
+        document.getElementById('stationChannelUrl').value = station.channelUrl;
+
+        document.getElementById('stationIndex').value = index; // Setter index for redigering
+    }
+
+    function deleteStation(category, index) {
+        stations[category].splice(index, 1);
+        if (stations[category].length === 0) delete stations[category]; // Fjern kategori hvis tom
+        displayStations();
+        saveStationsToFile();
+    }
+
+    function moveStation(category, index, direction) {
+        const newIndex = index + direction;
+        if (newIndex >= 0 && newIndex < stations[category].length) {
+            const [movedStation] = stations[category].splice(index, 1);
+            stations[category].splice(newIndex, 0, movedStation);
+            displayStations();
+            saveStationsToFile();
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('stationForm').reset();
+        document.getElementById('stationIndex').value = -1; // Tilbakestill index
+    }
+
+    window.onload = loadStations; // Last stasjoner når siden lastes
+</script>
+
+</body>
+</html>

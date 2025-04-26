@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radioportal</title>
+    <style>
+  /* Nattdesign som standard */
+/* Nattdesign som standard */
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: black;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: gray;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    color: black;
+    z-index: 10;
+}
+
+.header-logo {
+    margin-right: 10px;
+}
+
+.header-logo img {
+    height: 30px;
+}
+
+.header-title {
+    font-size: 1.8em;
+    font-weight: bold;
+    text-align: center;
+    flex: 1;
+}
+
+.header-subtitle {
+    margin-left: 20px;
+}
+
+.switch-button {
+    background-color: #555;
+    color: white;
+    padding: 8px 16px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 10px;
+}
+
+.switch-button:hover {
+    background-color: #666;
+}
+
+.container {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    margin-top: 65px;
+    margin-bottom: 40px;
+}
+
+.sidebar {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 180px;
+    background-color: #333;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: calc(100% - 80px);
+    margin-right: 40px;
+    z-index: 9;
+    margin-top: -15px;
+}
+
+.sidebar button {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 1em;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar button:hover {
+    background-color: #666;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin-left: 220px;
+}
+
+
+.stations-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+     padding: 10px
+}
+
+.station {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #444;
+    color: white;
+    text-align: center;
+    border: 1px solid #888;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    padding: 10px;
+    transition: all 0.3s ease; /* Myk overgang ved hover */
+    width: 90%; /* Tilpass bredden automatisk */
+    height: 130px; /* Juster til ønsket høyde */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Skjul eventuelle overløp */
+     
+}
+
+
+
+.station:hover {
+    background-color: #555; /* Lysere farge på hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Mer markant skygge */
+    transform: translateY(-2px); /* Liten løfteeffekt */
+}
+
+
+.station img {
+    max-width: 80%; /* Tilpass logoens størrelse */
+    max-height: 80px; /* Sikre riktig proporsjon */
+    object-fit: contain; /* Behold logoens proporsjoner */
+    margin-bottom: 10px; /* Avstand mellom logo og tekst */
+}
+
+.station .station-details {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.station .station-name {
+    font-size: 1em;
+    font-weight: bold;
+    margin-bottom: 5px; /* Avstand mellom navn og favorittknapp */
+}
+
+.station .favorite-button {
+    display: block; /* Sørg for at knappen vises */
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    margin-top: 10px;
+}
+ 
+.station.playing .favorite-button {
+    display: none; /* Skjul favorittknappen for spillende stasjon */
+}
+
+ 
+.station .favorite-button:hover {
+    color: #ffcc00; /* Gult på hover for favoritt */
+}
+
+
+.station.playing {
+    background-color: #222;
+    border-color: #666;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+}
+
+.station.logo-playing {
+    background-size: cover; /* Logoen fyller hele knappen */
+    background-position: center; /* Sentraliser logoen */
+    background-repeat: no-repeat; /* Unngå gjentakelser */
+    border: 1px solid #888; /* Valgfri kantlinje */
+    color: transparent; /* Skjul eventuell tekst */
+}
+
+
+.station.logo-playing img {
+    display: none; /* Skjul liten logo når bakgrunnslogo brukes */
+}
+
+.station.logo-only .station-logo {
+    width: 100%; /* Logo fyller hele knappen */
+    height: 100%;
+    object-fit: cover; /* Logo skaleres for å passe */
+}
+
+.station.logo-only .station-details,
+.station.logo-only .favorite-button {
+    display: none; /* Skjul tekst og favorittknapp */
+}
+
+
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: gray;
+    color: black;
+    text-align: center;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+     
+}
+
+        .footer .info {
+            font-size: 1em;
+        }
+
+        /* Dagfarger */
+        .day-mode {
+            background-color: white;
+        }
+        .day-mode .header {
+            background-color:#d3d3d3; /* #908962; */
+            color: black;
+        }
+        .day-mode .sidebar {
+            background-color: #f0f0f0;
+        }
+        .day-mode .sidebar button {
+            background-color: #d3d3d3;
+            color: black;
+        }
+        .day-mode .station {
+            background-color: #f9f9f9;
+            color: black;
+        }
+        .day-mode .station:hover {
+            background-color: #e0e0e0;
+        }
+        .day-mode .station.playing {
+            background-color: #c0c0c0;
+            border-color: #888;
+        }
+        .day-mode .footer {
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+            <img src="logo.370a4318.svg" alt="Xpeng Logo">
+        </div>
+        <button class="switch-button" onclick="toggleDayMode()">Bytt design</button>
+        <button class="switch-button" onclick="refreshPage()">Refresh</button>
+        
+        <div class="header-title">RADIOPORTAL</div>
+        <div class="header-subtitle">av: Moffa Jotto</div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar" id="sidebar"></div>
+
+        <div class="content">
+            <div class="stations-grid" id="stations-grid"></div>
+        </div>
+    </div>
+ 
+    <div class="footer">
+        <div class="info">
+            <img id="station-logo" src="" alt="Stasjonslogo" style="display:none; height: 30px; margin-right: 10px;">
+             <span id="channel-name"></span>
+            <span id="song-info"></span>
+        </div>
+    </div>
+
+    <script>
+// Kontroll for spillende stasjon
+
+
+
+
+
+
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        function toggleDayMode() {
+            document.body.classList.toggle('day-mode');
+        }
+
+        const sidebar = document.getElementById("sidebar");
+        const stationsGrid = document.getElementById("stations-grid");
+        const screenshotResultDiv = document.createElement('div');
+        screenshotResultDiv.id = 'screenshotResult';
+        stationsGrid.appendChild(screenshotResultDiv);
+
+        const menus = {
+            main: [
+                { label: "NRK", action: () => showStations("NRK") },
+                { label: "P4", action: () => showStations("P4") },
+                { label: "Radio Norge", action: () => showStations("Radio Norge") },
+                { label: "Metro", action: () => showStations("Metro") },
+                { label: "Lokale", action: () => showStations("Lokale") },
+                { label: "Internet", action: () => showStations("Internet") },
+               
+                { label: "Latinske", action: () => showStations("Latinske") },
+                { label: "Mer...", action: () => loadMenu("extra") },
+               
+            ],
+            extra: [
+                { label: "1fm", action: () => showStations("1fm") },               
+                { label: "100fm", action: () => showStations("Klassisk") },
+                { label: "181fm", action: () => showStations("Rock") },
+                { label: "Ledig", action: () => showStations("Jazz") },
+                { label: "Ledig", action: () => showStations("Pop") },
+                { label: "Ledig", action: () => showStations("1fm") },               
+                { label: "Tilbake", action: () => loadMenu("main") },
+                { label: "Mer...", action: () => loadMenu("extra2") },          
+            ],
+          extra2: [
+                { label: "Ledig..", action: () => showStations("1fm") },               
+                { label: "Ledig..", action: () => showStations("Ledig1") },
+                { label: "Ledig..", action: () => showStations("Ledig2") },
+                { label: "Ledig..", action: () => showStations("Ledig3u") },
+                { label: "Ledig..", action: () => showStations("Ledig4") },
+                { label: "Ledig..", action: () => showStations("Ledig5") },               
+                { label: "Tilbake", action: () => loadMenu("extra") },
+                { label: "Startside", action: () => loadMenu("main") },     
+            ],       
+        };
+
+      /*  function loadMenu(menuName) {
+            sidebar.innerHTML = "";
+            menus[menuName].forEach((item) => {
+                const button = document.createElement("button");
+                button.textContent = item.label;
+                button.onclick = item.action;
+                sidebar.appendChild(button);
+            });
+        }*/
+        
+        
+function loadMenu(menuName) {
+    // Hent alle knapper unntatt "Favoritter"
+    const buttons = Array.from(sidebar.querySelectorAll("button")).filter(
+        (button) => button.getAttribute("data-category") !== "Favoritter"
+    );
+
+    // Fjern kun de andre knappene
+    buttons.forEach((button) => button.remove());
+
+    // Legg til de nye knappene basert på menyen
+    menus[menuName].forEach((item) => {
+        const button = document.createElement("button");
+        button.textContent = item.label;
+        button.onclick = item.action;
+        sidebar.appendChild(button);
+    });
+}
+        
+        
+        // Kall på loadMenu for å laste hovedmenyen ved start
+        loadMenu('main');
+
+
+        let stationsData = {};
+        let currentAudio = null;
+        let currentlyPlayingUrl = null;
+
+        // Definer URL basert på nettverkssituasjonen
+        let url;
+        if (window.location.hostname.startsWith('192.168.') || window.location.hostname === 'localhost') {
+            url = 'http://192.168.0.11/stations.json';
+        } else {
+            url = 'http://anthonsen.net:2222/stations.json';
+        }
+
+        // Last stationsData fra JSON-fil
+        fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+            })
+            .then(data => {
+                stationsData = data;
+                const lastStation = JSON.parse(localStorage.getItem('lastStation'));
+                if (lastStation) {
+                    const category = lastStation.category;
+                    const url = lastStation.url;
+                    showStations(category);
+                    setTimeout(() => {
+                        const stationDiv = Array.from(document.querySelectorAll('.station')).find(div =>
+                            div.getAttribute("data-category") === category && div.getAttribute("data-url") === url
+                        );
+                        if (stationDiv) {
+                            initializeAudio(url, stationDiv);
+                        }
+                    }, 1000);
+                } else {
+                    showStations('NRK'); // Viser NRK-stasjoner som standard
+                }
+            })
+            .catch(error => console.error('Fetch error:', error));
+
+async function initializeAudio(url, stationDiv, station = null, useLogoBackground = false) {
+    if (!station) {
+        console.error("Stasjon mangler for URL:", url);
+        return;
+    }
+
+    console.log("Starter avspilling for stasjon:", station);
+
+    // Fjern tidligere markeringer
+    document.querySelectorAll('.station').forEach(div => {
+        div.classList.remove('playing', 'logo-playing');
+        div.style.backgroundImage = ''; // Fjern eventuell bakgrunn
+        // Vis favorittknappen for alle stasjoner
+        const favoriteButton = div.querySelector('.favorite-button');
+        if (favoriteButton) {
+            favoriteButton.style.display = 'block'; // Vis favorittknappen
+        }
+    });
+
+    // Marker spillende stasjon
+    if (useLogoBackground && station.logo) {
+        stationDiv.classList.add('logo-playing');
+        stationDiv.style.backgroundImage = `url('${station.logo}')`; // Bruk logo som bakgrunn
+    } else {
+        stationDiv.classList.add('playing');
+    }
+
+    // Skjul favorittknappen for den spillende stasjonen
+    const playingFavoriteButton = stationDiv.querySelector('.favorite-button');
+    if (playingFavoriteButton) {
+        playingFavoriteButton.style.display = 'none';
+    }
+
+    // Fjern tidligere lydstrøm
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+    }
+
+    try {
+        currentAudio = new Audio(url);
+        currentAudio.muted = true; // Start mutet for å unngå blokkering
+        currentlyPlayingUrl = url;
+
+        // Når lydstrømmen kan spilles av
+        currentAudio.addEventListener('canplay', () => {
+            currentAudio.muted = false;
+            currentAudio.play()
+                .then(() => {
+                    console.log("Avspilling startet for:", station.name);
+                    updateFooter(station); // Oppdater footer med metadata
+                });
+        });
+
+        // Håndter feil ved lasting av lydstrøm
+        currentAudio.addEventListener('error', (e) => {
+            console.error("Feil ved lasting av lydstrøm:", e);
+            alert("Kunne ikke spille av stasjonen. Sjekk nettverk og URL.");
+        });
+
+        setupWebSocket(url); // Oppdater WebSocket for metadata
+    } catch (error) {
+        console.error("Feil ved opprettelse av lydobjekt:", error);
+    }
+}
+
+async function togglePlayStation(url, stationDiv) {
+    const category = stationDiv.getAttribute("data-category");
+    const station = stationsData[category]?.find(s => s.url === url);
+
+    if (!station) {
+        console.error("Stasjon ikke funnet for URL:", url, "og kategori:", category);
+        return;
+    }
+
+    console.log("Spiller av stasjon:", station);
+
+    // Hvis stasjonen allerede spiller
+    if (currentAudio && url === currentlyPlayingUrl) {
+        currentAudio.pause();
+        currentlyPlayingUrl = null;
+        stationDiv.classList.remove('playing', 'logo-playing');
+        stationDiv.style.backgroundImage = ''; // Fjern bakgrunn
+        const favoriteButton = stationDiv.querySelector('.favorite-button');
+        if (favoriteButton) {
+            favoriteButton.style.display = 'block'; // Vis favorittknappen igjen
+        }
+        updateFooter(null);
+        return;
+    }
+
+    // Hvis en annen stasjon spiller, stopp den
+    if (currentAudio) currentAudio.pause();
+
+    // Start avspilling
+    initializeAudio(url, stationDiv, station, true); // Bruk bakgrunnslogo som standard
+}
+
+function isFavorite(url) {
+    const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    return favorites.some(fav => fav.url === url);
+}
+
+ 
+
+function updateFavoritesSidebar() {
+    const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    let favoriteButton = sidebar.querySelector('button[data-category="Favoritter"]');
+
+    // Opprett knappen én gang hvis den ikke finnes
+    if (!favoriteButton) {
+        favoriteButton = document.createElement("button");
+        favoriteButton.textContent = "Favoritter";
+        favoriteButton.setAttribute("data-category", "Favoritter");
+        favoriteButton.onclick = () => showStations("Favoritter");
+        sidebar.prepend(favoriteButton); // Legg knappen fast på toppen
+    }
+
+    // Deaktiver knappen hvis det ikke er noen favoritter
+    favoriteButton.disabled = favorites.length === 0;
+}
+
+
+ 
+
+function showStations(category) {
+    // ... resten av funksjonen ...
+}
+
+ 
+
+document.addEventListener("DOMContentLoaded", () => {
+    updateFavoritesSidebar(); // Sett opp "Favoritter"-knappen
+    loadMenu('main');         // Last hovedmenyen
+});
+
+
+
+function showStations(category) {
+    const stationsGrid = document.getElementById("stations-grid");
+    stationsGrid.innerHTML = ""; // Tøm grid
+
+    const stations = category === "Favoritter"
+        ? JSON.parse(localStorage.getItem("favorites")) || []
+        : stationsData[category];
+
+    if (stations && stations.length > 0) {
+        stations.forEach(favOrStation => {
+            const station = category === "Favoritter" 
+                ? stationsData[favOrStation.category]?.find(s => s.url === favOrStation.url) 
+                : favOrStation;
+
+            if (!station) {
+                console.warn("Ugyldig stasjonsdata:", favOrStation);
+                return;
+            }
+
+            const stationDiv = document.createElement("div");
+            stationDiv.classList.add("station");
+            stationDiv.setAttribute("data-category", category);
+            stationDiv.setAttribute("data-url", station.url);
+            stationDiv.onclick = () => togglePlayStation(station.url, stationDiv);
+
+            // Legg til logo
+            if (station.logo) {
+                const logo = document.createElement("img");
+                logo.src = station.logo;
+                logo.alt = `${station.name} logo`;
+                logo.className = "station-logo";
+                stationDiv.appendChild(logo);
+            } else {
+                console.warn("Ingen logo funnet for stasjonen:", station.name);
+            }
+
+            // Legg til stasjonsnavn
+            const name = document.createElement("div");
+            name.classList.add("station-name");
+            name.textContent = station.name;
+            stationDiv.appendChild(name);
+
+            // Legg til favorittknapp
+            const favoriteButton = document.createElement("button");
+            favoriteButton.classList.add("favorite-button");
+            favoriteButton.textContent = isFavorite(station.url) ? "★" : "☆";
+            favoriteButton.onclick = (e) => {
+                e.stopPropagation(); // Forhindrer klikk på stasjonen
+                toggleFavorite(station.url, category);
+                favoriteButton.textContent = isFavorite(station.url) ? "★" : "☆";
+            };
+            stationDiv.appendChild(favoriteButton);
+
+            stationsGrid.appendChild(stationDiv); // Legg stasjonsdiven til grid
+        });
+    } else {
+        stationsGrid.innerHTML = `<p style="color:white;">Ingen stasjoner funnet.</p>`;
+    }
+}
+
+// Favoritt-funksjon
+function toggleFavorite(url, category) {
+    const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    const index = favorites.findIndex(fav => fav.url === url);
+
+    if (index !== -1) {
+        favorites.splice(index, 1); // Fjern fra favoritter
+    } else {
+        favorites.push({ url, category }); // Legg til favoritter
+    }
+
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+}
+
+function isFavorite(url) {
+    const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    return favorites.some(fav => fav.url === url);
+}
+ let ws;
+
+       function setupWebSocket(url) {
+    if (ws) ws.close();
+    ws = new WebSocket('ws://anthonsen.net:8080'); // Endre IP/port hvis nødvendig
+    ws.onopen = () => {
+        console.log("WebSocket åpen, sender URL:", url);
+        ws.send(url);
+    };
+    ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        updateSongInfo(data.StreamTitle, data.imageUrl);
+    };
+    ws.onerror = (error) => {
+        console.error("WebSocket-feil:", error);
+        updateSongInfo("Ingen metadata tilgjengelig");
+    };
+    ws.onclose = () => {
+        console.log("WebSocket-tilkobling lukket");
+    };
+}
+
+
+
+if (useLogoBackground) {
+    if (station.logo) {
+        stationDiv.classList.add('logo-playing');
+        stationDiv.style.backgroundImage = `url('${station.logo}')`; // Sett logo som bakgrunn
+        console.log("Logo satt som bakgrunn for knappen:", station.logo);
+        console.log("Knappens bakgrunnsbilde:", stationDiv.style.backgroundImage);
+    } else {
+        console.warn("Ingen logo funnet for stasjonen:", station);
+    }
+} else {
+    stationDiv.classList.add('playing');
+}
+
+// Legg til logging her
+console.log("Stasjonen som spilles av:", station);
+console.log("Aktiv knapp:", stationDiv);
+
+// Sett opp WebSocket for metadata
+setupWebSocket(url);
+
+function applySystemTheme() {
+    const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+    
+    if (prefersDarkScheme.matches) {
+        document.body.classList.remove('day-mode'); // Fjern dagmodus
+    } else {
+        document.body.classList.add('day-mode'); // Sett dagmodus
+    }
+}
+
+// Overvåk endringer i systemets lysmodus
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applySystemTheme);
+
+// Kall funksjonen ved oppstart
+document.addEventListener("DOMContentLoaded", applySystemTheme);
+
+
+        function updateSongInfo(songTitle, imageUrl) {
+            const songInfoElement = document.getElementById('song-info');
+            songInfoElement.textContent = songTitle || "";
+            const logoElement = document.getElementById('station-logo');
+            if (imageUrl) {
+                logoElement.src = imageUrl;
+                logoElement.style.display = "inline";
+            }
+            const stationName = document.getElementById('channel-name').textContent;
+            document.title = `${stationName} - ${songTitle || ''}`;
+        }
+
+     function updateFooter(station) {
+    const logoElement = document.getElementById("station-logo");
+    /*const channelNameElement = document.getElementById("channel-name"); */
+    const songInfoElement = document.getElementById("song-info");
+
+    if (station) {
+        // Hvis logo mangler, hent stasjonen fra stationsData
+        if (!station.logo && station.category && station.url) {
+            const categoryStations = stationsData[station.category];
+            const fullStation = categoryStations?.find(s => s.url === station.url);
+            if (fullStation) {
+                station.logo = fullStation.logo; // Oppdater logoen
+                /* station.name = fullStation.name; // Oppdater navnet  */
+            }
+        }
+
+        // Oppdater logo
+        if (station.logo) {
+            logoElement.src = station.logo;
+            logoElement.style.display = "inline";
+        } else {
+            console.warn("Ingen logo funnet for stasjonen:", station);
+            logoElement.style.display = "none";
+        }
+
+        // Oppdater navn
+        channelNameElement.textContent = station.name || "Ukjent stasjon";
+        songInfoElement.textContent = station.songInfo || "";
+    } else {
+        // Tilbakestill når ingen stasjon er valgt
+        logoElement.style.display = "none";
+        /* channelNameElement.textContent = "Velg en radiokanal"; */
+        songInfoElement.textContent = "";
+    }
+}
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+const WebSocket = require('ws');
+const fs = require('fs');
+const path = require('path');
+
+// Konfigurasjon
+const serverPort = 8000; // Bytt til riktig portnummer hvis nødvendig
+const logoPath = '/var/www/radioportal/logo/nrklogo/sor.png';
+
+// Start WebSocket-server
+const wss = new WebSocket.Server({ port: serverPort });
+
+console.log(`WebSocket-server kjører på port ${serverPort}`);
+
+wss.on('connection', (ws) => {
+    console.log('Ny klient tilkoblet.');
+
+    // Send logo til klienten
+    try {
+        const logoBuffer = fs.readFileSync(path.resolve(logoPath));
+        ws.send(logoBuffer);
+        console.log('Logo sendt til klienten.');
+    } catch (error) {
+        console.error('Feil ved lesing/sending av logo:', error.message);
+    }
+
+    // Håndtere meldinger fra klienten (valgfritt)
+    ws.on('message', (message) => {
+        console.log('Melding fra klient:', message);
+    });
+
+    // Håndtere frakobling
+    ws.on('close', () => {
+        console.log('Klient frakoblet.');
+    });
+});

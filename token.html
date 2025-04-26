@@ -1,0 +1,44 @@
+const getRefreshToken = async () => {
+    // Henter refresh token fra localStorage
+    const refreshToken = localStorage.getItem('refresh_token'); 
+    if (!refreshToken) {
+        console.error('No refresh token found, please log in again.');
+        return; // Returner tidlig hvis ingen refresh token
+    }
+
+    const url = "https://accounts.spotify.com/api/token"; 
+    const payload = { 
+        method: 'POST', 
+        headers: { 
+            'Content-Type': 'application/x-www-form-urlencoded' 
+        }, 
+        body: new URLSearchParams({ 
+            grant_type: 'refresh_token', 
+            refresh_token: refreshToken, 
+            client_id: "aa4223881242a0950b6b988147b572", // Din klient-ID
+            client_secret: "YOUR_CLIENT_SECRET_HERE" // Sett inn din klient-hemmelighet
+        }), 
+    };
+
+    try {
+        const response = await fetch(url, payload);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`); // Håndtering for ikke-200 respons
+        }
+        
+        const data = await response.json(); // Parser responsen som JSON
+
+        // Lagre den nye access token
+        localStorage.setItem('access_token', data.access_token); 
+        
+        // Sjekk og oppdater refresh token om nødvendig
+        if (data.refresh_token) { 
+            localStorage.setItem('refresh_token', data.refresh_token); 
+        }
+
+        return data; // Valgfritt: returner den nye tokenen
+    } catch (error) {
+        console.error('Failed to get a new access token:', error); // Logger eventuelle feil
+    }
+};

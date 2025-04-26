@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screenshot Test</title>
+</head>
+<body>
+    <h1>Testområde</h1>
+    <div id="result"></div>
+    <button onclick="runTest()">Kjør Test</button>
+    <script>
+        async function runTest() {
+            const resultDiv = document.getElementById('result');
+            const channelUrl = 'https://radio.nrk.no/direkte/p1_sorlandet'; // Test URL
+
+            try {
+                const apiKey = 'ccbafb090b785be9628134029e5d8fa4'; // Din API-nøkkel
+                const screenshotUrl = `https://api.screenshotlayer.com/api/capture?access_key=${apiKey}&url=${encodeURIComponent(channelUrl)}`;
+
+                console.log('Generert skjermbilde-URL:', screenshotUrl);
+
+                // Opprett et bildeelement og vis skjermbilde
+                const img = document.createElement('img');
+                img.src = screenshotUrl; // URL direkte fra API-et
+                img.alt = 'Skjermbilde';
+                img.style = 'max-width: 100%; height: auto;';
+
+                // Tøm div og legg til bildet
+                resultDiv.innerHTML = '';
+                resultDiv.appendChild(img);
+
+            } catch (error) {
+                console.error('Feil:', error);
+                resultDiv.textContent = 'Noe gikk galt: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

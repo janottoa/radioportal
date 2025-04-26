@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radioportal</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            background-color: #f0f0f0;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .header-logo img {
+            height: 30px;
+        }
+        .header-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+        }
+        .header-metadata {
+            font-size: 1em;
+            text-align: right;
+            flex: 1;
+            margin-left: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            width: 75%;
+        }
+        
+        .sidebar {
+            width: 200px;
+            background-color: #f0f0f0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .sidebar button {
+            background-color: #d3d3d3;
+            border: none;
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .sidebar button:hover {
+            background-color: #c0c0c0;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        .station {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .station:hover {
+            background-color: #e0e0e0;
+        }
+        .station.playing {
+            background-color: #c0c0c0;
+            border-color: #888;
+        }
+        .station img {
+            max-width: 60px;
+            margin-bottom: 5px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer .info {
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+            <img src="logo.370a4318.svg" alt="Xpeng Logo">
+        </div>
+        <div class="header-title">RADIOPORTAL</div>
+        <div class="header-metadata" id="header-metadata">Metadata: Ingen informasjon</div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <h2>Valg</h2>
+            <button onclick="showStations('NRK')">NRK</button>
+            <button onclick="showStations('P4')">P4</button>
+            <button onclick="showStations('Radio Norge')">Radio Norge</button>
+            <button onclick="showStations('Metro')">Metro</button>
+            <button onclick="showStations('Lokale')">Lokale</button>
+            <button onclick="showStations('Internet')">Internet</button>
+            <button onclick="showStations('Utenlandske')">Utenlandske</button>
+            <button onclick="showStations('Spanske')">Spanske</button>
+            <button onclick="showStations('Spesielle')">Spesielle</button>
+        </div>
+        <div class="content">
+            <div class="stations-grid" id="stations-grid"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="info">
+            <img id="station-logo" src="" alt="Stasjonslogo" style="display:none; height: 30px; margin-right: 10px;">
+            <span id="channel-name">Velg en radiokanal</span> 
+            <span id="song-info"></span>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        console.log("Document loaded. Initializing radio portal.");
+        showStations('NRK');
+    });
+
+    const stationsData = {
+        "NRK": [
+            { name: "NRK P1 Sørlandet", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net/p1_dk10_mp3_h", logo: "nrklogo/sor.jpeg" },
+            { name: "NRK P1 Rogaland", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net/p1_dk9_mp3_h", logo: "nrklogo/rogaland.jpeg" },
+            { name: "NRK P1 Østfold", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net/p1_dk15_mp3_h", logo: "nrklogo/ostfold.jpeg" },
+            { name: "NRK P1+", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net/p1pluss_aac_h", logo: "nrklogo/p1pluss.png" },
+            { name: "NRK P2", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net/p2_mp3_h", logo: "nrklogo/p2.png" },
+            { name: "NRK P3", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net/p3_mp3_h", logo: "nrklogo/p3.png" },
+            { name: "NRK MP3", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net/mp3_mp3_h", logo: "nrklogo/mp3.png" },
+            { name: "NRK Alltid Nyheter", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net/nyheter_mp3_h", logo: "nrklogo/nyheter.jpeg" },
+            { name: "NRK P13", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net/p13_mp3_h", logo: "nrklogo/p13.png" },
+            { name: "NRK Sport", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net/sport_mp3_h", logo: "nrklogo/sport.png" },
+            { name: "NRK Jazz", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net/jazz_mp3_h", logo: "nrklogo/jazz.png" },
+            { name: "NRK Klassisk", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net/klassisk_mp3_h", logo: "nrklogo/klassisk.png" },
+            { name: "NRK P3 Urørt", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net/urort_mp3_h", logo: "nrklogo/urort.png" },
+            { name: "NRK P3 X", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net/p3x_mp3_h", logo: "nrklogo/p3x.png" },
+            { name: "NRK Folkemusikk", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net/folkemusikk_mp3_h", logo: "nrklogo/folkemusikk.png" }
+        ],
+        "P4": [
+            { name: "P4 Direkte", url: "https://p4.p4groupaudio.com/P04_AH", logo: "p4logo/p4.jpeg" },
+            { name: "P5 Nonstop", url: "https://p5n.p4groupaudio.com/P05AAH", logo: "p4logo/p5nonstop.png" },
+            { name: "P6 Rock", url: "https://p6.p4groupaudio.com/P06_MH", logo: "p4logo/p6.png" },
+            { name: "P7 Klem", url: "https://p7.p4groupaudio.com/P07_AH", logo: "p4logo/p7.jpeg" },
+            { name: "P8 Pop", url: "https://p8.p4groupaudio.com/P08_AH", logo: "p4logo/p8.jpeg" },
+            { name: "P9 Retro", url: "https://p9.p4groupaudio.com/P09_AH", logo: "p4logo/p9.jpeg" },
+            { name: "P10 Country", url: "https://p10.p4groupaudio.com/P10_AH", logo: "p4logo/p10country.jpeg" },
+            { name: "P11 Bandit", url: "https://p12.p4groupaudio.com/BAN_MM?args=3rdparty_01&distributor=radioplayer", logo: "p4logo/p11.jpeg" },
+            { name: "P12 Dance", url: "https://p12.p4groupaudio.com/P12_AH", logo: "p4logo/p12.png" },
+            { name: "NRJ", url: "https://nrj.p4groupaudio.com/NRJ_MH", logo: "p4logo/nrj.png" }
+        ],
+        "Radio Norge": [
+            { name: "Radio Norge", url: "https://live-bauerno.sharp-stream.com/radionorge_no_mp3", logo: "radionorge_logo.png" }
+        ],
+        "Metro": [
+            { name: "Radio Metro", url: "https://radiometro.mdhstream.com/radiometro.mp3", logo: "metro_logo.png" }
+        ],
+        "Lokale": [
+            { name: "Radio 102", url: "https://stream.radio102.no/radio102_mp3_h", logo: "radio102_logo.png" }
+        ],
+        "Internet": [
+            { name: "Internet Radio", url: "https://internet-radio.com/stream", logo: "internet_logo.png" }
+        ],
+        "Utenlandske": [
+            { name: "BBC Radio 1", url: "http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio1_mf_p", logo: "bbc_logo.png" }
+        ],
+        "Spanske": [
+            { name: "Radio Olé", url: "http://radioole.mp3.stream.tb-group.fm:80/", logo: "radioole_logo.png" }
+        ],
+        "Spesielle": [
+            { name: "Jazz FM", url: "http://streamer.jazz.fm:8000/", logo: "jazzfm_logo.png" }
+        ]
+    };
+
+    let currentAudio = null;
+    let currentlyPlayingUrl = null;
+
+    async function togglePlayStation(url, stationDiv) {
+        const category = stationDiv.getAttribute("data-category");
+        const station = stationsData[category].find(s => s.url === url);
+
+        if (currentAudio && url === currentlyPlayingUrl) {
+            currentAudio.pause();
+            currentlyPlayingUrl = null;
+            stationDiv.classList.remove('playing');
+            updateFooter(null);
+        } else {
+            if (currentAudio) currentAudio.pause();
+
+            currentAudio = new Audio(url);
+            currentAudio.crossOrigin = "anonymous";
+            currentAudio.addEventListener('canplay', () => {
+                currentAudio.play();
+                updateFooter(station);
+            });
+            currentlyPlayingUrl = url;
+
+            currentAudio.addEventListener('error', (e) => {
+                console.error('Error with audio stream:', e);
+                alert('Kunne ikke spille av kanalen. Vennligst prøv igjen senere.');
+            });
+
+            document.querySelectorAll('.station').forEach(st => st.classList.remove('playing'));
+            stationDiv.classList.add('playing');
+        }
+    }
+
+    function updateFooter(station) {
+        const logoElement = document.getElementById('station-logo');
+        const channelNameElement = document.getElementById('channel-name');
+        const songInfoElement = document.getElementById('song-info');
+
+        if (station) {
+            logoElement.src = station.logo;
+            logoElement.style.display = "inline";
+            channelNameElement.textContent = station.name;
+            songInfoElement.textContent = "Spiller nå...";
+        } else {
+            logoElement.style.display = "none";
+            channelNameElement.textContent = "Velg en radiokanal";
+            songInfoElement.textContent = "";
+        }
+    }
+
+    function showStations(category) {
+        console.log("Showing stations for category:", category);
+        const stationsGrid = document.getElementById('stations-grid');
+        stationsGrid.innerHTML = '';
+        stationsData[category].forEach(station => {
+            const stationDiv = document.createElement('div');
+            stationDiv.classList.add('station');
+            stationDiv.setAttribute("data-category", category);
+            stationDiv.onclick = () => togglePlayStation(station.url, stationDiv);
+
+            const logo = document.createElement('img');
+            logo.src = station.logo;
+            logo.alt = `${station.name} logo`;
+            stationDiv.appendChild(logo);
+
+            const name = document.createElement('h3');
+            name.textContent = station.name;
+            stationDiv.appendChild(name);
+
+            stationsGrid.appendChild(stationDiv);
+        });
+    }
+
+    </script>
+</body>
+</html>

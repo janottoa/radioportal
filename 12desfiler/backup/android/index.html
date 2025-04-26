@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radioportal</title>
+    <style>
+        /* Stilene her er som tidligere */
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            background-color: #908962;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .header-logo img {
+            height: 30px;
+        }
+        .header-title {
+            font-size: 1.5em; /* Justert for mobil */
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        
+        .sidebar {
+            background-color: #f0f0f0;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            text-align: center;
+        }
+        
+        .sidebar button {
+            background-color: #d3d3d3;
+            border: none;
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            flex: 1 1 45%; /* For jevn layout på mobil */
+        }
+
+        .sidebar button:hover {
+            background-color: #c0c0c0;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            width: 100%;
+        }
+
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+        }
+
+        .station {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+
+        .station:hover {
+            background-color: #e0e0e0;
+        }
+
+        .station.playing {
+            background-color: #c0c0c0;
+            border-color: #888;
+        }
+
+        .station img {
+            max-width: 60px;
+            margin-bottom: 5px;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+            flex-wrap: wrap; /* For å få plass på mobil */
+        }
+
+        .footer .info {
+            display: flex;
+            align-items: center;
+            text-align: left;
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .footer img {
+            height: 25px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+            <img src="logo.370a4318.svg" alt="Xpeng Logo">
+        </div>
+        <div class="header-title">RADIOPORTAL</div>
+        <div class="header-subtitle">av: Moffa Jotto</div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <h2>Valg</h2>
+            <button onclick="showStations('NRK')">NRK</button>
+            <button onclick="showStations('P4')">P4</button>
+            <button onclick="showStations('Radio Norge')">Radio Norge</button>
+            <button onclick="showStations('Metro')">Metro</button>
+            <button onclick="showStations('Lokale')">Lokale</button>
+            <button onclick="showStations('Internet')">Internet</button>
+            <button onclick="showStations('Utenlandske')">Utenlandske</button>
+            <button onclick="showStations('Spanske')">Spanske</button>
+            <button onclick="showStations('Spesielle')">Spesielle</button>
+        </div>
+        <div class="content">
+            <div class="stations-grid" id="stations-grid"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="info">
+            <img id="station-logo" src="" alt="Stasjonslogo" style="display:none; height: 30px; margin-right: 10px;">
+            <span id="channel-name">Velg en radiokanal</span> 
+            <span id="song-info"></span>
+        </div>
+    </div>
+
+    <script>
+    // JavaScript holder seg det samme, for å håndtere funksjoner og data
+    const stationsData = {
+        "NRK": [
+            { name: "NRK P1 Sørlandet", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p1_dk10_mp3_h", logo: "nrklogo/sor.jpeg" },
+            { name: "NRK P1 Rogaland", url: "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p1_dk9_mp3_h", logo: "nrklogo/rogaland.jpeg" },
+            // Ytterligere stasjoner ...
+        ],
+        // Flere kategorier og stasjoner ...
+    };
+
+    // Din eksisterende JavaScript-kode for WebSocket-tilkobling, oppdatering av metadata, osv.
+    </script>
+</body>
+</html>

@@ -1,0 +1,792 @@
+<!DOCTYPE html> <!-- Definerer dokumenttypen som HTML5 -->
+<html lang="no"> <!-- Setter språket for siden til norsk -->
+<head>
+    <meta charset="UTF-8"> <!-- Angir tegnsett som UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Gjør siden responsiv for ulike skjermstørrelser -->
+    <title>Radioportal</title> <!-- Tittelen på nettsiden -->
+    <style>
+        /* Nattdesign som standard */
+        body { /* Stiler for body-elementet */
+            display: flex; /* Bruker flexbox for layout */
+            flex-direction: column; /* Arrangerer elementer vertikalt */
+            margin: 0; /* Fjerner standard marger */
+            font-family: Arial, sans-serif; /* Setter standard font */
+            background-color: black; /* Bakgrunnsfarge for nattdesign */
+        }
+
+        .header { /* Header-styling */
+            position: fixed; /* Holder headeren på toppen når man scroller */
+            top: 0;
+            left: 0;
+            width: 100%; /* Full bredde */
+            background-color: gray; /* Headerens bakgrunnsfarge */
+            padding: 15px 20px; /* Avstand inni headeren */
+            display: flex; /* Flexbox for innhold i headeren */
+            align-items: center; /* Vertikal sentrering */
+            justify-content: flex-start; /* Innhold justert til venstre */
+            box-sizing: border-box; /* Inkluder padding i elementets totale bredde/høyde */
+            color: black; /* Tekstfarge i headeren */
+            z-index: 10; /* Legger headeren øverst i lagrekkefølgen */
+        }
+
+        .header-logo img { /* Styling for logo i header */
+            display: block; /* Fjerner mellomrom under bildet */
+            height: 45px; /* Angir høyde på logoen */
+        }
+
+        .header-title { /* Titteltekst i header */
+            font-size: 1.8em; /* Størrelse på tekst */
+            font-weight: bold; /* Fet tekst */
+            text-align: center; /* Sentraliserer teksten */
+            flex: 1; /* Fyller tilgjengelig plass */
+        }
+
+        .container { /* Hovedområde under headeren */
+            display: flex; /* Flexbox for layout */
+            flex: 1; /* Lar containeren fylle resten av siden */
+            width: 100%;
+            margin-top: 65px; /* Flytter ned fra header */
+            margin-bottom: 40px; /* Avstand fra footer */
+        }
+
+        .sidebar { /* Sidefeltet */
+            position: fixed; /* Holder sidebar på plass */
+            top: 80px; /* Flytter den under headeren */
+            left: 0;
+            width: 180px; /* Fast bredde */
+            background-color: #333; /* Mørk bakgrunnsfarge */
+            padding: 20px; /* Indre marg */
+            display: flex; /* Flexbox for innhold */
+            flex-direction: column; /* Vertikal layout */
+            gap: 10px; /* Avstand mellom knapper */
+            height: calc(100% - 80px); /* Full høyde minus headeren */
+        }
+
+        .stations-grid { /* Grid for radiostasjoner */
+            display: grid; /* Bruker CSS Grid for layout */
+            grid-template-columns: repeat(4, 1fr); /* 4 kolonner med like stor bredde */
+            gap: 10px; /* Avstand mellom ruter */
+            padding: 10px; /* Indre marg */
+        }
+
+        .station { /* Enkelt radiostasjon-element */
+            display: flex; /* Flexbox for å arrangere innhold */
+            flex-direction: column; /* Vertikal layout */
+            align-items: center; /* Sentraliserer innhold horisontalt */
+            justify-content: center; /* Sentraliserer innhold vertikalt */
+            background-color: #444; /* Mørk grå bakgrunn */
+            color: white; /* Hvit tekst */
+            border: 1px solid #888; /* Kantlinje rundt elementet */
+            border-radius: 10px; /* Runde hjørner */
+            transition: all 0.3s ease; /* Myk overgang på hover */
+        }
+
+        .station:hover { /* Hover-effekter for stasjonsknapp */
+            background-color: #555; /* Lysere bakgrunnsfarge */
+            transform: translateY(-2px); /* Løfter elementet litt opp */
+        }
+
+        .footer { /* Footer-styling */
+            position: fixed; /* Fikserer footer nederst på siden */
+            bottom: 0; /* Plasserer den helt nederst */
+            width: 100%; /* Full bredde */
+            background-color: gray; /* Bakgrunnsfarge */
+            text-align: center; /* Sentraliserer innholdet */
+            padding: 10px; /* Indre marg */
+            display: flex; /* Flexbox for innhold */
+            justify-content: space-between; /* Plasserer innhold på hver side */
+        }
+        #song-info { /* Selektor for et element med ID 'song-info' */
+            font-size: 1.1em; /* Setter tekststørrelsen til 1.1 ganger standard størrelsen */
+            font-weight: bold; /* Gjør teksten fet */
+            font-style: italic; /* Gjør teksten kursiv */
+        }
+
+        .footer .info { /* Selektor for elementer med klassen 'info' inni et element med klassen 'footer' */
+            font-size: 1em; /* Setter tekststørrelsen til standard */
+        }
+
+        /* Dagfarger */
+        .day-mode { /* Definerer dagmodus for body-elementet */
+            background-color: white; /* Angir hvit bakgrunnsfarge */
+        }
+
+        .day-mode .header { /* Header-styling i dagmodus */
+            background-color: #d3d3d3; /* Setter headerens bakgrunnsfarge til lys grå */
+            color: black; /* Gjør headerens tekst svart */
+        }
+
+        .day-mode .sidebar { /* Sidebar-styling i dagmodus */
+            background-color: #f0f0f0; /* Setter sidebarens bakgrunnsfarge til veldig lys grå */
+        }
+
+        .day-mode .sidebar button { /* Styling for knapper i sidebar i dagmodus */
+            background-color: #d3d3d3; /* Lys grå bakgrunn for knapper */
+            color: black; /* Svart tekst på knappene */
+        }
+
+        .day-mode .station { /* Styling for radiostasjoner i dagmodus */
+            background-color: #f9f9f9; /* Nesten hvit bakgrunnsfarge */
+            color: black; /* Svart tekstfarge */
+        }
+
+        .day-mode .station:hover { /* Hover-effekt for stasjoner i dagmodus */
+            background-color: #e0e0e0; /* Lysere grå bakgrunn ved hover */
+        }
+
+        .day-mode .station.playing { /* Styling for spillende stasjoner i dagmodus */
+            background-color: #c0c0c0; /* Middels grå bakgrunn */
+            border-color: #888; /* Grå kantfarge */
+        }
+
+        .day-mode .footer { /* Footer-styling i dagmodus */
+            background-color: #333; /* Mørk grå bakgrunn */
+            color: white; /* Hvit tekst */
+        }
+        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>  <!-- Legger til HLS.js, et bibliotek for streaming av HLS (HTTP Live Streaming) -->
+        <meta charset="UTF-8"> <!-- Angir tegnsett som UTF-8 for å støtte spesialtegn -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Gjør siden responsiv og tilpasser den til ulike skjermstørrelser -->
+        <title>Radioportal</title> <!-- Setter tittelen på nettsiden som vises i nettleserens fane -->
+        <script>
+         document.addEventListener("DOMContentLoaded", function() { <!-- Kjør koden når HTML-dokumentet er fullstendig lastet -->
+            if (/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) { <!-- Sjekker om brukeren bruker en mobil enhet -->
+        window.location.href = "http://anthonsen.net:2222/mobil.html"; <!-- Omdirigerer mobilbrukere til en mobilversjon av siden -->
+        }
+        });
+        </script>
+        </head>
+        <body>
+        <div class="header"> <!-- Header-delen av siden, inkludert logo, tittel og knapper -->
+        <div class="header-logo"> <!-- Logo-seksjon i headeren -->
+        <img src="moffaradio.png" alt="Moffa Logo" width="250" height="150"> <!-- Viser logoen til radioportalen -->
+        </div>
+
+        <div class="header-title">RADIOPORTAL</div> <!-- Viser hovedtittelen i headeren -->
+        <div class="header-subtitle"></div> <!-- Tom plass for undertittel hvis nødvendig -->
+
+        <div class="header-buttons"> <!-- Seksjon for knapper i headeren -->
+        <button class="switch-button" onclick="toggleDayMode()">Bytt design</button> <!-- Knappefunksjon for å bytte mellom dag- og nattdesign -->
+        <button class="switch-button" onclick="refreshPage()">Refresh</button> <!-- Knappefunksjon for å oppdatere siden -->
+        </div>
+        </div>
+
+        <div class="container"> <!-- Hovedcontaineren som inneholder sidefelt og innhold -->
+        <div class="sidebar" id="sidebar"></div> <!-- Sidefeltet som kan inneholde navigasjon eller radiokanalliste -->
+        <div class="content"> <!-- Hovedinnholdsområdet -->
+        <div class="stations-grid" id="stations-grid"></div> <!-- Grid for å vise radiostasjoner dynamisk -->
+        </div>
+        </div>
+
+        <div class="footer"> <!-- Lager en footer-seksjon nederst på siden -->
+        <div class="info"> <!-- En seksjon inne i footeren for å vise stasjonsinformasjon -->
+        <img id="station-logo" src="" alt="Stasjonslogo" <!-- Bildet for stasjonens logo -->
+        style="display:none; height: 30px; margin-right: 10px;"> <!-- Skjuler bildet som standard, setter høyden til 30px, og gir en margin på 10px til høyre -->
+        <span id="channel-name"></span> <!-- Et element for å vise navnet på den valgte kanalen -->
+        <span id="song-info"></span> <!-- Et element for å vise informasjon om den aktuelle sangen -->
+        </div>
+        </div>
+
+        <script>
+        // Kontroll for spillende stasjon
+        // (Kommentar til hva funksjonen gjør, her skal du kanskje legge til mer logikk senere)
+
+        function refreshPage() { // Funksjon for å oppdatere siden
+        window.location.reload(); // Laster siden på nytt
+        }
+
+        function toggleDayMode() { // Funksjon for å bytte mellom dag- og nattmodus
+        document.body.classList.toggle('day-mode'); // Legger til eller fjerner klassen 'day-mode' på <body>
+        }
+
+        const sidebar = document.getElementById("sidebar"); // Henter sidebaren fra HTML med ID 'sidebar'
+        const stationsGrid = document.getElementById("stations-grid"); // Henter gridet for stasjoner med ID 'stations-grid'
+        const screenshotResultDiv = document.createElement('div'); // Oppretter et nytt <div>-element
+                                                                                                                                                                                                                              const menus = { // Definerer menyer for sidebaren med kategorier og handlinger
+        main: [ // Hovedmeny med radiokategorier
+        { label: "NRK", action: () => showStations("NRK") }, // Knapp for NRK, viser NRK-stasjoner når trykket
+        { label: "P4", action: () => showStations("P4") }, // Knapp for P4, viser P4-stasjoner
+        { label: "Radio Norge", action: () => showStations("Radio Norge") }, // Knapp for Radio Norge
+        { label: "Metro", action: () => showStations("Metro") }, // Knapp for Metro
+        { label: "Lokale", action: () => showStations("Lokale") }, // Knapp for lokale stasjoner
+        { label: "Internet", action: () => showStations("Internet") }, // Knapp for internettstasjoner
+        { label: "Latinske", action: () => showStations("Latinske") }, // Knapp for latinske stasjoner
+        { label: "Mer...", action: () => loadMenu("extra") }, // Knapp for å laste "extra"-menyen
+        ],
+        extra: [ // Ekstra meny med flere radiokategorier
+        { label: "1fm", action: () => showStations("1fm") }, // Knapp for 1fm-stasjoner
+        { label: "181fm", action: () => showStations("181fm") }, // Knapp for 181fm-stasjoner
+        { label: "Ledig..", action: () => showStations("Ledig2") }, // Tom knapp som kan tilpasses senere
+        { label: "Sverige", action: () => showStations("se") }, // Knapp for svenske stasjoner
+        { label: "Danmark", action: () => showStations("dk") }, // Knapp for danske stasjoner
+        { label: "UK", action: () => showStations("utland") }, // Knapp for britiske stasjoner
+        { label: "Tilbake", action: () => loadMenu("main") }, // Knapp for å gå tilbake til hovedmenyen
+        { label: "Mer...", action: () => loadMenu("extra2") }, // Knapp for å laste "extra2"-menyen
+        ],
+        extra2: [ // Andre ekstra menyer med flere kategorier
+        { label: "Tyskland", action: () => showStations("de") }, // Knapp for tyske stasjoner
+        { label: "USA", action: () => showStations("us") }, // Knapp for amerikanske stasjoner
+        { label: "Middelhavet", action: () => showStations("middelhavet") }, // Knapp for middelhavsstasjoner
+        { label: "Ledig..", action: () => showStations("Ledig3u") }, // Tom knapp som kan tilpasses
+        { label: "Ledig..", action: () => showStations("Ledig4") }, // Tom knapp
+        { label: "Ledig..", action: () => showStations("Ledig5") }, // Tom knapp
+        { label: "Tilbake", action: () => loadMenu("extra") }, // Gå tilbake til "extra"-menyen
+        { label: "Startside", action: () => loadMenu("main") }, // Gå tilbake til hovedmenyen
+        ],
+        };
+
+        function loadMenu(menuName) { // Funksjon for å laste menyer dynamisk
+        const buttons = Array.from(sidebar.querySelectorAll("button")).filter( // Henter alle knappene i sidebar
+        (button) => button.getAttribute("data-category") !== "Favoritter" // Ekskluderer knapper merket som "Favoritter"
+        );
+
+        buttons.forEach((button) => button.remove()); // Fjerner eksisterende knapper fra sidebar
+
+        menus[menuName].forEach((item) => { // Itererer gjennom elementer i menyen
+        const button = document.createElement("button"); // Oppretter en ny knapp
+        button.textContent = item.label; // Setter knappens tekst
+        button.onclick = item.action; // Binder en handling til knappen
+        sidebar.appendChild(button); // Legger knappen til i sidebar
+        });
+        }
+
+        loadMenu('main'); // Laster hovedmenyen når siden starter
+                             let stationsData = {}; // Holder data om stasjoner, som navn, URL, og metadata
+        let currentlyPlayingUrl = null; // Holder URL-en til stasjonen som spiller nå
+                                           let currentAudio = null; // Holder lydstrømmen som spilles av
+                                                                       let currentlyExpanded = null; // Holder stasjonen som er utvidet for visning
+                                                                                                        let ws = null; // Global variabel for WebSocket-tilkobling
+
+        // Definer URL basert på nettverkssituasjonen
+           let url;
+        if (window.location.hostname.startsWith('192.168.') || window.location.hostname === 'localhost') {
+            url = 'http://192.168.0.11/stations.json'; // Lokal URL for stasjonsdata i nettverket
+        } else {
+              url = 'http://anthonsen.net:2222/stations.json'; // Ekstern URL for stasjonsdata
+          }
+
+        // Last stationsData fra JSON-fil
+        fetch(url) // Hent JSON-data fra angitt URL
+                      .then(response => {
+                                          if (!response.ok) { // Sjekker om responsen er vellykket
+                                      throw new Error(`Network response was not ok: ${response.statusText}`); // Kaster en feil hvis responsen er dårlig
+                                      }
+                                          return response.json(); // Konverterer responsen til JSON
+                                      })
+        .then(data => {
+                        stationsData = data; // Oppdaterer global variabel med stasjonsdata
+
+                    // Opprett radioknapper basert på stationsData
+                    stationsData.forEach(station => { // Itererer gjennom hver stasjon i dataene
+                    const stationDiv = document.createElement("div"); // Oppretter en <div> for hver stasjon
+                    stationDiv.className = "station"; // Legger til klassen "station"
+                    stationDiv.setAttribute("data-category", station.category || ""); // Legger til kategori som data-attributt
+                    stationDiv.setAttribute("data-url", station.url); // Legger til URL som data-attributt
+
+                    const logo = document.createElement("img"); // Oppretter et <img>-element for stasjonslogoen
+                    logo.src = station.logo; // Setter bildets kilde til stasjonens logo
+                    logo.alt = `${station.name} logo`; // Alternativ tekst for logoen
+                    stationDiv.appendChild(logo); // Legger logoen til stasjonsdiven
+
+                    const metadataDiv = document.createElement("div"); // Oppretter en <div> for metadata
+                    metadataDiv.className = "metadata"; // Legger til klassen "metadata"
+
+                    const program = document.createElement("p"); // Oppretter et <p>-element for programnavn
+                    program.textContent = `Program: ${station.metadata.program}`; // Setter teksten for programnavnet
+                    metadataDiv.appendChild(program); // Legger programnavnet til metadata-diven
+
+                    const song = document.createElement("p"); // Oppretter et <p>-element for sangtittel
+                    song.textContent = `Sang: ${station.metadata.song}`; // Setter teksten for sangtittel
+                    metadataDiv.appendChild(song); // Legger sangtittelen til metadata-diven
+
+                    const artist = document.createElement("p"); // Oppretter et <p>-element for artistnavn
+                    artist.textContent = `Artist: ${station.metadata.artist}`; // Setter teksten for artistnavn
+                    metadataDiv.appendChild(artist); // Legger artistnavnet til metadata-diven
+
+                    const album = document.createElement("p"); // Oppretter et <p>-element for albumnavn
+                    album.textContent = `Album: ${station.metadata.album}`; // Setter teksten for albumnavn
+                    metadataDiv.appendChild(album); // Legger albumnavnet til metadata-diven
+
+                    stationDiv.appendChild(metadataDiv); // Legger metadata-diven til stasjonsdiven
+
+                    // Legg til klikkhåndtering for avspilling
+                    stationDiv.addEventListener("click", () => togglePlayStation(station.url, stationDiv)); // Legger til en klikkhendelse for å spille av stasjonen
+
+                    // Legg til stasjonselement i grid
+                    stationsGrid.appendChild(stationDiv); // Legger stasjonsdiven til gridet for stasjoner
+                    });
+
+                    // Hent siste spilte stasjon fra localStorage, hvis tilgjengelig
+                    const lastStation = JSON.parse(localStorage.getItem('lastStation')); // Henter siste stasjon fra nettleserens lagring
+                    if (lastStation) { // Hvis det finnes en lagret stasjon
+                    const { category, url } = lastStation; // Hent kategori og URL fra lagrede data
+                    showStations(category); // Vis stasjoner i riktig kategori
+                    setTimeout(() => { // Forsinker oppstart av sist spilte stasjon for å sikre lasting
+                    const stationDiv = Array.from(document.querySelectorAll('.station')).find(div =>
+                    div.getAttribute("data-category") === category && div.getAttribute("data-url") === url
+                    ); // Finn stasjonsdiven basert på kategori og URL
+                    if (stationDiv) {
+                    initializeAudio(url, stationDiv); // Start avspilling for den siste stasjonen
+                    }
+                    }, 1000); // Forsinkelse på 1 sekund
+                    } else {
+            // Standardvisning hvis ingen siste stasjon
+            showStations('NRK'); // Viser NRK-stasjoner som standard
+            }
+                    })
+        .catch(error => {
+                          console.error('Fetch error:', error); // Logger en feil hvis noe går galt under henting av data
+
+                      // Fallback: Vis standardkategori
+                      showStations('NRK'); // Viser NRK som fallback-kategori
+                      });
+        async function initializeAudio(url, stationDiv, station) { // Asynkron funksjon for å starte avspilling av en stasjon
+        try {
+        console.log("Starter avspilling for stasjon:", station); // Logger hvilken stasjon som skal spilles
+
+        // Valider nødvendige data
+        if (!url || !station || !stationDiv) { // Sjekker om URL, stasjon, eller stasjonsdiv mangler
+        console.error("Manglende data: ", { url, station, stationDiv }); // Logger feilen hvis noe mangler
+        return; // Avbryter funksjonen
+        }
+
+        // Fjern markeringer fra tidligere stasjoner
+        document.querySelectorAll('.station').forEach(div => { // Itererer gjennom alle stasjoner i DOM
+        div.classList.remove('playing', 'logo-playing'); // Fjerner spillende-status og logo-bakgrunn
+        div.style.backgroundImage = ''; // Tømmer eventuelle tidligere bakgrunnsbilder
+        const favoriteButton = div.querySelector('.favorite-button'); // Finn favorittknappen
+        if (favoriteButton) {
+        favoriteButton.style.display = 'block'; // Vis favorittknappen hvis skjult
+        }
+        });
+
+        // Marker stasjonen som spillende
+        stationDiv.classList.add('playing'); // Legger til klassen "playing" for stasjonen
+        if (station.logo) { // Hvis stasjonen har en logo
+        stationDiv.classList.add('logo-playing'); // Legger til klassen "logo-playing"
+        stationDiv.style.backgroundImage = `url('${station.logo}')`; // Setter logoen som bakgrunnsbilde
+        }
+
+        // Skjul favorittknappen for spillende stasjon
+        const playingFavoriteButton = stationDiv.querySelector('.favorite-button'); // Finn favorittknappen
+        if (playingFavoriteButton) {
+        playingFavoriteButton.style.display = 'none'; // Skjul knappen for stasjonen som spiller
+        }
+
+        // Stopp tidligere lydstrøm hvis aktiv
+        if (currentAudio) { // Sjekker om det er en aktiv lydstrøm
+        currentAudio.pause(); // Stopper avspillingen
+        currentAudio = null; // Tømmer referansen
+        }
+
+        // Opprett ny lydstrøm
+        currentAudio = new Audio(url); // Lager et nytt `Audio`-objekt med URL
+        currentAudio.muted = true; // Starter mutet for å unngå automatisk avspillingsblokkering
+
+        // Når lydstrømmen kan spilles
+        currentAudio.addEventListener('canplay', () => { // Lytter etter `canplay`-hendelsen
+        currentAudio.muted = false; // Slår av muting
+        currentAudio.play() // Starter avspillingen
+        .then(() => {
+        console.log("Avspilling startet for:", station.name); // Logger at avspillingen startet
+        updateFooter(station); // Oppdaterer footeren med metadata om stasjonen
+        })
+        .catch(err => console.error("Feil under avspilling:", err)); // Logger feil hvis avspillingen mislykkes
+        });
+        // Sjekk om URL-en er en HLS-strøm (.m3u8) og bruk hls.js
+        if (url.endsWith('.m3u8')) { // Sjekker om URL-en slutter med .m3u8, som indikerer en HLS-strøm
+        if (Hls.isSupported()) { // Sjekker om HLS.js støttes i nettleseren
+        const videoElement = document.createElement('video'); // Oppretter et <video>-element for å håndtere HLS-strømmen
+        videoElement.style.display = 'none'; // Skjuler videoelementet siden det bare brukes til lyd
+        document.body.appendChild(videoElement); // Legger videoelementet til i <body> for avspilling
+
+        const hls = new Hls(); // Oppretter en ny HLS.js-instans
+        hls.loadSource(url); // Laster inn HLS-strømmen fra URL-en
+        hls.attachMedia(videoElement); // Binder HLS-strømmen til videoelementet
+
+        hls.on(Hls.Events.MANIFEST_PARSED, () => { // Når HLS-manifestet er lastet og klart for avspilling
+        videoElement.play() // Starter avspilling av HLS-strømmen
+        .then(() => console.log("HLS-avspilling startet:", url)) // Logger suksessfull start av avspilling
+        .catch(error => console.error("HLS-avspilling feilet:", error)); // Logger feil hvis avspillingen mislykkes
+        });
+
+            currentAudio = videoElement; // Setter `currentAudio` til videoelementet for å spore strømmen
+        updateFooter(station); // Oppdaterer footer med metadata om stasjonen
+        return; // Avslutter funksjonen for å hoppe over standard Audio-håndtering
+        } else {
+              console.error("HLS støttes ikke i denne nettleseren."); // Logger en feilmelding hvis HLS ikke støttes
+          alert("HLS-strøm støttes ikke i nettleseren din."); // Viser en advarsel til brukeren om manglende støtte
+          return; // Avslutter funksjonen siden HLS-strøm ikke kan spilles
+          }
+        }
+        // Håndter feil ved lasting av lydstrøm
+        currentAudio.addEventListener('error', (error) => { // Legger til en lytter for feilhendelser på `currentAudio`
+        console.error("Feil ved lasting av lydstrøm:", error); // Logger feilen som oppstod under lasting av lydstrøm
+        alert("Kunne ikke spille av stasjonen. Sjekk nettverk og URL."); // Viser en advarsel til brukeren om problemet
+        });
+
+        // Sett opp WebSocket for å hente metadata
+        setupWebSocket(url, stationDiv, station); // Kaller en funksjon for å etablere WebSocket-tilkobling for metadatahenting
+
+        } catch (error) { // Fanger opp feil som oppstår i hele `initializeAudio`-blokken
+        console.error("Feil i initializeAudio:", error); // Logger feilen som oppstod
+        }
+        setupWebSocket(url, stationDiv, station); // Starter WebSocket-tilkobling for metadata for gjeldende stasjon
+
+        async function togglePlayStation(url, stationDiv) { // Funksjon for å starte eller stoppe avspilling av en stasjon
+        const category = stationDiv.getAttribute("data-category"); // Henter kategorien fra stasjonsdivens data-attributt
+        let station = stationsData[category]?.find(s => s.url === url); // Finner stasjonen i `stationsData` basert på kategori og URL
+
+        // Håndter stasjoner i "Favoritter"-kategorien
+        if (!station && category === "Favoritter") { // Hvis stasjonen ikke finnes i favoritter-kategorien
+        const favorites = JSON.parse(localStorage.getItem("favorites")) || []; // Hent favoritter fra localStorage
+        const favStation = favorites.find(fav => fav.url === url); // Finn stasjonen i favorittene
+        if (favStation) {
+            station = stationsData[favStation.category]?.find(s => s.url === url); // Finn stasjonen i dens opprinnelige kategori
+        }
+        }
+
+            if (!station) { // Hvis stasjonen fortsatt ikke finnes
+        console.error("Stasjon ikke funnet for URL:", url, "og kategori:", category); // Logger feilen
+        return; // Avbryter funksjonen
+        }
+
+        console.log("Spiller av stasjon:", station); // Logger hvilken stasjon som spilles
+
+        // Fjern tidligere utvidelse
+        const previousExpanded = document.querySelector('.station.expanded'); // Finn tidligere utvidet stasjonsdiv
+        if (previousExpanded) { // Hvis en stasjon var utvidet
+        previousExpanded.classList.remove('expanded'); // Fjern "expanded"-klassen
+        previousExpanded.style.gridRow = ''; // Tilbakestill radplassering
+        previousExpanded.style.gridColumn = ''; // Tilbakestill kolonneplassering
+        previousExpanded.style.backgroundImage = ''; // Fjern bakgrunnsbilde
+        const metadataDiv = previousExpanded.querySelector('.metadata'); // Finn metadata-diven
+        if (metadataDiv) metadataDiv.innerHTML = ''; // Tøm metadata fra tidligere stasjon
+        }
+
+        // Hvis samme knapp trykkes igjen, stopp avspillingen og tilbakestill
+        if (currentAudio && url === currentlyPlayingUrl) { // Hvis stasjonen som spiller nå er den samme som ble klikket på
+        currentAudio.pause(); // Pause avspilling
+        currentAudio = null; // Nullstill lydstrømmen
+        currentlyPlayingUrl = null; // Nullstill spillende URL
+        stationDiv.classList.remove('expanded'); // Fjern "expanded"-klassen
+        stationDiv.style.gridRow = ''; // Tilbakestill radplassering
+        stationDiv.style.gridColumn = ''; // Tilbakestill kolonneplassering
+        stationDiv.style.backgroundImage = ''; // Fjern bakgrunnsbilde
+        updateFooter(null); // Fjern metadata fra footer
+        return; // Avbryter funksjonen
+        }
+
+        // Stopp tidligere lydstrøm hvis aktiv
+        if (currentAudio) { // Hvis det finnes en aktiv lydstrøm
+        currentAudio.pause(); // Pause tidligere lydstrøm
+        currentAudio = null; // Nullstill lydstrømmen
+        currentlyPlayingUrl = null; // Nullstill spillende URL
+        }
+
+        // Utvid valgt knapp
+        stationDiv.classList.add('expanded'); // Legg til "expanded"-klassen for stasjonen
+        stationDiv.style.gridRow = '1'; // Flytt stasjonen til første rad
+        stationDiv.style.gridColumn = '1 / -1'; // Få stasjonen til å dekke alle kolonner
+
+        // Start avspilling
+        currentlyPlayingUrl = url; // Sett den nåværende spillende URL
+        currentAudio = new Audio(url); // Opprett en ny `Audio`-instans med URL
+
+        currentAudio.play() // Start avspilling
+        .then(() => {
+        console.log(`Spiller nå: ${station.name}`); // Logger at avspillingen startet
+        })
+        .catch(err => console.error("Feil under avspilling:", err)); // Logger feil hvis avspillingen mislykkes
+
+        // Oppdater footer med metadata
+        updateFooter(station); // Oppdater metadataen i footer for gjeldende stasjon
+
+        // Sett opp WebSocket for metadata
+        setupWebSocket(url, stationDiv, station); // Starter WebSocket-tilkobling for å hente metadata for stasjonen
+        }
+        // Oppdater layout og metadata
+        const metadataDiv = stationDiv.querySelector('.metadata') || document.createElement('div'); // Finn metadata-diven, eller opprett en ny
+        metadataDiv.className = 'metadata'; // Sett klassen til "metadata"
+
+        // Hent metadata fra RadioPlanet og Spotify
+        const metadata = await fetchMetadata(url); // Henter metadata asynkront fra URL
+        if (metadata) { // Hvis metadata er tilgjengelig
+        metadataDiv.innerHTML = ` // Oppdater metadata-diven med informasjon
+        <p>Stasjon: ${station.name || 'N/A'}</p> <!-- Viser stasjonsnavnet -->
+        <p>Sangtittel: ${metadata.StreamTitle || 'N/A'}</p> <!-- Viser sangtittel -->
+        <p>Artist: ${metadata.artist || 'N/A'}</p> <!-- Viser artistens navn -->
+        <p>Album: ${metadata.album || 'N/A'}</p> <!-- Viser albumnavn -->
+        `;
+
+        // Oppdater bilde
+        const backgroundImageUrl = metadata.imageUrl || station.logo; // Bruk metadataens bilde-URL eller fallback til stasjonens logo
+        stationDiv.style.backgroundImage = `url('${backgroundImageUrl}')`; // Sett bakgrunnsbilde for stasjonen
+        console.log("Oppdaterte bilde til:", backgroundImageUrl); // Logger oppdateringen av bildet
+        } else {
+              console.warn("Ingen metadata tilgjengelig for stasjonen."); // Logger advarsel hvis ingen metadata er tilgjengelig
+          }
+
+        // Legg metadata-div til hvis det ikke allerede finnes
+        if (!stationDiv.contains(metadataDiv)) { // Sjekker om metadata-diven allerede er lagt til
+        stationDiv.appendChild(metadataDiv); // Legger til metadata-diven i stasjonsdiven
+        }
+
+        // Oppdater favorittstjerne
+        const favoriteButton = stationDiv.querySelector('.favorite-button') || document.createElement('button'); // Finn favorittknappen eller opprett en ny
+        favoriteButton.className = 'favorite-button'; // Sett klassen til "favorite-button"
+        favoriteButton.textContent = isFavorite(url) ? "★" : "☆"; // Viser stjernesymbol basert på om stasjonen er i favoritter
+        favoriteButton.onclick = (e) => { // Definerer klikkhåndtering for favorittknappen
+        e.stopPropagation(); // Hindrer at klikket også starter avspilling av stasjonen
+        toggleFavorite(url, category); // Bytter mellom favorittstatus
+        favoriteButton.textContent = isFavorite(url) ? "★" : "☆"; // Oppdaterer stjernesymbolet
+        };
+
+        // Legg til favorittknappen hvis den ikke allerede finnes
+        if (!stationDiv.contains(favoriteButton)) { // Sjekker om favorittknappen allerede er lagt til
+        stationDiv.appendChild(favoriteButton); // Legger til favorittknappen i stasjonsdiven
+        }
+        // Hjelpefunksjon for å hente metadata fra RadioPlanet og Spotify
+        async function fetchMetadata(url) { // Asynkron funksjon som henter metadata basert på stasjonens URL
+        try {
+            const response = await fetch(`/metadata?url=${encodeURIComponent(url)}`); // Henter metadata fra en API-endepunkt
+        if (!response.ok) throw new Error(`Feil ved henting av metadata: ${response.statusText}`); // Kaster en feil hvis svaret ikke er OK
+        return await response.json(); // Returnerer metadata som JSON
+        } catch (error) {
+        console.error("Feil ved henting av metadata:", error); // Logger feil hvis henting mislykkes
+        return null; // Returnerer null hvis det oppstår en feil
+        }
+        }
+
+            function isFavorite(url) { // Sjekker om en stasjon er i favoritter
+        const favorites = JSON.parse(localStorage.getItem("favorites")) || []; // Henter favoritter fra localStorage
+        return favorites.some(fav => fav.url === url); // Returnerer true hvis URL-en finnes i favorittene
+        }
+
+            function updateFavoritesSidebar() { // Oppdaterer "Favoritter"-knappen i sidebaren
+        const favorites = JSON.parse(localStorage.getItem("favorites")) || []; // Henter favoritter fra localStorage
+        let favoriteButton = sidebar.querySelector('button[data-category="Favoritter"]'); // Sjekker om knappen allerede finnes
+
+        if (!favoriteButton) { // Hvis knappen ikke finnes, opprett en ny
+        favoriteButton = document.createElement("button");
+        favoriteButton.textContent = "Favoritter"; // Setter knappetekst
+        favoriteButton.setAttribute("data-category", "Favoritter"); // Legger til kategori-attributt
+        favoriteButton.onclick = () => showStations("Favoritter"); // Klikkhåndtering for å vise favoritter
+        sidebar.prepend(favoriteButton); // Legger knappen øverst i sidebaren
+        }
+
+        favoriteButton.disabled = favorites.length === 0; // Deaktiverer knappen hvis det ikke finnes favoritter
+        }
+
+        document.addEventListener("DOMContentLoaded", () => { // Når siden er lastet ferdig
+        updateFavoritesSidebar(); // Oppdaterer "Favoritter"-knappen
+        loadMenu('main'); // Laster hovedmenyen
+        });
+
+            function showStations(category) { // Viser stasjoner for en gitt kategori
+        const stationsGrid = document.getElementById("stations-grid"); // Henter grid-elementet for stasjoner
+        stationsGrid.innerHTML = ""; // Tømmer gridet
+
+        const stations = category === "Favoritter" // Hvis kategorien er "Favoritter"
+        ? (JSON.parse(localStorage.getItem("favorites")) || []).map(fav => { // Henter favoritter fra localStorage
+        return stationsData[fav.category]?.find(station => station.url === fav.url); // Finner stasjonene i originalkategoriene
+        }).filter(station => station) // Filtrerer ut ugyldige stasjoner
+        : stationsData[category]; // Ellers hentes stasjonene for valgt kategori
+
+        if (stations && stations.length > 0) { // Hvis det finnes stasjoner
+        stations.forEach(station => { // Itererer gjennom stasjonene
+        const stationDiv = document.createElement("div"); // Oppretter en <div> for stasjonen
+        stationDiv.classList.add("station"); // Legger til klassen "station"
+        stationDiv.setAttribute("data-category", category); // Legger til kategori-attributt
+        stationDiv.setAttribute("data-url", station.url); // Legger til URL-attributt
+
+        // Legg til logo
+        if (station.logo) { // Hvis stasjonen har en logo
+        const logo = document.createElement("img");
+        logo.src = station.logo; // Setter kilden til logoen
+        logo.alt = `${station.name} logo`; // Setter alternativ tekst
+        logo.className = "station-logo"; // Legger til klassen "station-logo"
+        stationDiv.appendChild(logo); // Legger logoen til stasjonsdiven
+        }
+
+        // Legg til stasjonsnavn
+        const name = document.createElement("div");
+        name.classList.add("station-name");
+        name.textContent = station.name; // Setter navnet på stasjonen
+        stationDiv.appendChild(name); // Legger stasjonsnavnet til stasjonsdiven
+
+        // Legg til favorittknapp
+        const favoriteButton = document.createElement("button");
+        favoriteButton.classList.add("favorite-button");
+        favoriteButton.textContent = isFavorite(station.url) ? "★" : "☆"; // Viser stjernesymbol for favorittstatus
+        favoriteButton.onclick = (e) => { // Klikkhåndtering for favorittknappen
+        e.stopPropagation(); // Hindrer klikk på stasjonen
+        toggleFavorite(station.url, category); // Bytter favorittstatus
+        favoriteButton.textContent = isFavorite(station.url) ? "★" : "☆"; // Oppdaterer stjernesymbolet
+        };
+        stationDiv.appendChild(favoriteButton); // Legger favorittknappen til stasjonsdiven
+
+        // Legg til klikkhåndtering for stasjonen
+        stationDiv.onclick = () => togglePlayStation(station.url, stationDiv); // Starter avspilling av stasjonen
+
+        stationsGrid.appendChild(stationDiv); // Legger stasjonsdiven til gridet
+        });
+        } else {
+              stationsGrid.innerHTML = `<p style="color:white;">Ingen stasjoner funnet.</p>`; // Viser melding hvis ingen stasjoner finnes
+          }
+        }
+        // Favoritt-funksjon
+        function toggleFavorite(url, category) { // Funksjon for å legge til eller fjerne en stasjon fra favoritter
+        const favorites = JSON.parse(localStorage.getItem("favorites")) || []; // Henter favoritter fra localStorage
+        const index = favorites.findIndex(fav => fav.url === url); // Finner indeksen til stasjonen i favorittene
+
+        if (index !== -1) { // Hvis stasjonen allerede er i favoritter
+        favorites.splice(index, 1); // Fjern stasjonen fra favorittene
+        } else {
+              favorites.push({ url, category }); // Legg stasjonen til favorittene
+          }
+
+        localStorage.setItem("favorites", JSON.stringify(favorites)); // Oppdaterer localStorage med endrede favoritter
+        updateFavoritesSidebar(); // Oppdaterer "Favoritter"-knappen i sidebaren
+        }
+
+        // Oppdatert WebSocket-setup
+        function setupWebSocket(url, stationDiv, station) { // Funksjon for å sette opp WebSocket for metadata
+        if (ws) ws.close(); // Lukk eksisterende WebSocket-tilkobling hvis den finnes
+        ws = new WebSocket('ws://anthonsen.net:3080'); // Oppretter en ny WebSocket-tilkobling til angitt URL
+
+        ws.onopen = () => { // Når WebSocket-tilkoblingen åpnes
+        console.log("WebSocket åpen for URL:", url); // Logger at tilkoblingen er åpen
+        ws.send(url); // Sender stasjonens URL til serveren for å starte metadata-strømmen
+        };
+
+        ws.onmessage = (event) => { // Når WebSocket mottar en melding
+        try {
+            const data = JSON.parse(event.data); // Parser innkommende data som JSON
+        console.log("Mottatt metadata:", data); // Logger metadataen som er mottatt
+
+        // Oppdater metadata i den utvidede knappen
+        const metadataDiv = stationDiv.querySelector('.metadata'); // Henter metadata-diven for stasjonen
+        if (metadataDiv) { // Hvis metadata-diven finnes
+        metadataDiv.innerHTML = `
+        <p>Stasjon: ${station.name || 'N/A'}</p> <!-- Viser stasjonsnavnet -->
+        <p>Sangtittel: ${data.StreamTitle || 'N/A'}</p> <!-- Viser sangtittel -->
+        <p>Artist: ${data.artist || 'N/A'}</p> <!-- Viser artist -->
+        <p>Album: ${data.album || 'N/A'}</p> <!-- Viser album -->
+        `;
+        }
+
+        // Oppdater logoen i den utvidede knappen
+        const logoElement = stationDiv.querySelector('img'); // Henter logoelementet i stasjonen
+        if (logoElement) { // Hvis logoelementet finnes
+        const newImageUrl = data.imageUrl || station.logo; // Bruker ny bildelenke fra metadata eller stasjonens standardlogo
+        logoElement.src = newImageUrl; // Oppdaterer logoens kilde
+        console.log("Oppdaterte logo til:", newImageUrl); // Logger oppdateringen av logoen
+        }
+        } catch (error) { // Hvis parsing av data feiler
+        console.error("Feil ved parsing av WebSocket-data:", error); // Logger feilen
+        }
+        };
+
+        ws.onerror = (error) => { // Når det oppstår en WebSocket-feil
+        console.error("WebSocket-feil:", error); // Logger feilen
+        };
+
+        ws.onclose = () => { // Når WebSocket-tilkoblingen lukkes
+        console.log("WebSocket lukket."); // Logger at tilkoblingen er lukket
+        };
+        }
+        // Overvåk endringer i systemets lysmodus
+        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applySystemTheme);
+        // Lytter etter endringer i systemets foretrukne fargeskjema (mørkt eller lyst modus)
+        // og kaller funksjonen `applySystemTheme` når det skjer.
+
+        function applySystemTheme(event) { // Funksjon som håndterer endringer i systemets lysmodus
+        if (event.matches) { // Sjekker om systemet er satt til mørkt modus
+        document.body.classList.add('dark-mode'); // Legger til klassen `dark-mode` på <body> for å aktivere mørkt tema
+        } else { // Hvis systemet ikke er i mørkt modus
+          document.body.classList.remove('dark-mode'); // Fjerner klassen `dark-mode` fra <body> for å deaktivere mørkt tema
+          }
+        }
+            function updateSongInfo(songTitle, imageUrl) {
+            const songInfoElement = document.getElementById('song-info'); // Henter elementet for å vise sanginformasjonen
+        songInfoElement.textContent = songTitle || ""; // Oppdaterer teksten til sangtittel, eller setter til tom streng hvis ingen tittel
+
+        const logoElement = document.getElementById('station-logo'); // Henter elementet for å vise logoen
+        if (imageUrl) { // Hvis en bildelenke er tilgjengelig
+        logoElement.src = imageUrl; // Oppdaterer logoen med bildelenken
+        logoElement.style.display = "inline"; // Viser logoelementet
+        }
+
+            const stationName = document.getElementById('channel-name').textContent; // Henter navnet på stasjonen fra UI
+        document.title = `${stationName}  ${songTitle || ''}`; // Oppdaterer nettlesertittelen med stasjonsnavn og sangtittel
+        }
+            function updateFooter(station, metadata = null) {
+            const logoElement = document.getElementById("station-logo"); // Henter elementet for stasjonslogoen i footeren
+        const songInfoElement = document.getElementById("song-info"); // Henter elementet for sanginformasjonen i footeren
+        const channelNameElement = document.getElementById("channel-name"); // Henter elementet for kanalnavnet i footeren
+
+        if (station) { // Sjekker om en stasjon er valgt
+        console.log("Oppdaterer footer for stasjon:", station); // Logger hvilken stasjon som oppdateres
+
+        // Oppdater logo
+        if (station.logo) { // Sjekker om stasjonen har en logo
+        logoElement.src = station.logo; // Oppdaterer logoens kilde (URL)
+        document.logo = station.logo; // Valgfritt: Setter logoen på dokumentnivå (lite brukt)
+        logoElement.style.display = "inline"; // Viser logoen
+        console.log("Oppdaterte logo til:", station.logo); // Logger at logoen ble oppdatert
+        } else { // Hvis stasjonen ikke har en logo
+          logoElement.style.display = "none"; // Skjuler logoelementet
+          console.warn("Ingen logo funnet for stasjonen."); // Logger en advarsel om manglende logo
+          }
+        }
+            function updateFooter(station, metadata = null) {
+        // Funksjon for å oppdatere footer basert på valgt stasjon og eventuelt metadata
+        const logoElement = document.getElementById("station-logo"); // Henter elementet som viser stasjonslogoen
+        const songInfoElement = document.getElementById("song-info"); // Henter elementet som viser sanginformasjonen
+        const channelNameElement = document.getElementById("channel-name"); // Henter elementet som viser stasjonsnavnet
+
+        if (station) { // Hvis en stasjon er valgt
+        console.log("Oppdaterer footer for stasjon:", station); // Logger hvilken stasjon som oppdateres
+
+        // Oppdater logo
+        if (station.logo) { // Hvis stasjonen har en logo
+        logoElement.src = station.logo; // Setter logoens URL
+        document.logo = station.logo; // Lagrer logoen globalt i dokumentobjektet
+        logoElement.style.display = "inline"; // Viser logoen
+        console.log("Oppdaterte logo til:", station.logo); // Logger oppdateringen
+        } else { // Hvis stasjonen ikke har en logo
+          logoElement.style.display = "none"; // Skjuler logoelementet
+          console.warn("Ingen logo funnet for stasjonen."); // Logger en advarsel
+          }
+
+        // Oppdater kanalnavn
+        if (channelNameElement) { // Hvis kanalnavnelementet finnes
+        channelNameElement.textContent = station.name || "Ukjent stasjon"; // Setter navnet eller en fallback
+        console.log("Oppdaterte kanalnavn til:", station.name || "Ukjent stasjon"); // Logger oppdateringen
+        }
+
+        // Oppdater sanginformasjon
+        if (metadata && metadata.songInfo) { // Hvis metadata inneholder sanginformasjon
+        songInfoElement.textContent = metadata.songInfo; // Oppdaterer med metadataens sanginfo
+        console.log("Bruker metadata for songInfo:", metadata.songInfo); // Logger oppdateringen
+        } else if (station.songInfo) { // Hvis metadata mangler, bruker fallback fra stasjonen
+        songInfoElement.textContent = station.songInfo; // Oppdaterer med stasjonens sanginfo
+        console.log("Bruker songInfo fra stations.json:", station.songInfo); // Logger fallbacken
+        } else { // Hvis ingen informasjon er tilgjengelig
+          songInfoElement.textContent = "Ingen informasjon tilgjengelig"; // Viser en standardmelding
+          console.warn("Ingen metadata eller songInfo tilgjengelig for stasjonen."); // Logger en advarsel
+          }
+        } else { // Hvis ingen stasjon er valgt
+          console.warn("Ingen stasjon valgt. Tilbakestiller footer."); // Logger at footeren tilbakestilles
+          logoElement.style.display = "none"; // Skjuler logoen
+          if (channelNameElement) channelNameElement.textContent = ""; // Tømmer kanalnavnet
+          songInfoElement.textContent = ""; // Tømmer sanginformasjonen
+          }
+
+        // Sjekk verdien av songInfoElement for feilsøking
+        console.log("Endelig verdi av songInfoElement:", songInfoElement.textContent); // Logger sluttverdien av sanginformasjonen
+        }
+        /script>
+        </body>
+        </html>
+        

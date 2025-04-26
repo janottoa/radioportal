@@ -1,0 +1,32 @@
+{
+  Ja, når du henter data fra Spotify API, får du faktisk en del informasjon om sangene, som den du har nevnt. Her er en oversikt over de viktigste attributtene som tilbys i svaret ditt:
+  name:
+  Navnet på sangen (i dette tilfellet "Imagine").
+
+  album: En strukturerte informasjon om albumet sangen tilhører, inkludert:
+  name: Navnet på albumet ("Imagine").
+
+  images: En liste over bilder relatert til albumet, med forskjellige størrelser (640x640, 300x300, 64x64).
+
+  artists: En liste over artister som er involvert i sangen, hver med:
+
+  name: Navnet på artisten ("John Lennon").
+
+  id: Spotify ID for artisten.
+
+  id: Spotify ID for sangen selv ("7pKfPomDEeI4TPT6EOYjn9").
+
+  uri: En URI som kan brukes for å identifisere sangen på Spotify ("spotify:track:7pKfPomDEeI4TPT6EOYjn9").
+  external_urls: En lenke til sangen på Spotify, som gjør det enkelt for brukere å åpne låten i applikasjonen (f.eks. "https://open.spotify.com/track/7pKfPomDEeI4TPT6EOYjn9").
+
+  Ellers kan Spotify API også tilby mer informasjon om en sang, avhengig av forespørselen du gjør. For eksempel kan du hente data som:
+
+  popularity: En rangering av hvor populær sangen er.
+
+  duration_ms: Varigheten av sangen i millisekunder.
+
+  explicit: Om sangen inneholder eksplisitt innhold.
+
+  preview_url: En lenke til en forhåndsvisning av sangen.
+
+  Hvis du ønsker spesifikk informasjon fra Spotify API, må du gjøre tilpassede API-forespørsel med nødvendige parametere.

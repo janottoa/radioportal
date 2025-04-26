@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test BBC Radio</title>
+  <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+</head>
+<body>
+  <h1>BBC Radio One Test</h1>
+  <video id="testPlayer" controls autoplay style="width: 100%;"></video>
+  
+  <script>
+    const url = "https://a.files.bbci.co.uk/ms6/live/3441A116-B12E-4D2F-ACA8-C1984642FA4B/audio/simulcast/dash/nonuk/pc_hd_abr_v2/cfs/bbc_radio_one.mpd";
+    const video = document.getElementById('testPlayer');
+
+    if (dashjs.MediaPlayer.isSupported()) {
+      const player = dashjs.MediaPlayer().create();
+      player.initialize(video, url, true);
+      console.log("DASH-stream initialisert");
+      
+      // Logg eventuelle feil
+      player.on(dashjs.MediaPlayer.events.ERROR, function(e) {
+        console.error("DASH Error: ", e);
+      });
+    } else {
+      console.error("dash.js støttes ikke av nettleseren.");
+    }
+  </script>
+</body>
+</html>

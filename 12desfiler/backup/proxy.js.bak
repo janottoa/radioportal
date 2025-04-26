@@ -1,0 +1,73 @@
+const WebSocket = require('ws');
+const { spawn } = require('child_process');
+const fs = require('fs');
+
+// Port for WebSocket-serveren
+const PORT = 8080;
+const LOG_FILE = 'ffmpeg_metadata.log';
+
+// Start WebSocket-serveren
+const wss = new WebSocket.Server({ port: PORT });
+console.log(`WebSocket-server kjører på ws://192.168.0.11:${PORT}`);
+
+// Åpne loggfil for å skrive metadata
+const logStream = fs.createWriteStream(LOG_FILE, { flags: 'a' });
+
+wss.on('connection', (ws) => {
+    console.log('Ny WebSocket-tilkobling opprettet.');
+
+    ws.on('message', (message) => {
+        const streamUrl = message;
+        console.log(`Mottok forespørsel om strøm-URL: ${streamUrl}`);
+        logStream.write(`Mottok strøm-URL: ${streamUrl}\n`);
+
+        // Start ffmpeg-prosessen for å hente metadata fra strømmen
+        const ffmpeg = spawn('ffmpeg', [
+            '-i', streamUrl,
+            '-vn',
+            '-loglevel', 'debug', // Endrer til 'debug' for mer detaljert informasjon
+            '-f', 'null', '-'
+        ]);
+
+        // Logg all output fra ffmpeg til feilsøking
+        ffmpeg.stderr.on('data', (data) => {
+            const output = data.toString();
+            console.log('ffmpeg output:', output); // Logger til konsollen
+            logStream.write(`ffmpeg output: ${output}\n`); // Logger til filen
+
+            // Hent StreamTitle fra metadata hvis tilgjengelig
+            const matches = output.match(/StreamTitle\s*:\s*(.*)/);
+            if (matches) {
+                const streamTitle = matches[1].trim();
+                console.log(`Sender metadata til klient: ${streamTitle}`);
+                ws.send(JSON.stringify({ StreamTitle: streamTitle }));
+                logStream.write(`Sender metadata til klient: ${streamTitle}\n`);
+            } else {
+                // Logg hvis ingen StreamTitle finnes i output
+                logStream.write(`Ingen StreamTitle funnet i denne outputen.\n`);
+            }
+        });
+
+        ffmpeg.on('error', (err) => {
+            console.error("ffmpeg-prosess feilet:", err);
+            logStream.write(`ffmpeg-prosess feilet: ${err}\n`);
+        });
+
+        ffmpeg.on('close', (code) => {
+            console.log(`ffmpeg avsluttet med kode ${code}`);
+            ws.send(JSON.stringify({ StreamTitle: "Ingen metadata tilgjengelig" }));
+            logStream.write(`ffmpeg avsluttet med kode ${code}\n`);
+        });
+
+        ws.on('close', () => {
+            console.log('WebSocket-tilkobling avsluttet av klienten.');
+            ffmpeg.kill(); // Avslutt ffmpeg-prosessen når WebSocket-tilkoblingen lukkes
+            logStream.write('WebSocket-tilkobling avsluttet av klienten.\n');
+        });
+    });
+
+    ws.on('error', (err) => {
+        console.error("WebSocket-feil:", err);
+        logStream.write(`WebSocket-feil: ${err}\n`);
+    });
+});

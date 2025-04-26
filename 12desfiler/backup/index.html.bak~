@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Radioportal</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            background-color: #f0f0f0;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .header-logo img {
+            height: 40px;
+        }
+        .header-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+            width: 100%;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #f0f0f0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .sidebar button {
+            background-color: #d3d3d3;
+            border: none;
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .sidebar button:hover {
+            background-color: #c0c0c0;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .station {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+        .station img {
+            max-width: 50px;
+            margin-bottom: 10px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer .info {
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toppmeny -->
+    <div class="header">
+        <div class="header-logo">
+            <img alt="Xpeng Logo" src="logo.370a4318.svg">
+        </div>
+        <div class="header-title">RADIOPORTAL</div>
+        <div class="header-subtitle">av Jan Otto</div>
+    </div>
+
+    <!-- Hovedinnholdsområde -->
+    <div class="container">
+        <div class="sidebar">
+            <h2>Valg</h2>
+            <button onclick="showStations('NRK')">NRK</button>
+            <button onclick="showStations('P4')">P4</button>
+            <button onclick="showStations('Radio Norge')">Radio Norge</button>
+            <button onclick="showStations('Hitlister')">Hitlister</button>
+            <button onclick="showStations('Utenlandske')">Utenlandske</button>
+            <button onclick="showStations('Lokale')">Lokale</button>
+            <button onclick="showStations('Spesielle')">Spesielle</button>
+        </div>
+
+        <div class="content">
+            <div class="stations-grid" id="stations-grid"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="info">
+            <img id="station-logo" src="" alt="Stasjonslogo" style="display:none; height: 30px; margin-right: 10px;">
+            <span id="channel-name">Velg en radiokanal</span> 
+            <span id="song-info"></span>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        const stationsData = {
+            NRK: [
+                { name: "NRK P1 Sørlandet", url: "https://lyd.nrk.no/nrk_radio_p1_sorlandet_mp3_m.xspf", logo: "nrklogo/sor.jpeg", songInfo: "Direkte fra Sørlandet" },
+                { name: "NRK P1 Rogaland", url: "https://lyd.nrk.no/nrk_radio_p1_rogaland_mp3_m.xspf", logo: "nrklogo/rogaland.jpeg", songInfo: "Nyheter og musikk fra Rogaland" },
+                { name: "NRK P1 Østfold", url: "https://lyd.nrk.no/nrk_radio_p1_ostfold_mp3_m.xspf", logo: "nrklogo/ostfold.jpeg", songInfo: "Direkte fra Østfold" },
+                { name: "NRK P2", url: "https://lyd.nrk.no/nrk_radio_p2_mp3_m.xspf", logo: "nrklogo/p2.png", songInfo: "Kultur og debatt på P2" },
+                { name: "NRK P3", url: "https://lyd.nrk.no/nrk_radio_p3_mp3_m.xspf", logo: "nrklogo/p3.png", songInfo: "Ungdomsradion NRK P3" },
+                { name: "NRK MP3", url: "https://lyd.nrk.no/nrk_radio_mp3_mp3_m.xspf", logo: "nrklogo/mp3.png", songInfo: "De beste hitene døgnet rundt" },
+                { name: "NRK Alltid Nyheter", url: "https://lyd.nrk.no/nrk_radio_alltid_nyheter_aac_h.xspf", logo: "nrklogo/nyheter.png", songInfo: "Nyheter døgnet rundt" },
+                { name: "NRK P13", url: "https://lyd.nrk.no/nrk_radio_alltidnyheter_mp3_m.xspf", logo: "nrklogo/p13.png", songInfo: "Rock og indie på P13" },
+                { name: "NRK Sport", url: "https://lyd.nrk.no/nrk_radio_sport_mp3_m.xspf", logo: "nrklogo/sport.png", songInfo: "Sportsendinger døgnet rundt" },
+                { name: "NRK Jazz", url: "https://lyd.nrk.no/nrk_radio_jazz_mp3_m.xspf", logo: "nrklogo/jazz.png", songInfo: "Jazzmusikk fra NRK" },
+                { name: "NRK Klassisk", url: "https://lyd.nrk.no/nrk_radio_klassisk_mp3_m.xspf", logo: "nrklogo/klassisk.png", songInfo: "Klassisk musikk hele dagen" },
+                { name: "NRK Trafikk", url: "https://lyd.nrk.no/nrk_radio_trafikk_mp3_m.xspf", logo: "nrklogo/trafikk.png", songInfo: "Oppdatert trafikkinformasjon" }
+      ],
+            P4: [ 
+                { name: "P4 Direkte", url: "https://p4.p4groupaudio.com/P04_AH", logo: "p4logo/p4.jpeg", songInfo: "Hør P4 Direkte" },
+                { name: "P5 Nonstop", url: "https://p5n.p4groupaudio.com/P05AAH", logo: "p4logo/p5nonstop.png" },
+                { name: "P6 Rock", url: "https://p6.p4groupaudio.com/P06_MH", logo: "p4logo/p6.png" },
+              { name: "P7 Klem", url: "https://p7.p4groupaudio.com/P07_AH", logo: "p4logo/p7.jpeg" },
+              { name: "P8 pop", url: "https://p8.p4groupaudio.com/P08_AH", logo: "p4logo/p8.jpeg" },
+              { name: "P9 retro", url: "https://p9.p4groupaudio.com/P09_AH", logo: "p4logo/p9.jpeg" },
+                { name: "P10 Country", url: "https://p10.p4groupaudio.com/P10_AH", logo: "p4logo/p10country.jpeg" },
+                 { name: "P11 Bandit", url: "https://p12.p4groupaudio.com/BAN_MM?args=3rdparty_01&distributor=radioplayer", logo: "p4logo/p11.jpeg" },
+                 { name: "P12 Dance", url: "https://p12.p4groupaudio.com/P12_AH", logo: "p4logo/p12.png" }
+        ],
+        
+         "Radio Norge": [
+        { name: "Radio Norge Direkte", url: "https://p4.p4groupaudio.com/P04_AH", logo: "p4logo/p4.jpeg", songInfo: "Hør Radio Norge Direkte" }
+        // Legg til flere Radio Norge-stasjoner...
+    ],
+    "Hitlister": [
+        { name: "Hit 1", url: "https://p4.p4groupaudio.com/P04_AH", logo: "p4logo/p4.jpeg", songInfo: "Hit 1" }
+        // Legg til flere Radio Norge-stasjoner...
+  ],
+    "Utenlandske": [
+        { name: "Utl 1", url: "https://p4.p4groupaudio.com/P04_AH", logo: "p4logo/p4.jpeg", songInfo: "Hit 1" }
+        // Legg til flere Radio Norge-stasjoner...
+    ]
+};         
+        let currentAudio = null;
+        let currentlyPlayingUrl = null;
+
+        async function fetchStreamUrlFromXSPF(xspfUrl) {
+            try {
+                const response = await fetch(xspfUrl);
+                const xspfContent = await response.text();
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xspfContent, 'application/xml');
+                const locationElement = xmlDoc.querySelector('location');
+                return locationElement ? locationElement.textContent.trim() : null;
+            } catch (error) {
+                console.error('Feil ved henting av XSPF-URL:', error);
+                return null;
+            }
+        }
+
+        async function fetchSongInfo(station) {
+            try {
+                const response = await fetch(`https://example.com/api/songinfo?station=${station.name}`);
+                const data = await response.json();
+                if (data && data.song) {
+                    document.getElementById('song-info').textContent = `Nå spiller: ${data.artist} - ${data.song}`;
+                } else {
+                    document.getElementById('song-info').textContent = "";
+                }
+            } catch (error) {
+                console.error("Feil ved henting av sanginformasjon:", error);
+                document.getElementById('song-info').textContent = "";
+            }
+        }
+
+        function startSongInfoUpdate(station) {
+            fetchSongInfo(station);
+            if (window.songInfoInterval) {
+                clearInterval(window.songInfoInterval);
+            }
+            window.songInfoInterval = setInterval(() => fetchSongInfo(station), 60000);
+        }
+
+        async function togglePlayStation(url, stationDiv) {
+            const category = stationDiv.getAttribute("data-category");
+            const station = stationsData[category].find(s => s.url === url);
+
+            if (currentAudio && url === currentlyPlayingUrl) {
+                currentAudio.pause();
+                currentlyPlayingUrl = null;
+                stationDiv.classList.remove('playing');
+                updateFooter(null);
+                if (window.songInfoInterval) clearInterval(window.songInfoInterval);
+            } else {
+                if (currentAudio) currentAudio.pause();
+
+                let actualStreamUrl = url.endsWith('.xspf') ? await fetchStreamUrlFromXSPF(url) : url;
+                if (!actualStreamUrl) return;
+
+                currentAudio = new Audio(actualStreamUrl);
+                currentAudio.play();
+                currentlyPlayingUrl = url;
+
+                document.querySelectorAll('.station').forEach(st => st.classList.remove('playing'));
+                stationDiv.classList.add('playing');
+
+                updateFooter(station);
+                startSongInfoUpdate(station);
+            }
+        }
+
+        function showStations(category) {
+            const stationsGrid = document.getElementById('stations-grid');
+            stationsGrid.innerHTML = '';
+            stationsData[category].forEach(station => {
+                const stationDiv = document.createElement('div');
+                stationDiv.classList.add('station');
+                stationDiv.setAttribute("data-category", category);
+                stationDiv.onclick = () => togglePlayStation(station.url, stationDiv);
+
+                const logo = document.createElement('img');
+                logo.src = station.logo;
+                logo.alt = `${station.name} logo`;
+                stationDiv.appendChild(logo);
+
+                const name = document.createElement('h3');
+                name.textContent = station.name;
+                stationDiv.appendChild(name);
+
+                stationsGrid.appendChild(stationDiv);
+            });
+        }
+
+        function updateFooter(station) {
+            const logoElement = document.getElementById('station-logo');
+            const channelNameElement = document.getElementById('channel-name');
+            const songInfoElement = document.getElementById('song-info');
+
+            if (station) {
+                logoElement.src = station.logo;
+                logoElement.alt = `${station.name} logo`;
+                logoElement.style.display = "inline";
+
+                channelNameElement.textContent = station.name;
+                songInfoElement.textContent = station.songInfo || "";
+            } else {
+                logoElement.style.display = "none";
+                channelNameElement.textContent = "Velg en radiokanal";
+                songInfoElement.textContent = "";
+            }
+        }
+
+        showStations('NRK');
+    </script>
+</body>
+</html>

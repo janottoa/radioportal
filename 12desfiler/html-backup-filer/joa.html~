@@ -1,0 +1,24 @@
+const socket = new WebSocket('ws://anthonsen.net:8088');
+
+socket.onopen = function() {
+    console.log('Connected to WebSocket server');
+};
+
+socket.onmessage = function(event) {
+    const message = JSON.parse(event.data);
+    if (message.type === 'logo') {
+        // Display the logo in an HTML element
+        const img = document.createElement('img');
+        img.src = `data:image/png;base64,${message.data}`;
+        img.alt = 'Radio Logo';
+        document.body.appendChild(img); // Add the image to the webpage
+    }
+};
+
+socket.onerror = function(error) {
+    console.error('WebSocket Error:', error);
+};
+
+socket.onclose = function() {
+    console.log('WebSocket connection closed');
+};

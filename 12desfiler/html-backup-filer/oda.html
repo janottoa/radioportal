@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Test</title>
+</head>
+<body>
+    <h1>WebSocket Logo Test</h1>
+    <div id="status">Kobler til...</div>
+    <img id="logo" alt="Logo vises her" style="max-width: 100%; height: auto; display: none;">
+    <script>
+        const ws = new WebSocket('ws://anthonsen.net:8088');
+
+        ws.onopen = () => {
+            document.getElementById('status').textContent = 'Tilkoblet!';
+        };
+
+        ws.onmessage = (message) => {
+            try {
+                const data = JSON.parse(message.data);
+                if (data.type === 'logo') {
+                    const logoElement = document.getElementById('logo');
+                    logoElement.src = 'data:image/png;base64,' + data.data;
+                    logoElement.style.display = 'block';
+                    document.getElementById('status').textContent = 'Logo mottatt!';
+                }
+            } catch (error) {
+                console.error('Feil ved behandling av data:', error);
+            }
+        };
+
+        ws.onclose = () => {
+            document.getElementById('status').textContent = 'Tilkobling lukket.';
+        };
+
+        ws.onerror = (error) => {
+            document.getElementById('status').textContent = 'En feil oppstod.';
+            console.error('WebSocket Error:', error);
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+● dashjs.service                              loaded failed failed  Dash.js for Radio Portal
+  nodejs-server.service                       loaded active running Node.js Server for Radio Portal
+  script.service                              loaded active running Script Service for Radio Portal
+  spotify_album_cover.service                 loaded active running Spotify Album Cover Service
+● spotify_fetcher.service                     loaded failed failed  Spotify Fetcher Service
+ metadataFetcher.service                     loaded active running Metadata Fetcher Service for Radio Portal

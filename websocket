@@ -1,0 +1,42 @@
+function setupWebSocket(url, stationDiv, station) {
+    if (ws) ws.close(); // Lukk eksisterende WebSocket-forbindelse
+    ws = new WebSocket('ws://anthonsen.net:3080');
+
+    ws.onopen = () => {
+        console.log("WebSocket åpen for URL:", url);
+        ws.send(url); // Send URL for å starte strømmen
+    };
+
+    ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log("Mottatt metadata:", data);
+
+        // Fallback-logo hentet fra stations.json
+        const fallbackLogo = station.logo;
+
+        // Håndter bildeoppdatering
+        let backgroundImageUrl = fallbackLogo; // Sett fallback som standard
+
+        if (data.imageUrl && data.imageUrl.trim()) {
+            // Rens og ekstrakt kun URL uten ekstra parametere
+            const sanitizedUrl = data.imageUrl.split(',')[0].replace(/[\x00-\x1F\x7F-\x9F"]/g, "").trim();
+            if (sanitizedUrl) {
+                backgroundImageUrl = sanitizedUrl;
+                console.log("Renset og bruker bilde fra metadata:", backgroundImageUrl);
+            } else {
+                console.log("Fant ugyldig imageUrl i metadata, bruker fallback:", fallbackLogo);
+            }
+        } else {
+            console.log("Ingen gyldig imageUrl i metadata, bruker fallback:", fallbackLogo);
+        }
+
+        // Oppdater stasjonsknappen med riktig bakgrunnsbilde
+        stationDiv.style.backgroundImage = `url('${backgroundImageUrl}')`;
+        console.log("Oppdaterte stasjonsknapp med bilde:", backgroundImageUrl);
+
+        // Oppdater sanginformasjon i UI
+        const songInfo = data.StreamTitle || 'Ingen informasjon tilgjengelig';
+        updateSongInfo(songInfo, backgroundImageUrl);
+        console.log("Oppdaterte sanginfo:", songInfo);
+    };
+}

@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <title>Radio Portal</title>
+    <style>
+        /* Basic styling to maintain the 5-column layout */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            padding: 10px;
+        }
+        .station {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        /* Styling for metadata display */
+        #programTitle, #streamTitle {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Radio Portal</h1>
+    <div class="container">
+        <div class="station">NRK P1</div>
+        <div class="station">NRK P2</div>
+        <div class="station">NRK P3</div>
+        <div class="station">NRK Nyheter</div>
+        <div class="station">NRK Klassisk</div>
+        <!-- Add more stations as needed -->
+    </div>
+
+    <!-- Audio player for streaming -->
+    <audio id="radioPlayer" controls>
+        Din nettleser støtter ikke lydspilling.
+    </audio>
+
+    <!-- Display for program and song title -->
+    <div id="programTitle"></div>
+    <div id="streamTitle"></div>
+
+    <script>
+        const xspfUrl = 'https://lyd.nrk.no/nrk_radio_p1_ostfold_mp3_l.xspf';
+        let currentStreamUrl = '';
+
+        async function loadRadioStream() {
+            try {
+                const response = await fetch(xspfUrl);
+                if (!response.ok) throw new Error('Kunne ikke laste XSPF-filen.');
+                const xspfContent = await response.text();
+
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xspfContent, 'application/xml');
+                const namespace = 'http://xspf.org/ns/0/';
+
+                const trackElement = xmlDoc.getElementsByTagNameNS(namespace, 'track')[0];
+                if (trackElement) {
+                    const streamUrl = trackElement.getElementsByTagNameNS(namespace, 'location')[0]?.textContent.trim();
+                    const programTitleElement = trackElement.getElementsByTagNameNS(namespace, 'title')[0];
+                    const programTitle = programTitleElement ? programTitleElement.textContent.trim() : "Ingen sangtittel tilgjengelig";
+
+                    const annotationContent = trackElement.getElementsByTagNameNS(namespace, 'annotation')[0]?.textContent;
+                    const streamTitle = annotationContent ? annotationContent.split('\n').find(line => line.startsWith('Stream Title')).replace('Stream Title: ', '').trim() : "Ingen stasjonsnavn tilgjengelig";
+
+                    const player = document.getElementById('radioPlayer');
+                    if (currentStreamUrl !== streamUrl) {
+                        currentStreamUrl = streamUrl;
+                        player.src = streamUrl;
+                        player.play();
+                    }
+
+                    document.getElementById('programTitle').innerHTML = `<strong>Sang:</strong> ${programTitle}`;
+                    document.getElementById('streamTitle').innerHTML = `<strong>Stasjon:</strong> ${streamTitle}`;
+                }
+            } catch (error) {
+                console.error('Feil under innlasting av metadata:', error);
+            }
+        }
+
+        loadRadioStream();
+        setInterval(loadRadioStream, 10000);
+    </script>
+</body>
+</html>

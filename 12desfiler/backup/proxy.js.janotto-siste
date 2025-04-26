@@ -1,0 +1,92 @@
+const WebSocket = require('ws');
+const { spawn } = require('child_process');
+const fs = require('fs');
+
+// Logging setup
+const logStream = fs.createWriteStream('proxy.log', { flags: 'a' });
+function log(message) {
+    const timestamp = new Date().toISOString();
+    logStream.write(`[${timestamp}] ${message}\n`);
+    console.log(`[${timestamp}] ${message}`);
+}
+
+// Configuration
+const WEBSOCKET_PORT = 8080;
+const METADATA_PORT = 8081;
+
+// Start WebSocket server for frontend
+const wss = new WebSocket.Server({ port: WEBSOCKET_PORT });
+log(`WebSocket-server for frontend kjører på ws://192.168.0.11:${WEBSOCKET_PORT}`);
+
+// Start a new WebSocket server for metadataFetcher.js
+const metadataWss = new WebSocket.Server({ port: METADATA_PORT });
+log(`Metadata WebSocket-server kjører på ws://192.168.0.11:${METADATA_PORT}`);
+
+let metadataFetcherClient = null;
+
+// Handle connection from metadataFetcher.js
+metadataWss.on('connection', (ws) => {
+    log('Koblet til metadataFetcher.js');
+    metadataFetcherClient = ws;
+
+    // Send test message to verify connection
+    if (metadataFetcherClient && metadataFetcherClient.readyState === WebSocket.OPEN) {
+        metadataFetcherClient.send('{"test": "connection established"}');
+        log('Sendt testmelding til metadataFetcher.js');
+    }
+
+    ws.on('close', () => {
+        log('WebSocket-tilkobling til metadataFetcher.js lukket.');
+        metadataFetcherClient = null;
+    });
+
+    ws.on('message', (message) => {
+        log(`Mottatt melding fra metadataFetcher.js: ${message}`);
+    });
+});
+
+wss.on('connection', (ws) => {
+    ws.on('message', (streamUrl) => {
+        log(`Starter ffmpeg for URL: ${streamUrl}`);
+        const ffmpeg = spawn('ffmpeg', [
+            '-i', streamUrl,
+            '-vn',
+            '-loglevel', 'debug',
+            '-f', 'null', '-'
+        ]);
+
+        ffmpeg.stderr.on('data', (data) => {
+            const output = data.toString();
+            log(`ffmpeg output: ${output}`);
+
+            // Look for StreamUrl in ffmpeg output
+            const urlMatch = output.match(/StreamUrl\s*:\s*(https:\/\/\S+)/);
+            if (urlMatch) {
+                const metadataUrl = urlMatch[1].trim();
+                log(`Funnet StreamUrl: ${metadataUrl}`);
+
+                // Check connection to metadataFetcherClient before sending
+                if (metadataFetcherClient && metadataFetcherClient.readyState === WebSocket.OPEN) {
+                    metadataFetcherClient.send(metadataUrl);
+                    log(`Sendt oppdatert StreamUrl til metadataFetcher.js: ${metadataUrl}`);
+                } else {
+                    log('Ingen aktiv tilkobling til metadataFetcher.js for å sende StreamUrl.');
+                }
+            } else {
+                log('Ingen StreamUrl funnet i ffmpeg output.');
+            }
+        });
+
+        ffmpeg.on('close', (code) => {
+            log(`ffmpeg avsluttet med kode ${code}`);
+            if (code !== 0) {
+                log('ffmpeg avsluttet med en feil. Sjekk URL-en eller ffmpeg-konfigurasjonen.');
+            }
+            ws.send(JSON.stringify({ StreamTitle: "Ingen metadata tilgjengelig" }));
+        });
+    });
+
+    ws.on('close', () => {
+        log('Frontend WebSocket-tilkobling lukket.');
+    });
+});

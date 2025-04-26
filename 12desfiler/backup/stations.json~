@@ -1,0 +1,43 @@
+{ {
+  "NRK": [
+    { "name": "NRK P1 Sørlandet", "url": "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p1_dk10_mp3_h", "logo": "/logo/nrklogo/sor.avif" },
+    { "name": "NRK P1 Rogaland", "url": "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p1_dk9_mp3_h", "logo": "/logo/nrklogo/rogaland.jpeg" },
+    { "name": "NRK P1 Østfold", "url": "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p1_dk15_mp3_h", "logo": "/logo/nrklogo/ostfold.jpeg" },
+    { "name": "NRK P1+", "url": "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p1pluss_aac_h", "logo": "/logo/nrklogo/p1pluss.png" },
+    { "name": "NRK P2", "url": "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p2_mp3_h", "logo": "/logo/nrklogo/p2.png" },
+    { "name": "NRK P3", "url": "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p3_mp3_h", "logo": "/logo/nrklogo/p3.png" },
+    { "name": "NRK MP3", "url": "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/mp3_mp3_h", "logo": "/logo/nrklogo/mp3.png" },
+    { "name": "NRK Alltid Nyheter", "url": "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/nyheter_mp3_h", "logo": "/logo/nrklogo/nyheter.jpeg", "songInfo": "Nyheter døgnet rundt" },
+    { "name": "NRK P13", "url": "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p13_mp3_h", "logo": "/logo/nrklogo/p13.png" },
+    { "name": "NRK Sport", "url": "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/sport_mp3_h", "logo": "/logo/nrklogo/sport.png" },
+    { "name": "NRK Jazz", "url": "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/jazz_mp3_h", "logo": "/logo/nrklogo/jazz.avif" },
+    { "name": "NRK Klassisk", "url": "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/klassisk_mp3_h", "logo": "/logo/nrklogo/klassisk.png" },
+    { "name": "NRK P3 Urørt", "url": "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/urort_mp3_h", "logo": "/logo/nrklogo/urort.png" },
+    { "name": "NRK P3 X", "url": "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/p3x_mp3_h", "logo": "/logo/nrklogo/p3x.png" },
+    { "name": "NRK Folkemusikk", "url": "http://cdn0-47115-liveicecast0.dna.contentdelivery.net:80/folkemusikk_mp3_h", "logo": "/logo/nrklogo/folkemusikk.png" }
+  ],
+  "P4": [
+    { "name": "P4 Direkte", "url": "https://p4.p4groupaudio.com/P04_AH", "logo": "/logo/p4logo/p4.jpeg", "songInfo": "Hør P4 Direkte" },
+    { "name": "P5 Nonstop", "url": "https://p5n.p4groupaudio.com/P05AAH", "logo": "/logo/p4logo/p5nonstop.png" },
+    { "name": "P6 Rock", "url": "https://p6.p4groupaudio.com/P06_MH", "logo": "/logo/p4logo/p6.png" },
+    { "name": "P7 Klem", "url": "https://p7.p4groupaudio.com/P07_AH", "logo": "/logo/p4logo/p7.jpeg" },
+    { "name": "P8 Pop", "url": "https://p8.p4groupaudio.com/P08_AH", "logo": "/logo/p4logo/p8.jpeg" },
+    { "name": "P9 Retro", "url": "https://p9.p4groupaudio.com/P09_AH", "logo": "/logo/p4logo/p9.jpeg" },
+    { "name": "P10 Country", "url": "https://p10.p4groupaudio.com/P10_AH", "logo": "/logo/p4logo/p10country.jpeg" },
+    { "name": "P11 Bandit", "url": "https://p12.p4groupaudio.com/BAN_MM?args=3rdparty_01&distributor=radioplayer", "logo": "/logo/p4logo/p11.jpeg" },
+    { "name": "P12 Dance", "url": "https://p12.p4groupaudio.com/P12_AH", "logo": "/logo/p4logo/p12.png" },
+    { "name": "NRJ", "url": "https://nrj.p4groupaudio.com/NRJ_MH", "logo": "/logo/p4logo/nrj.png" }
+  ],
+  "Radio Norge": [
+    { "name": "Radio Norge", "url": "https://live-bauerno.sharp-stream.com/radionorge_no_mp3", "logo": "/logo/norgelogo/norge.png" },
+    { "name": "P24/7 Mix", "url": "https://live-bauerno.sharp-stream.com/p247mix_no_mp3", "logo": "/logo/norgelogo/p24-7mix.png" },
+    { "name": "p24/7 Kos", "url": "https://live-bauerno.sharp-stream.com/p247kos_no_mp3", "logo": "/logo/norgelogo/p24-7kos.png" },
+    { "name": "p24/7 Fun", "url": "https://live-bauerno.sharp-stream.com/station10_no_hq", "logo": "/logo/norgelogo/p24-7fun.png" },
+    { "name": "p24/7 Norsk", "url": "https://live-bauerno.sharp-stream.com/norskpop_no_mp3", "logo": "/logo/norgelogo/p24-7norsk.jpg" },
+    { "name": "Kiss", "url": "https://live-bauerno.sharp-stream.com/kiss_no_mp3", "logo": "/logo/norgelogo/kiss.png", "songInfo": "Club og Dance" },
+    { "name": "Topp 40", "url": "https://edge-bauerno-03-gos2.sharp-stream.com/top40_no_mp3", "logo": "/logo/norgelogo/topp40.png", "songInfo": "Spiller dagens hits" },
+    { "name": "Rock", "url": "https://live-bauerno.sharp-stream.com/radiorock_no_mp3", "logo": "/logo/norgelogo/rock.png" },
+    { "name": "Vinyl", "url": "https://live-bauerno.sharp-stream.com/vinyl_no_aac", "logo": "/logo/norgelogo/vinyl.png" },
+    { "name": "Radio 1", "url": "https://live-bauerno.sharp-stream.com/radio1_no_mp3", "logo": "/logo/norgelogo/radio1.png" }
+  ]
+}

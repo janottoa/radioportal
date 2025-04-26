@@ -1,0 +1,217 @@
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const app = express();
+const PORT = 3000;
+
+app.use(express.json());
+app.use(express.static('public'));
+
+// Endepunkt for å lese stasjoner
+app.get('/stations', (req, res) => {
+  const stationsPath = path.join(__dirname, 'stations.json');
+  fs.readFile(stationsPath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Feil ved lesing av stasjoner:', err);
+      return res.status(500).send('Kunne ikke lese stasjoner');
+    }
+    res.json(JSON.parse(data));
+  });
+});
+
+// Endepunkt for å lagre stasjoner
+app.post('/stations', (req, res) => {
+  const stationsPath = path.join(__dirname, 'stations.json');
+  const newData = JSON.stringify(req.body, null, 2);
+
+  fs.writeFile(stationsPath, newData, 'utf8', (err) => {
+    if (err) {
+      console.error('Feil ved lagring av stasjoner:', err);
+      return res.status(500).send('Kunne ikke lagre stasjoner');
+    }
+    res.status(200).send('Stasjoner lagret');
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server kjører på port ${PORT}`);
+});
+
+// HTML-fil for å administrere radiostasjoner
+const htmlContent = `
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrer Radiostasjoner</title>
+    <style>
+        label { display: block; margin-top: 10px; }
+        button { margin-top: 10px; }
+        .category-header { font-size: 1.2em; font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<h1>Administrer Radiostasjoner</h1>
+
+<form id="stationForm">
+    <input type="hidden" id="stationIndex" value="-1">
+    
+    <label for="stationCategory">Kategori:</label>
+    <input type="text" id="stationCategoryInput" required>
+
+    <label for="stationName">Navn:</label>
+    <input type="text" id="stationName" required>
+
+    <label for="stationUrl">URL:</label>
+    <input type="text" id="stationUrl" required>
+
+    <label for="stationLogo">Logo (URL til katalog eller bilde):</label>
+    <input type="text" id="stationLogo">
+
+    <label for="stationInfo">Informasjon:</label>
+    <input type="text" id="stationInfo">
+
+    <label for="stationChannelUrl">Kanalens URL:</label>
+    <input type="text" id="stationChannelUrl">
+
+    <button type="button" onclick="addOrUpdateStation()">Legg til / Oppdater</button>
+</form>
+
+<h2>Stasjonsliste</h2>
+<div id="stationList"></div>
+
+<script>
+    let stations = {};
+
+    async function loadStations() {
+        try {
+            const response = await fetch('/stations');
+            if (!response.ok) throw new Error('Network response was not ok');
+            stations = await response.json();
+            displayStations();
+        } catch (error) {
+            console.error('Feil ved innlasting av stasjoner:', error);
+            alert('Kunne ikke laste stasjoner fra stations.json');
+        }
+    }
+
+    function displayStations() {
+        const stationList = document.getElementById('stationList');
+        stationList.innerHTML = '';
+        
+        // Vis stasjoner gruppert etter kategori
+        for (const [category, stationsInCategory] of Object.entries(stations)) {
+            const categoryHeader = document.createElement('div');
+            categoryHeader.className = 'category-header';
+            categoryHeader.textContent = category;
+            stationList.appendChild(categoryHeader);
+
+            const categoryList = document.createElement('ul');
+            stationsInCategory.forEach((station, index) => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <strong>${station.name}</strong>
+                    <br>URL: ${station.url} 
+                    <br>Logo: ${station.logo}
+                    <br>Informasjon: ${station.songInfo || 'Ingen info tilgjengelig'}
+                    <br>
+                    <button onclick="editStation('${category}', ${index})">Endre</button>
+                    <button onclick="deleteStation('${category}', ${index})">Slett</button>
+                    <button onclick="moveStation('${category}', ${index}, -1)">Flytt opp</button>
+                    <button onclick="moveStation('${category}', ${index}, 1)">Flytt ned</button>
+                `;
+                categoryList.appendChild(listItem);
+            });
+            stationList.appendChild(categoryList);
+        }
+    }
+
+    function addOrUpdateStation() {
+        const category = document.getElementById('stationCategoryInput').value;
+        const name = document.getElementById('stationName').value;
+        const url = document.getElementById('stationUrl').value;
+        const logo = document.getElementById('stationLogo').value;
+        const info = document.getElementById('stationInfo').value;
+        const channelUrl = document.getElementById('stationChannelUrl').value;
+        const stationData = { name, url, logo, songInfo: info, channelUrl };
+
+        if (!stations[category]) stations[category] = [];
+        const index = document.getElementById('stationIndex').value;
+        if (index == -1) {
+            stations[category].push(stationData);
+        } else {
+            stations[category][index] = stationData;
+        }
+
+        displayStations();
+        resetForm();
+        saveStations();
+    }
+
+    function editStation(category, index) {
+        const station = stations[category][index];
+        
+        document.getElementById('stationCategoryInput').value = category;
+        document.getElementById('stationName').value = station.name;
+        document.getElementById('stationUrl').value = station.url;
+        document.getElementById('stationLogo').value = station.logo;
+        document.getElementById('stationInfo').value = station.songInfo;
+        document.getElementById('stationChannelUrl').value = station.channelUrl;
+        document.getElementById('stationIndex').value = index;
+    }
+
+    function deleteStation(category, index) {
+        stations[category].splice(index, 1);
+        if (stations[category].length === 0) delete stations[category]; // Fjern kategori hvis tom
+        displayStations();
+        saveStations();
+    }
+
+    function moveStation(category, index, direction) {
+        const newIndex = index + direction;
+        if (newIndex >= 0 && newIndex < stations[category].length) {
+            // Bytt plass på elementene
+            const [movedStation] = stations[category].splice(index, 1);
+            stations[category].splice(newIndex, 0, movedStation);
+            displayStations();
+            saveStations();
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('stationForm').reset();
+        document.getElementById('stationIndex').value = -1;
+    }
+
+    async function saveStations() {
+        try {
+            const response = await fetch('/stations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(stations),
+            });
+
+            if (!response.ok) {
+                throw new Error('Feil ved lagring av stasjoner');
+            }
+        } catch (error) {
+            console.error('Feil ved lagring av stasjoner:', error);
+            alert('Kunne ikke lagre stasjoner til stations.json');
+        }
+    }
+
+    window.onload = loadStations;
+</script>
+
+</body>
+</html>
+`;
+
+// Serve HTML page
+app.get('/', (req, res) => {
+  res.send(htmlContent);
+});

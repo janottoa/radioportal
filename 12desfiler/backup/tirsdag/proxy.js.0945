@@ -1,0 +1,171 @@
+const WebSocket = require('ws');
+const { spawn } = require('child_process');
+const fs = require('fs');
+const axios = require('axios'); // Axios for å hente JSON-data
+
+// Logging setup
+const logStream = fs.createWriteStream('proxy.log', { flags: 'a' });
+function log(message) {
+    const timestamp = new Date().toISOString();
+    logStream.write(`[${timestamp}] ${message}\n`);
+    console.log(`[${timestamp}] ${message}`);
+}
+
+// Configuration
+const WEBSOCKET_PORT = 8080;
+const METADATA_PORT = 8081;
+
+// Start WebSocket server for frontend
+const wss = new WebSocket.Server({ port: WEBSOCKET_PORT });
+log(`WebSocket-server for frontend kjører på ws://192.168.0.11:${WEBSOCKET_PORT}`);
+
+// Start a separate WebSocket server for metadataFetcher.js
+const metadataWss = new WebSocket.Server({ port: METADATA_PORT });
+log(`Metadata WebSocket-server kjører på ws://192.168.0.11:${METADATA_PORT}`);
+
+let metadataFetcherClient = null;
+
+// Handle connection from metadataFetcher.js
+metadataWss.on('connection', (ws) => {
+    log('Koblet til metadataFetcher.js');
+    metadataFetcherClient = ws;
+
+    ws.on('close', () => {
+        log('WebSocket-tilkobling til metadataFetcher.js lukket.');
+        metadataFetcherClient = null;
+    });
+
+    ws.on('message', (message) => {
+        log(`Mottatt melding fra metadataFetcher.js: ${message}`);
+    });
+});
+
+// Handle connection from frontend
+wss.on('connection', (ws) => {
+    ws.on('message', async (streamUrl) => {
+        log(`Koblet til ny strøm for URL: ${streamUrl}`);
+
+        if (streamUrl.includes('listenapi.planetradio.co.uk')) {
+            log(`API-basert metadatahenting oppdaget for URL: ${streamUrl}`);
+            startApiBasedInterval(streamUrl, ws);
+        } else {
+            log(`Standard ffmpeg-behandling for URL: ${streamUrl}`);
+            startFfmpegProcess(streamUrl, ws);
+        }
+    });
+
+    ws.on('close', () => {
+        log('Frontend WebSocket-tilkobling lukket.');
+    });
+});
+
+// Funksjon for å hente metadata fra API ved intervall
+function startApiBasedInterval(apiUrl, ws) {
+    const intervalId = setInterval(async () => {
+        try {
+            log(`Sender forespørsel til API: ${apiUrl}`);
+            const response = await axios.get(apiUrl);
+            const data = response.data;
+
+            // Logg hele API-responsen for debugging
+            log(`Full API-respons: ${JSON.stringify(data)}`);
+
+            const songInfo = {
+                title: data.eventSongTitle || 'Ukjent tittel',
+                artist: data.eventSongArtist || 'Ukjent artist',
+                startTime: data.eventStart,
+                endTime: data.eventFinish,
+                duration: data.eventDuration,
+                imageUrl: data.eventImageUrl,
+            };
+
+            ws.send(JSON.stringify({ StreamTitle: `${songInfo.artist} - ${songInfo.title}`, ...songInfo }));
+            log(`Sendt sanginformasjon til frontend: ${songInfo.artist} - ${songInfo.title}`);
+
+            // Send metadata til metadataFetcher hvis tilkobling er aktiv
+            if (metadataFetcherClient && metadataFetcherClient.readyState === WebSocket.OPEN) {
+                metadataFetcherClient.send(JSON.stringify(songInfo));
+                log(`Sendt metadata til metadataFetcher.js: ${JSON.stringify(songInfo)}`);
+            }
+        } catch (error) {
+            log(`Feil ved henting av API-metadata fra ${apiUrl}: ${error.message}`);
+            ws.send(JSON.stringify({ StreamTitle: "Ingen metadata tilgjengelig" }));
+            clearInterval(intervalId); // Stopp intervallet ved feil for å unngå flere forespørsler
+        }
+    }, 10000); // Henter metadata hvert 10. sekund
+
+    ws.on('close', () => {
+        clearInterval(intervalId); // Stopp intervallet når tilkoblingen lukkes
+        log(`Intervall for API-basert metadata oppdatering stoppet for URL: ${apiUrl}`);
+    });
+}
+
+// Funksjon for å starte ffmpeg for vanlige strømmer
+function startFfmpegProcess(streamUrl, ws) {
+    const ffmpeg = spawn('ffmpeg', [
+        '-i', streamUrl,
+        '-vn',
+        '-loglevel', 'info',
+        '-f', 'null', '-'
+    ]);
+
+    ffmpeg.stderr.on('data', (data) => {
+        const output = data.toString();
+        log(`ffmpeg output: ${output}`);
+
+        const titleMatch = output.match(/StreamTitle\s*:\s*(.*)/);
+        const urlMatch = output.match(/StreamUrl\s*:\s*(https:\/\/listenapi\.planetradio\.co\.uk\/api9\.2\/eventdata\/\d+)/);
+
+        if (titleMatch) {
+            const streamTitle = titleMatch[1].trim();
+            ws.send(JSON.stringify({ StreamTitle: streamTitle }));
+            log(`StreamTitle funnet og sendt: ${streamTitle}`);
+        } else {
+            log('Ingen StreamTitle funnet i ffmpeg output.');
+        }
+
+        if (urlMatch) {
+            const apiUrl = urlMatch[1].trim();
+            log(`Planetradio StreamUrl funnet: ${apiUrl}`);
+
+            // Hent metadata fra `listenapi.planetradio.co.uk`
+            fetchMetadataFromApi(apiUrl, ws);
+        } else {
+            log('Ingen JSON-lignende StreamUrl funnet i ffmpeg output.');
+        }
+    });
+
+    ffmpeg.on('close', (code) => {
+        log(`ffmpeg prosess avsluttet med kode ${code}`);
+        if (code !== 0) {
+            log('ffmpeg avsluttet med en feil. Sjekk URL-en eller ffmpeg-konfigurasjonen.');
+        }
+        ws.send(JSON.stringify({ StreamTitle: "Ingen metadata tilgjengelig" }));
+    });
+}
+
+// Funksjon for å hente metadata fra planetradio API
+async function fetchMetadataFromApi(apiUrl, ws) {
+    try {
+        log(`Henter metadata fra Planetradio API: ${apiUrl}`);
+        const response = await axios.get(apiUrl);
+        const data = response.data;
+
+        // Ekstra logging for å vise hele API-responsen
+        log(`Full respons fra Planetradio API: ${JSON.stringify(data)}`);
+
+        const songInfo = {
+            title: data.eventSongTitle || 'Ukjent tittel',
+            artist: data.eventSongArtist || 'Ukjent artist',
+            startTime: data.eventStart,
+            endTime: data.eventFinish,
+            duration: data.eventDuration,
+            imageUrl: data.eventImageUrl,
+        };
+
+        ws.send(JSON.stringify({ StreamTitle: `${songInfo.artist} - ${songInfo.title}`, ...songInfo }));
+        log(`Metadata fra API funnet og sendt: ${songInfo.artist} - ${songInfo.title}`);
+    } catch (error) {
+        log(`Feil ved henting av metadata fra Planetradio API: ${error.message}`);
+    }
+}

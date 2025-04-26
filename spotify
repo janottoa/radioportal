@@ -1,0 +1,83 @@
+import requests
+import base64
+import webbrowser
+
+# Spotify API Credentials
+client_id = "14aa4223881242a0950b6b988147b572"
+client_secret = "9cb6fb7ac80944f6a55cbf38aebb9833"
+redirect_uri = "http://localhost:8888/callback"
+
+# Step 1: Get User Authorization
+def get_authorization():
+    auth_url = (
+        "https://accounts.spotify.com/authorize"
+        f"?client_id={client_id}"
+        "&response_type=code"
+        "&scope=user-read-private user-read-email"
+        f"&redirect_uri={redirect_uri}"
+    )
+    webbrowser.open(auth_url)
+    auth_code = input("Enter the authorization code from the URL after approval: ")
+    return auth_code
+
+# Step 2: Exchange Authorization Code for Access Token
+def get_access_token(auth_code):
+    auth_string = f"{client_id}:{client_secret}"
+    b64_auth_string = base64.b64encode(auth_string.encode()).decode()
+
+    headers = {
+        "Authorization": f"Basic {b64_auth_string}",
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+
+    data = {
+        "grant_type": "authorization_code",
+        "code": auth_code,
+        "redirect_uri": redirect_uri
+    }
+
+    response = requests.post("https://accounts.spotify.com/api/token", headers=headers, data=data)
+
+    if response.status_code == 200:
+        access_token = response.json().get("access_token")
+        return access_token
+    else:
+        print("Failed to get access token. Status code:", response.status_code)
+        return None
+
+# Step 3: Get Album Cover
+def get_album_cover(access_token, album_name):
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    search_url = "https://api.spotify.com/v1/search"
+    params = {
+        "q": album_name,
+        "type": "album",
+        "limit": 1
+    }
+
+    response = requests.get(search_url, headers=headers, params=params)
+
+    if response.status_code == 200:
+        albums = response.json().get("albums").get("items")
+        if albums:
+            album_cover_url = albums[0].get("images")[0].get("url")
+            print("Album Cover URL:", album_cover_url)
+        else:
+            print("No album found with that name.")
+    else:
+        print("Failed to search album. Status code:", response.status_code)
+
+if __name__ == "__main__":
+    # Step 1: Get Authorization Code from User
+    authorization_code = get_authorization()
+
+    # Step 2: Get Access Token using Authorization Code
+    access_token = get_access_token(authorization_code)
+
+    if access_token:
+        # Step 3: Get Album Cover URL by Searching Spotify
+        album_name = input("Enter the album name to search: ")
+        get_album_cover(access_token, album_name)

@@ -1,0 +1,116 @@
+const WebSocket = require('ws');
+const { spawn } = require('child_process');
+const fs = require('fs');
+const axios = require('axios'); // Axios for å hente JSON-data
+
+// Logging setup
+const logStream = fs.createWriteStream('proxy.log', { flags: 'a' });
+function log(message) {
+    const timestamp = new Date().toISOString();
+    logStream.write(`[${timestamp}] ${message}\n`);
+    console.log(`[${timestamp}] ${message}`);
+}
+
+// Configuration
+const WEBSOCKET_PORT = 8080;
+const METADATA_PORT = 8081;
+
+// Start WebSocket server for frontend
+const wss = new WebSocket.Server({ port: WEBSOCKET_PORT });
+log(`WebSocket-server for frontend kjører på ws://192.168.0.11:${WEBSOCKET_PORT}`);
+
+// Start a new WebSocket server for metadataFetcher.js
+const metadataWss = new WebSocket.Server({ port: METADATA_PORT });
+log(`Metadata WebSocket-server kjører på ws://192.168.0.11:${METADATA_PORT}`);
+
+let metadataFetcherClient = null;
+
+// Handle connection from metadataFetcher.js
+metadataWss.on('connection', (ws) => {
+    log('Koblet til metadataFetcher.js');
+    metadataFetcherClient = ws;
+
+    ws.on('close', () => {
+        log('WebSocket-tilkobling til metadataFetcher.js lukket.');
+        metadataFetcherClient = null;
+    });
+
+    ws.on('message', (message) => {
+        log(`Mottatt melding fra metadataFetcher.js: ${message}`);
+    });
+});
+
+wss.on('connection', (ws) => {
+    ws.on('message', async (streamUrl) => {
+        log(`Starter ffmpeg for URL: ${streamUrl}`);
+
+        if (streamUrl.includes('planetradio.co.uk')) {
+            // Hent metadata fra JSON-API for Radio Norge
+            await fetchRadioNorgeMetadata(streamUrl, ws);
+        } else {
+            // Start ffmpeg for andre stasjoner
+            startFfmpegProcess(streamUrl, ws);
+        }
+    });
+
+    ws.on('close', () => {
+        log('Frontend WebSocket-tilkobling lukket.');
+    });
+});
+
+// Funksjon for å hente JSON-data for Radio Norge
+async function fetchRadioNorgeMetadata(apiUrl, ws) {
+    try {
+        const response = await axios.get(apiUrl);
+        const data = response.data;
+
+        // Ekstrakter informasjonen
+        const songInfo = {
+            title: data.title,
+            artist: data.artist,
+            startTime: data.start_time,
+            endTime: data.end_time,
+            duration: data.duration,
+            imageUrl: data.image_url,
+        };
+
+        // Send sanginformasjonen til frontend
+        ws.send(JSON.stringify({ StreamTitle: `${songInfo.artist} - ${songInfo.title}`, ...songInfo }));
+        log(`Sendt sanginformasjon fra Radio Norge til frontend: ${songInfo.artist} - ${songInfo.title}`);
+    } catch (error) {
+        log(`Feil ved henting av Radio Norge metadata: ${error.message}`);
+        ws.send(JSON.stringify({ StreamTitle: "Ingen metadata tilgjengelig" }));
+    }
+}
+
+// Funksjon for å starte ffmpeg for vanlige strømmer
+function startFfmpegProcess(streamUrl, ws) {
+    const ffmpeg = spawn('ffmpeg', [
+        '-i', streamUrl,
+        '-vn',
+        '-loglevel', 'info',
+        '-f', 'null', '-'
+    ]);
+
+    ffmpeg.stderr.on('data', (data) => {
+        const output = data.toString();
+        log(`ffmpeg output: ${output}`);
+
+        const titleMatch = output.match(/StreamTitle\s*:\s*(.*)/);
+        if (titleMatch) {
+            const streamTitle = titleMatch[1].trim();
+            ws.send(JSON.stringify({ StreamTitle: streamTitle }));
+            log(`Funnet StreamTitle: ${streamTitle}`);
+        } else {
+            log('Ingen StreamTitle funnet i denne delen av output.');
+        }
+    });
+
+    ffmpeg.on('close', (code) => {
+        log(`ffmpeg avsluttet med kode ${code}`);
+        if (code !== 0) {
+            log('ffmpeg avsluttet med en feil. Sjekk URL-en eller ffmpeg-konfigurasjonen.');
+        }
+        ws.send(JSON.stringify({ StreamTitle: "Ingen metadata tilgjengelig" }));
+    });
+}
