@@ -59,27 +59,29 @@ function logError(message) {
 }
 // ✅ FIKS NASJONALE TEGN (ICE/ISO-8859-1 problem)
 function fixEncoding(str) {
-    if (!str || typeof str !== 'string') return str;
-    
     try {
-        // Sjekk om strengen har garbled tegn
-        if (/[\uFFFD?]/.test(str) || /[^\x00-\x7F]/.test(str)) {
-            // Prøv å konvertere fra latin1 til UTF-8
-            const buffer = Buffer.from(str, 'latin1');
-            const fixed = buffer.toString('utf8');
-            
-            // Hvis det ser bedre ut, bruk det
-            if (fixed !== str && !fixed.includes('?')) {
-                logInfo(`🔧 Fixed encoding: "${str}" → "${fixed}"`);
-                return fixed;
-            }
-        }
-        return str;
+      if (typeof str !== 'string' || !str) return str;
+  
+      // Trigger kun når teksten ser "UTF-8 bytes tolket som latin1" ut:
+      // Eksempler: BjÃ¶rk, RÃ¸yksopp, Guns Nâ€™ Roses, â€“
+      const looksMojibake = /[ÃÂ]|â€/.test(str) || str.includes('\uFFFD');
+      if (!looksMojibake) return str;
+  
+      // Reparasjon for mojibake: utf8 -> latin1
+      const fixed = Buffer.from(str, 'utf8').toString('latin1');
+  
+      // Bruk kun hvis det ikke introduserer erstatningstegn
+      if (fixed && fixed !== str && !fixed.includes('\uFFFD')) {
+        logInfo(`Fixed encoding: "${str}" -> "${fixed}"`);
+        return fixed;
+      }
+  
+      return str;
     } catch (e) {
-        logError(`Encoding fix error: ${e.message}`);
-        return str;
+      logError(`Encoding fix error: ${e.message}`);
+      return str;
     }
-}
+  }
 // Global variabler for metadata-håndtering
 let scriptCheckInterval = null;
 const activeScriptStreams = new Map();
@@ -452,26 +454,30 @@ async function fetchAlbumCover(artist, track) {
 }
 
 // ✅ NY FUNKSJON - Hent lyrics fra Musixmatch
+// ✅ NY FUNKSJON - Hent lyrics fra lyrics-api.ovh (GRATIS)
+// ✅ NY FUNKSJON - Hent lyrics fra lyrics-api.ovh (GRATIS)
 async function fetchLyrics(artist, title) {
     try {
-        logInfo(`Henter lyrics fra Musixmatch: ${artist} - ${title}`);
+        // Rens artist-navn - fjern featuring, &, etc
+        let cleanArtist = artist
+            .split(/\s+(?:feat\.|featuring|&|ft\.)/i)[0]
+            .trim();
         
-        // Musixmatch API kall - bruker gratis API
+        logInfo(`Henter lyrics: ${cleanArtist} - ${title}`);
+        
+        // Lyrics-API - GRATIS, ingen nøkkel trengs!
         const response = await axios.get(
-            `https://api.musixmatch.com/ws/1.1/matcher.lyrics.get?q_artist=${encodeURIComponent(artist)}&q_track=${encodeURIComponent(title)}&apikey=d3b9a1f4c2e8b6a9f1c3e5d7`
+            `https://api.lyrics.ovh/v1/${encodeURIComponent(cleanArtist)}/${encodeURIComponent(title)}`
         );
 
-        if (response.data.message.header.status_code === 200 && 
-            response.data.message.body && 
-            response.data.message.body.lyrics) {
-            
-            const lyricsText = response.data.message.body.lyrics.lyrics_body;
+        if (response.data && response.data.lyrics) {
+            const lyricsText = response.data.lyrics;
             const lyricsLines = lyricsText
                 .split('\n')
                 .map(line => line.trim())
-                .filter(line => line.length > 0 && !line.includes('****'));
+                .filter(line => line.length > 0);
             
-            logInfo(`Lyrics hentet: ${lyricsLines.length} linjer`);
+            logInfo(`✅ Lyrics hentet: ${lyricsLines.length} linjer`);
             
             return {
                 hasLyrics: true,
@@ -479,7 +485,7 @@ async function fetchLyrics(artist, title) {
                 lyricsLines: lyricsLines
             };
         } else {
-            logInfo(`Ingen lyrics funnet på Musixmatch for: ${artist} - ${title}`);
+            logInfo(`⚠️ Ingen lyrics funnet for: ${cleanArtist} - ${title}`);
             return {
                 hasLyrics: false,
                 lyricsLines: []
@@ -493,7 +499,6 @@ async function fetchLyrics(artist, title) {
         };
     }
 }
-
 async function startFffmpegProcess(result, ws) {
     stopFffmpegProcess();
 
@@ -782,7 +787,7 @@ async function startPlanetradioPolling(streamUrl, channelUrl, ws) {
         } catch (error) {
             logError(`Planetradio API poll feil: ${error.message}`);
         }
-    }, 3000);
+    }, 20000);
     
     planetradioPollers.set(streamUrl, pollInterval);
     
