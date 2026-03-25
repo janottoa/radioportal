@@ -500,8 +500,7 @@
 <div class="footer">
     <div class="info">
         <img id="station-logo" src="" alt="Stasjonslogo" style="display:none; height: 30px; margin-right: 10px;">
-        <span id="channel-name"></span>
-        <span id="song-info"></span>
+        <span id="song-info" role="status" aria-live="polite"></span>
     </div>
 </div>
 
@@ -1060,6 +1059,9 @@ ws.onopen = () => {
 function stopStreaming() {
     console.log("[DEBUG] stopStreaming kalles.");
     
+    // Stopp lyrics-rotasjon
+    if (typeof stopLyricsRotation === 'function') stopLyricsRotation();
+
     // Legg til denne nye delen for å håndtere Spotify-knappen
     const spotifyButtonHeader = document.getElementById("spotifyAddButton");
     if (spotifyButtonHeader) {
@@ -1453,6 +1455,7 @@ function clearMetadata(stationDiv) {
 }
 // Funksjon for å stoppe lydstrømmen og nullstille Spotify-knappen
 function stopStreaming() {
+    if (typeof stopLyricsRotation === 'function') stopLyricsRotation();
     if (ws) {
         ws.close(); // Lukk WebSocket-forbindelsen
         ws = null;
@@ -1912,6 +1915,51 @@ function updateSpotifyButton(validLink) {
 
 
 
+// === LYRICS ROTATION ===
+let currentLyricsLines = [];
+let currentLyricsIndex = 0;
+let lyricsRotationInterval = null;
+const LYRICS_ROTATION_INTERVAL = 6000; // 6 sekunder
+
+function rotateAndDisplayLyrics() {
+    const songInfoElement = document.getElementById("song-info");
+    if (!songInfoElement) return;
+    if (currentLyricsLines.length === 0) return;
+    const line1 = currentLyricsLines[currentLyricsIndex];
+    const line2 = currentLyricsLines[(currentLyricsIndex + 1) % currentLyricsLines.length];
+    songInfoElement.textContent = [line1, line2].filter(Boolean).join(" / ");
+    currentLyricsIndex = (currentLyricsIndex + 1) % currentLyricsLines.length;
+}
+
+function startLyricsRotation(lyricsLines, fallbackText) {
+    if (lyricsRotationInterval) {
+        clearInterval(lyricsRotationInterval);
+        lyricsRotationInterval = null;
+    }
+    currentLyricsLines = (lyricsLines && lyricsLines.length > 0) ? lyricsLines : [];
+    currentLyricsIndex = 0;
+    const songInfoElement = document.getElementById("song-info");
+    if (!songInfoElement) return;
+    if (currentLyricsLines.length > 0) {
+        rotateAndDisplayLyrics();
+        lyricsRotationInterval = setInterval(rotateAndDisplayLyrics, LYRICS_ROTATION_INTERVAL);
+    } else {
+        songInfoElement.textContent = fallbackText || "";
+    }
+}
+
+function stopLyricsRotation() {
+    if (lyricsRotationInterval) {
+        clearInterval(lyricsRotationInterval);
+        lyricsRotationInterval = null;
+    }
+    currentLyricsLines = [];
+    currentLyricsIndex = 0;
+    const songInfoElement = document.getElementById("song-info");
+    if (songInfoElement) songInfoElement.textContent = "";
+}
+// === END LYRICS ROTATION ===
+
 function setupWebSocket(url, stationDiv, station, app) {
     if (ws) {
         ws.close(); // Lukk eksisterende WebSocket-forbindelse hvis den finnes
@@ -2013,13 +2061,8 @@ console.log("setupWebSocket kalt med stasjon:", station ? station.name : "Ingen 
         // ... resten av koden din ...
         let backgroundImageUrl = data.imageUrl?.split(",")[0].trim() || (station.logo || "");
 
-        if (data.StreamTitle) {
-            const songInfoElement = document.getElementById("song-info");
-            if (songInfoElement) {
-                songInfoElement.textContent = data.StreamTitle;
-                console.log("Oppdatert sanginfo med StreamTitle:", data.StreamTitle);
-            }
-        }
+        // Start lyrics rotation (fallback to StreamTitle if no lyrics)
+        startLyricsRotation(data.lyricsLines, data.StreamTitle || "");
 
         let metadataDiv = stationDiv.querySelector('.metadata');
         if (!metadataDiv) {
@@ -2216,16 +2259,12 @@ ws.onclose = (event) => {  // Legg til 'event' som parameter
             logoElement.src = imageUrl;
             logoElement.style.display = "inline";
         }
-        const stationName = document.getElementById('channel-name').textContent;
-        console.log("Før oppdatering: ", document.title);
-        document.title = `${stationName}  ${songTitle || ''}`;
-        console.log("Etter oppdatering: ", document.title);
+        document.title = `${songTitle || ''}`;
     }
 
     function updateFooter(station, metadata = null) {
         const logoElement = document.getElementById("station-logo");
         const songInfoElement = document.getElementById("song-info");
-        const channelNameElement = document.getElementById("channel-name");
 
         if (station) {
             console.log("Oppdaterer footer for stasjon:", station);
@@ -2241,28 +2280,20 @@ ws.onclose = (event) => {  // Legg til 'event' som parameter
                 console.warn("Ingen logo funnet for stasjonen.");
             }
 
-            // Oppdater songInfo
-            if (metadata && metadata.songInfo) {
-                // Bruk metadata hvis tilgjengelig
-                songInfoElement.textContent = metadata.songInfo;
-                console.log("Bruker metadata for songInfo:", metadata.songInfo);
-            } else if (station.songInfo) {
-                // Bruk songInfo fra stations.json som fallback
-                songInfoElement.textContent = station.songInfo;
-                console.log("Bruker songInfo fra stations.json:", station.songInfo);
-            } else {
-                // Ingen informasjon tilgjengelig
-                songInfoElement.textContent = "";
-                console.warn("Ingen informasjon tilgjengelig");
-                channelNameElement.textContent = "";
-                data.StreamTitle = "";
-                 
+            // Lyrics rotation handles song-info; only set fallback if rotation not active
+            if (!lyricsRotationInterval) {
+                if (metadata && metadata.songInfo) {
+                    songInfoElement.textContent = metadata.songInfo;
+                } else if (station.songInfo) {
+                    songInfoElement.textContent = station.songInfo;
+                } else {
+                    songInfoElement.textContent = "";
+                }
             }
         } else {
             // Tilbakestill footer når ingen stasjon er valgt
             console.warn("Ingen stasjon valgt. Tilbakestiller footer.");
             logoElement.style.display = "none";
-            if (channelNameElement) channelNameElement.textContent = "";
             songInfoElement.textContent = "";
              
      // Tilbakestill document.title til standardverdi
