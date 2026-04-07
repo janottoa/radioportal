@@ -408,18 +408,14 @@
     let currentAudio = null; // Holder lydstrømmen
     let currentlyExpanded = null; // Holder utvidet stasjon
     let ws = null; // Global WebSocket-variabel
-
-    // Definer URL basert på nettverkssituasjonen
-    let url;
-    if (window.location.hostname.startsWith('192.168.') || window.location.hostname === 'localhost') {
-        url = 'http://192.168.0.11/stations.json';
-    } else {
-        url = 'http://anthonsen.net:2222/stations.json';
-    }
+    let currentMetadata = {};
+    let songStartTime = 0;
+    // Eksponeres på window for sonos-ui.js
+    window._currentlyPlayingUrl = null;
+    window._currentAudio = null;
 
     // Last stationsData fra JSON-fil
-    // Last stationsData fra JSON-fil
-    fetch(url)
+    fetch('stations.json')
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Network response was not ok: ${response.statusText}`);
@@ -592,7 +588,6 @@
             console.error("Feil i initializeAudio:", error);
         }
     }
-    setupWebSocket(url, stationDiv, station);
     async function togglePlayStation(url, stationDiv) {
         const category = stationDiv.getAttribute("data-category");
         let station = stationsData[category]?.find(s => s.url === url);
@@ -653,18 +648,21 @@
         // Start avspilling
         currentlyPlayingUrl = url;
         currentAudio = new Audio(url);
+        songStartTime = Date.now();
+        window._currentlyPlayingUrl = url;
+        window._currentAudio = currentAudio;
 
         currentAudio.play()
             .then(() => {
-                console.log(`Spiller nå: ${station.name}`);
+                window._currentlyPlayingUrl = url;
+                window._currentAudio = currentAudio;
+                if (window.sonosSendToActive) window.sonosSendToActive(url);
+                setupWebSocket(url, stationDiv, station, station.app);
             })
-            .catch(err => console.error("Feil under avspilling:", err));
+            .catch(err => console.error("Avspillingsfeil:", err));
 
         // Oppdater footer med metadata
         updateFooter(station);
-
-        // Sett opp WebSocket for metadata
-        setupWebSocket(url, stationDiv, station);
 
         // Oppdater layout og metadata
         const metadataDiv = stationDiv.querySelector('.metadata') || document.createElement('div');
@@ -803,6 +801,20 @@
         }
     }
 
+    function stopStreaming() {
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio = null;
+        }
+        currentlyPlayingUrl = null;
+        if (ws) {
+            ws.close();
+            ws = null;
+        }
+        window._currentlyPlayingUrl = null;
+        window._currentAudio = null;
+    }
+
     function isFavorite(url) {
         const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
         return favorites.some(fav => fav.url === url);
@@ -908,7 +920,7 @@
     // Oppdatert WebSocket-setup
     /* let ws; // Flyttet utenfor funksjonen for å unngå "Cannot access before initialization"-feil
 */
-    function setupWebSocket(url, stationDiv, station) {
+    function setupWebSocket(url, stationDiv, station, app) {
         if (ws) ws.close(); // Lukk eksisterende WebSocket-forbindelse
         ws = new WebSocket('ws://anthonsen.net:3080'); // Sett riktig WebSocket URL
 
@@ -1076,5 +1088,6 @@
     }
 
 </script>
+<script src="sonos-ui.js"></script>
 </body>
 </html>
