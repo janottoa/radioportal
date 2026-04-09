@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#111111">
+    <title>Radioportal</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12"></script>
+    <style>
+        /* ===================================================
+           RESET & BASE
+           =================================================== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #111;
+            --surface: #1e1e1e;
+            --surface2: #2a2a2a;
+            --text: #f0f0f0;
+            --text2: #aaa;
+            --accent: #1db954;
+            --header-h: 56px;
+            --mini-h: 64px;
+            --radius: 16px;
+            --sheet-radius: 22px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ===================================================
+           DAY MODE
+           =================================================== */
+        body.day-mode {
+            --bg: #f2f2f7;
+            --surface: #fff;
+            --surface2: #e5e5ea;
+            --text: #1c1c1e;
+            --text2: #6c6c70;
+        }
+
+        /* ===================================================
+           HEADER
+           =================================================== */
+        .header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--header-h);
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 14px;
+            z-index: 100;
+            box-shadow: 0 1px 0 rgba(255,255,255,.06);
+        }
+
+        .header-logo img { height: 32px; object-fit: contain; }
+
+        .header-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: .04em;
+        }
+
+        .header-actions { display: flex; gap: 8px; }
+
+        .hbtn {
+            background: var(--surface2);
+            color: var(--text);
+            border: none;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: .8rem;
+            cursor: pointer;
+            transition: opacity .2s;
+        }
+        .hbtn:active { opacity: .7; }
+
+        /* ===================================================
+           CATEGORY TABS
+           =================================================== */
+        .categories {
+            position: fixed;
+            top: var(--header-h);
+            left: 0; right: 0;
+            height: 44px;
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,.05);
+            z-index: 99;
+            scrollbar-width: none;
+        }
+        .categories::-webkit-scrollbar { display: none; }
+
+        .cat-btn {
+            flex-shrink: 0;
+            background: var(--surface2);
+            color: var(--text2);
+            border: none;
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-size: .82rem;
+            cursor: pointer;
+            transition: background .2s, color .2s;
+            white-space: nowrap;
+        }
+        .cat-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        /* ===================================================
+           MAIN SCROLL AREA
+           =================================================== */
+        .main {
+            margin-top: calc(var(--header-h) + 44px);
+            padding: 12px 10px calc(var(--mini-h) + 16px + env(safe-area-inset-bottom));
+        }
+
+        /* ===================================================
+           STATION GRID
+           =================================================== */
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        @media (max-width: 360px) {
+            .stations-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .station-card {
+            position: relative;
+            background: var(--surface);
+            border-radius: var(--radius);
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 8px 8px;
+            cursor: pointer;
+            transition: transform .15s ease, box-shadow .15s ease;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .station-card:active {
+            transform: scale(.94);
+        }
+
+        .station-card.playing {
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .station-card img {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .station-card .card-name {
+            font-size: .65rem;
+            color: var(--text2);
+            text-align: center;
+            margin-top: 6px;
+            line-height: 1.2;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .station-card .fav-btn {
+            position: absolute;
+            top: 5px; right: 6px;
+            background: none;
+            border: none;
+            color: var(--text2);
+            font-size: 1rem;
+            cursor: pointer;
+            line-height: 1;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .station-card .fav-btn.active { color: gold; }
+
+        /* Playing pulse */
+        .station-card.playing::after {
+            content: '';
+            position: absolute;
+            bottom: 5px; left: 50%; transform: translateX(-50%);
+            width: 20px; height: 3px;
+            border-radius: 2px;
+            background: var(--accent);
+            animation: pulseBar 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseBar {
+            from { width: 12px; opacity: .6; }
+            to   { width: 22px; opacity: 1; }
+        }
+
+        /* ===================================================
+           MINI-PLAYER
+           =================================================== */
+        .mini-player {
+            position: fixed;
+            bottom: env(safe-area-inset-bottom, 0);
+            left: 0; right: 0;
+            height: var(--mini-h);
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 14px;
+            cursor: pointer;
+            z-index: 200;
+            transform: translateY(100%);
+            transition: transform .35s cubic-bezier(.32,1,.23,1);
+            border-top: 1px solid rgba(255,255,255,.06);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .mini-player.visible { transform: translateY(0); }
+
+        .mini-logo {
+            width: 44px; height: 44px;
+            border-radius: 10px;
+            object-fit: contain;
+            background: var(--surface2);
+            flex-shrink: 0;
+        }
+
+        .mini-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .mini-station {
+            font-size: .85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .mini-song {
+            font-size: .73rem;
+            color: var(--text2);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 2px;
+        }
+
+        .mini-controls { display: flex; align-items: center; gap: 10px; }
+
+        .mini-play-btn {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: opacity .2s;
+        }
+        .mini-play-btn:active { opacity: .7; }
+
+        .mini-output-btn {
+            background: var(--surface2);
+            border: none;
+            color: var(--text2);
+            font-size: .7rem;
+            border-radius: 10px;
+            padding: 4px 8px;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background .2s, color .2s;
+        }
+        .mini-output-btn.sonos { color: var(--accent); }
+
+        /* ===================================================
+           BOTTOM SHEET
+           =================================================== */
+        .sheet-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.55);
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s ease;
+        }
+        .sheet-overlay.open { opacity: 1; pointer-events: all; }
+
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            max-height: 95dvh;
+            background: var(--surface);
+            border-radius: var(--sheet-radius) var(--sheet-radius) 0 0;
+            z-index: 301;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform .38s cubic-bezier(.32,1,.23,1);
+            overflow: hidden;
+        }
+        .bottom-sheet.open { transform: translateY(0); }
+
+        /* Drag handle */
+        .sheet-handle {
+            width: 40px; height: 4px;
+            background: rgba(255,255,255,.2);
+            border-radius: 2px;
+            margin: 12px auto 6px;
+            flex-shrink: 0;
+        }
+
+        /* Scroll area inside sheet */
+        .sheet-scroll {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 0 20px 32px;
+            flex: 1;
+        }
+
+        /* Cover art */
+        .sheet-cover {
+            width: 100%;
+            max-width: 320px;
+            aspect-ratio: 1;
+            border-radius: 18px;
+            object-fit: contain;
+            margin: 12px auto 18px;
+            display: block;
+            background: var(--surface2);
+        }
+
+        /* Metadata */
+        .sheet-station {
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-align: center;
+        }
+        .sheet-artist {
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 4px;
+        }
+        .sheet-song {
+            font-size: .9rem;
+            color: var(--text2);
+            text-align: center;
+            margin-top: 2px;
+        }
+        .sheet-program {
+            font-size: .78rem;
+            color: var(--text2);
+            text-align: center;
+            margin-top: 2px;
+            font-style: italic;
+        }
+
+        /* Controls row */
+        .sheet-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .sheet-play-btn {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            font-size: 1.6rem;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: opacity .2s, transform .15s;
+        }
+        .sheet-play-btn:active { transform: scale(.92); opacity: .8; }
+
+        .sheet-output-btn {
+            background: var(--surface2);
+            border: none;
+            color: var(--text);
+            border-radius: 14px;
+            padding: 8px 16px;
+            font-size: .85rem;
+            cursor: pointer;
+            transition: background .2s, color .2s;
+        }
+        .sheet-output-btn.sonos { color: var(--accent); }
+
+        .sheet-fav-btn {
+            background: none;
+            border: none;
+            color: var(--text2);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color .2s;
+        }
+        .sheet-fav-btn.active { color: gold; }
+
+        /* Sonos speaker picker */
+        .speaker-row {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 0 0 8px;
+            scrollbar-width: none;
+            margin-bottom: 12px;
+        }
+        .speaker-row::-webkit-scrollbar { display: none; }
+        .speaker-chip {
+            flex-shrink: 0;
+            background: var(--surface2);
+            border: none;
+            color: var(--text2);
+            border-radius: 16px;
+            padding: 5px 12px;
+            font-size: .78rem;
+            cursor: pointer;
+            transition: background .2s, color .2s;
+        }
+        .speaker-chip.active { background: var(--accent); color: #fff; }
+
+        /* Divider */
+        .sheet-divider {
+            height: 1px;
+            background: rgba(255,255,255,.07);
+            margin: 12px 0;
+        }
+
+        /* Lyrics section */
+        .lyrics-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .lyrics-title {
+            font-size: .8rem;
+            font-weight: 600;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+        .lyrics-offset-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .offset-btn {
+            background: var(--surface2);
+            border: none;
+            color: var(--text);
+            border-radius: 8px;
+            width: 28px; height: 28px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .offset-value {
+            font-size: .78rem;
+            color: var(--text2);
+            min-width: 28px;
+            text-align: center;
+        }
+
+        .lyrics-text {
+            font-size: 1rem;
+            line-height: 1.65;
+            color: var(--text);
+            min-height: 80px;
+            white-space: pre-wrap;
+        }
+        .lyrics-line {
+            padding: 3px 0;
+            cursor: pointer;
+            transition: color .2s;
+            border-radius: 4px;
+        }
+        .lyrics-line.active { color: var(--accent); font-weight: 600; }
+
+        /* ===================================================
+           NO-STATION PLACEHOLDER
+           =================================================== */
+        .no-stations {
+            text-align: center;
+            color: var(--text2);
+            padding: 40px 0;
+            font-size: .9rem;
+        }
+
+        /* ===================================================
+           SCROLLBAR HIDE
+           =================================================== */
+        .main::-webkit-scrollbar { display: none; }
+        .main { scrollbar-width: none; }
+    </style>
+</head>
+<body>
+
+<!-- ======================================================
+     HEADER
+     ====================================================== -->
+<header class="header">
+    <div class="header-logo">
+        <img src="moffaradio.png" alt="Moffa Radio" onerror="this.style.display='none'">
+    </div>
+    <div class="header-title">RADIOPORTAL</div>
+    <div class="header-actions">
+        <button class="hbtn" onclick="toggleDayMode()">☀/🌙</button>
+        <button class="hbtn" onclick="window.location.reload()">↺</button>
+    </div>
+</header>
+
+<!-- ======================================================
+     CATEGORY TABS
+     ====================================================== -->
+<div class="categories" id="categories"></div>
+
+<!-- ======================================================
+     MAIN GRID
+     ====================================================== -->
+<main class="main">
+    <div class="stations-grid" id="stations-grid">
+        <div class="no-stations">Laster stasjoner…</div>
+    </div>
+</main>
+
+<!-- ======================================================
+     MINI-PLAYER
+     ====================================================== -->
+<div class="mini-player" id="mini-player" onclick="openSheet()">
+    <img class="mini-logo" id="mini-logo" src="" alt="">
+    <div class="mini-info">
+        <div class="mini-station" id="mini-station">–</div>
+        <div class="mini-song" id="mini-song"></div>
+    </div>
+    <div class="mini-controls" onclick="event.stopPropagation()">
+        <button class="mini-output-btn" id="mini-output-btn" onclick="toggleOutput()">Local</button>
+        <button class="mini-play-btn" id="mini-play-btn" onclick="togglePlay()">▶</button>
+    </div>
+</div>
+
+<!-- ======================================================
+     BOTTOM SHEET OVERLAY
+     ====================================================== -->
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+
+<!-- ======================================================
+     BOTTOM SHEET
+     ====================================================== -->
+<div class="bottom-sheet" id="bottom-sheet">
+    <div class="sheet-handle" id="sheet-handle"></div>
+
+    <div class="sheet-scroll">
+        <!-- Cover art -->
+        <img class="sheet-cover" id="sheet-cover" src="" alt="">
+
+        <!-- Station metadata -->
+        <div class="sheet-station" id="sheet-station"></div>
+        <div class="sheet-artist" id="sheet-artist"></div>
+        <div class="sheet-song" id="sheet-song"></div>
+        <div class="sheet-program" id="sheet-program"></div>
+
+        <!-- Controls -->
+        <div class="sheet-controls">
+            <button class="sheet-fav-btn" id="sheet-fav-btn" onclick="toggleFavFromSheet()">☆</button>
+            <button class="sheet-play-btn" id="sheet-play-btn" onclick="togglePlay()">▶</button>
+            <button class="sheet-output-btn" id="sheet-output-btn" onclick="toggleOutput()">Local</button>
+        </div>
+
+        <!-- Sonos speaker picker (shown in Sonos mode) -->
+        <div id="speaker-section" style="display:none">
+            <div class="lyrics-title" style="margin-bottom:6px">Velg høyttaler</div>
+            <div class="speaker-row" id="speaker-row"></div>
+        </div>
+
+        <div class="sheet-divider"></div>
+
+        <!-- Lyrics -->
+        <div class="lyrics-header">
+            <div class="lyrics-title">Tekst / Info</div>
+            <div class="lyrics-offset-controls">
+                <button class="offset-btn" onclick="adjustOffset(-1)">−</button>
+                <span class="offset-value" id="offset-value">0s</span>
+                <button class="offset-btn" onclick="adjustOffset(+1)">+</button>
+            </div>
+        </div>
+        <div class="lyrics-text" id="lyrics-text">Ingen tekst tilgjengelig.</div>
+    </div>
+</div>
+
+<!-- ======================================================
+     SCRIPTS: Sonos UI first, then main app
+     ====================================================== -->
+<script src="sonos-ui.js"></script>
+<script>
+/* ============================================================
+   CONSTANTS & STATE
+   ============================================================ */
+const WS_URL       = `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://anthonsen.net:3080`;
+const STATIONS_PATH = 'stations.json'; // relative path — file is served from the same origin
+
+// Lyrics timing constants
+const LYRICS_INTERVAL_MS  = 4000; // milliseconds per lyric line
+const MIN_LYRICS_OFFSET   = -30;  // seconds, earliest allowed hold-back
+const MAX_LYRICS_OFFSET   =  30;  // seconds, latest allowed hold-forward
+
+let stationsData  = {};        // { category: [...] }
+let currentStation = null;     // currently selected station object
+let isPlaying      = false;
+let audio          = null;     // HTMLAudioElement or HLS video element
+let ws             = null;     // WebSocket
+let lyricsOffset   = parseInt(localStorage.getItem('lyricsOffset') || '0', 10);
+let lyricsLines    = [];
+let currentLyricsIdx = 0;
+let lyricsTimer    = null;
+let currentCategory = 'NRK';
+
+/* ============================================================
+   CATEGORY MENU CONFIG
+   ============================================================ */
+const CAT_MENUS = {
+    main:   ['NRK', 'P4', 'Radio Norge', 'Metro', 'Lokale', 'Internet', 'Latinske', '→ Mer'],
+    extra:  ['1fm', '181fm', 'se', 'dk', 'utland', '← Tilbake'],
+};
+
+/* ============================================================
+   INIT
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    applySystemTheme();
+    renderCategoryTabs('main');
+    loadStations();
+    initDragSheet();
+    updateOutputButtons();
+
+    // Listen for output mode changes from sonos-ui.js
+    document.addEventListener('outputModeChanged', () => updateOutputButtons());
+});
+
+/* ============================================================
+   LOAD STATIONS.JSON
+   ============================================================ */
+async function loadStations() {
+    try {
+        const res = await fetch(STATIONS_PATH);
+        if (!res.ok) throw new Error(res.statusText);
+        stationsData = await res.json();
+        restoreLastCategory();
+    } catch (err) {
+        console.error('Feil ved lasting av stasjoner:', err);
+        document.getElementById('stations-grid').innerHTML =
+            '<div class="no-stations">Kunne ikke laste stasjoner.</div>';
+    }
+}
+
+function restoreLastCategory() {
+    const last = localStorage.getItem('lastCategory') || 'NRK';
+    showStations(last);
+}
+
+/* ============================================================
+   CATEGORY TABS
+   ============================================================ */
+function renderCategoryTabs(menuKey) {
+    const container = document.getElementById('categories');
+    container.innerHTML = '';
+    CAT_MENUS[menuKey].forEach(label => {
+        const btn = document.createElement('button');
+        btn.className = 'cat-btn';
+        btn.textContent = label;
+        if (label.startsWith('→')) {
+            btn.onclick = () => renderCategoryTabs('extra');
+        } else if (label.startsWith('←')) {
+            btn.onclick = () => renderCategoryTabs('main');
+        } else {
+            btn.onclick = () => {
+                showStations(label);
+                // highlight
+                container.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            };
+            if (label === currentCategory) btn.classList.add('active');
+        }
+        container.appendChild(btn);
+    });
+}
+
+/* ============================================================
+   SHOW STATIONS IN GRID
+   ============================================================ */
+function showStations(category) {
+    currentCategory = category;
+    localStorage.setItem('lastCategory', category);
+
+    const grid = document.getElementById('stations-grid');
+    grid.innerHTML = '';
+
+    let stations;
+    if (category === 'Favoritter') {
+        const favs = JSON.parse(localStorage.getItem('favorites') || '[]');
+        stations = favs.map(f => {
+            for (const cat of Object.values(stationsData)) {
+                const s = cat.find(s => s.url === f.url);
+                if (s) return s;
+            }
+            return null;
+        }).filter(Boolean);
+    } else {
+        stations = stationsData[category] || [];
+    }
+
+    if (!stations.length) {
+        grid.innerHTML = '<div class="no-stations">Ingen stasjoner i denne kategorien.</div>';
+        return;
+    }
+
+    stations.forEach(station => {
+        const card = buildCard(station, category);
+        grid.appendChild(card);
+    });
+
+    // Mark currently playing card
+    if (currentStation) markPlayingCard(currentStation.url);
+}
+
+function buildCard(station, category) {
+    const card = document.createElement('div');
+    card.className = 'station-card';
+    card.dataset.url = station.url;
+
+    const img = document.createElement('img');
+    img.src  = station.logo || '';
+    img.alt  = station.name;
+    img.loading = 'lazy';
+    img.onerror = () => { img.src = ''; img.style.opacity = '0'; };
+    card.appendChild(img);
+
+    const name = document.createElement('div');
+    name.className = 'card-name';
+    name.textContent = station.name;
+    card.appendChild(name);
+
+    const favBtn = document.createElement('button');
+    favBtn.className = 'fav-btn' + (isFavorite(station.url) ? ' active' : '');
+    favBtn.textContent = isFavorite(station.url) ? '★' : '☆';
+    favBtn.onclick = e => {
+        e.stopPropagation();
+        toggleFavorite(station.url, category);
+        favBtn.textContent = isFavorite(station.url) ? '★' : '☆';
+        favBtn.className = 'fav-btn' + (isFavorite(station.url) ? ' active' : '');
+    };
+    card.appendChild(favBtn);
+
+    card.onclick = () => playStation(station, category);
+    return card;
+}
+
+function markPlayingCard(url) {
+    document.querySelectorAll('.station-card').forEach(c => {
+        c.classList.toggle('playing', c.dataset.url === url);
+    });
+}
+
+/* ============================================================
+   PLAY / PAUSE
+   ============================================================ */
+function playStation(station, category) {
+    // Toggle if same station already playing
+    if (currentStation?.url === station.url) {
+        togglePlay();
+        return;
+    }
+
+    stopAudio();
+
+    currentStation = station;
+    isPlaying = true;
+
+    showMiniPlayer(station);
+    markPlayingCard(station.url);
+    updatePlayButtons('⏸');
+
+    if (window.shouldPlayToSonos && window.shouldPlayToSonos()) {
+        // Sonos mode: no local audio, send to speaker
+        if (window.sonosSendToActive) {
+            window.sonosSendToActive(station.url)
+                .catch(err => console.error('[playStation] Sonos error:', err));
+        }
+    } else {
+        startLocalAudio(station);
+    }
+
+    // Always set up WebSocket metadata
+    setupWebSocket(station.url, station);
+}
+
+function startLocalAudio(station) {
+    const url = station.url;
+
+    if (url.endsWith('.m3u8') && window.Hls && Hls.isSupported()) {
+        const videoEl = document.createElement('video');
+        videoEl.style.display = 'none';
+        document.body.appendChild(videoEl);
+        const hls = new Hls();
+        hls.loadSource(url);
+        hls.attachMedia(videoEl);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            videoEl.play().catch(console.error);
+        });
+        audio = videoEl;
+        return;
+    }
+
+    audio = new Audio();
+    audio.src = url;
+    audio.play().catch(err => {
+        console.error('Avspillingsfeil:', err);
+        isPlaying = false;
+        updatePlayButtons('▶');
+    });
+
+    audio.onended = () => {
+        isPlaying = false;
+        updatePlayButtons('▶');
+    };
+    audio.onerror = () => {
+        console.error('Audio error for', url);
+        isPlaying = false;
+        updatePlayButtons('▶');
+    };
+}
+
+function stopAudio() {
+    if (audio) {
+        audio.pause();
+        if (audio.tagName === 'VIDEO') {
+            try { document.body.removeChild(audio); } catch {}
+        }
+        audio = null;
+    }
+    if (ws) { ws.close(); ws = null; }
+}
+
+function togglePlay() {
+    if (!currentStation) return;
+
+    if (isPlaying) {
+        // Pause
+        if (window.shouldPlayToSonos()) {
+            if (window.sonosPause) window.sonosPause();
+        } else if (audio) {
+            audio.pause();
+        }
+        isPlaying = false;
+        updatePlayButtons('▶');
+    } else {
+        // Resume
+        if (window.shouldPlayToSonos()) {
+            if (window.sonosSendToActive) {
+                window.sonosSendToActive(currentStation.url);
+            }
+        } else {
+            if (audio) {
+                audio.play().catch(console.error);
+            } else {
+                startLocalAudio(currentStation);
+            }
+        }
+        isPlaying = true;
+        updatePlayButtons('⏸');
+    }
+}
+
+/* ============================================================
+   MINI-PLAYER
+   ============================================================ */
+function showMiniPlayer(station) {
+    document.getElementById('mini-logo').src = station.logo || '';
+    document.getElementById('mini-station').textContent = station.name || '';
+    document.getElementById('mini-song').textContent = '';
+    document.getElementById('mini-player').classList.add('visible');
+}
+
+/* ============================================================
+   BOTTOM SHEET
+   ============================================================ */
+function openSheet() {
+    if (!currentStation) return;
+    const sheet = document.getElementById('bottom-sheet');
+    const overlay = document.getElementById('sheet-overlay');
+
+    // Populate sheet
+    document.getElementById('sheet-cover').src = currentStation.logo || '';
+    document.getElementById('sheet-station').textContent = currentStation.name || '';
+    document.getElementById('sheet-artist').textContent = '';
+    document.getElementById('sheet-song').textContent = currentStation.songInfo || '';
+    document.getElementById('sheet-program').textContent = '';
+    document.getElementById('sheet-fav-btn').textContent = isFavorite(currentStation.url) ? '★' : '☆';
+    document.getElementById('sheet-fav-btn').className = 'sheet-fav-btn' + (isFavorite(currentStation.url) ? ' active' : '');
+    document.getElementById('lyrics-text').textContent = 'Ingen tekst tilgjengelig.';
+    updatePlayButtons(isPlaying ? '⏸' : '▶');
+    updateOutputButtons();
+
+    // Speaker list in Sonos mode
+    refreshSpeakerSection();
+
+    sheet.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSheet() {
+    document.getElementById('bottom-sheet').classList.remove('open');
+    document.getElementById('sheet-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+/* ============================================================
+   SHEET: DRAG TO CLOSE
+   ============================================================ */
+function initDragSheet() {
+    const sheet = document.getElementById('bottom-sheet');
+    const handle = document.getElementById('sheet-handle');
+    let startY = 0, currentY = 0, isDragging = false;
+
+    function onStart(e) {
+        startY = e.touches ? e.touches[0].clientY : e.clientY;
+        isDragging = true;
+        sheet.style.transition = 'none';
+    }
+    function onMove(e) {
+        if (!isDragging) return;
+        currentY = (e.touches ? e.touches[0].clientY : e.clientY) - startY;
+        if (currentY > 0) {
+            sheet.style.transform = `translateY(${currentY}px)`;
+        }
+    }
+    function onEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        sheet.style.transition = '';
+        sheet.style.transform = '';
+        if (currentY > 100) closeSheet();
+        currentY = 0;
+    }
+
+    handle.addEventListener('touchstart', onStart, { passive: true });
+    document.addEventListener('touchmove', onMove, { passive: true });
+    document.addEventListener('touchend', onEnd);
+
+    // Mouse fallback for desktop testing
+    handle.addEventListener('mousedown', onStart);
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onEnd);
+}
+
+/* ============================================================
+   OUTPUT MODE SWITCHING
+   ============================================================ */
+function toggleOutput() {
+    if (window.toggleOutputMode) {
+        const mode = window.toggleOutputMode();
+
+        if (mode === 'sonos') {
+            // Stop local audio
+            if (audio) { audio.pause(); audio = null; }
+            // Start on Sonos
+            if (currentStation && window.sonosSendToActive) {
+                window.sonosSendToActive(currentStation.url);
+            }
+            refreshSpeakerSection();
+        } else {
+            // Stop Sonos
+            if (window.sonosPause) window.sonosPause();
+            // Start locally
+            if (currentStation && isPlaying) {
+                startLocalAudio(currentStation);
+            }
+        }
+    }
+    updateOutputButtons();
+}
+
+function updateOutputButtons() {
+    const isSonos = window.getOutputMode && window.getOutputMode() === 'sonos';
+    const label = isSonos ? '📡 Sonos' : '🔊 Local';
+
+    const mBtn = document.getElementById('mini-output-btn');
+    const sBtn = document.getElementById('sheet-output-btn');
+    if (mBtn) { mBtn.textContent = label; mBtn.className = 'mini-output-btn' + (isSonos ? ' sonos' : ''); }
+    if (sBtn) { sBtn.textContent = label; sBtn.className = 'sheet-output-btn' + (isSonos ? ' sonos' : ''); }
+}
+
+async function refreshSpeakerSection() {
+    const isSonos = window.getOutputMode && window.getOutputMode() === 'sonos';
+    const section = document.getElementById('speaker-section');
+    if (!section) return;
+    section.style.display = isSonos ? 'block' : 'none';
+
+    if (!isSonos) return;
+
+    const row = document.getElementById('speaker-row');
+    row.innerHTML = '<span style="color:var(--text2);font-size:.78rem">Laster høyttalere…</span>';
+
+    const rooms = window.sonosFetchRooms ? await window.sonosFetchRooms() : [];
+    row.innerHTML = '';
+    if (!rooms.length) {
+        row.innerHTML = '<span style="color:var(--text2);font-size:.78rem">Ingen Sonos-enheter funnet.</span>';
+        return;
+    }
+    const active = window.getSonosSpeaker ? window.getSonosSpeaker() : '';
+    rooms.forEach(room => {
+        const chip = document.createElement('button');
+        chip.className = 'speaker-chip' + (room === active ? ' active' : '');
+        chip.textContent = room;
+        chip.onclick = () => {
+            if (window.setSonosSpeaker) window.setSonosSpeaker(room);
+            row.querySelectorAll('.speaker-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            if (currentStation && isPlaying && window.sonosSendToActive) {
+                window.sonosSendToActive(currentStation.url);
+            }
+        };
+        row.appendChild(chip);
+    });
+}
+
+/* ============================================================
+   PLAY BUTTON STATE
+   ============================================================ */
+function updatePlayButtons(symbol) {
+    const ids = ['mini-play-btn', 'sheet-play-btn'];
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = symbol;
+    });
+}
+
+/* ============================================================
+   WEBSOCKET METADATA
+   ============================================================ */
+function setupWebSocket(streamUrl, station) {
+    if (ws) ws.close();
+    ws = new WebSocket(WS_URL);
+
+    ws.onopen = () => {
+        ws.send(streamUrl);
+        console.log('[ws] opened for', streamUrl);
+    };
+
+    ws.onmessage = (event) => {
+        try {
+            const data = JSON.parse(event.data);
+            handleMetadata(data, station);
+        } catch {
+            // non-JSON message, ignore
+        }
+    };
+
+    ws.onerror  = err => console.warn('[ws] error', err);
+    ws.onclose  = ()  => console.log('[ws] closed');
+}
+
+function handleMetadata(data, station) {
+    const artist  = data.artist || '';
+    const title   = data.title  || data.songTitle || data.StreamTitle || '';
+    const program = data.program || '';
+    const imgUrl  = sanitizeImageUrl(data.imageUrl || '') || (currentStation?.logo || '');
+
+    // Update title bar
+    if (title) document.title = `${title} — ${station.name}`;
+
+    // Mini-player
+    document.getElementById('mini-song').textContent = artist ? `${artist} – ${title}` : title;
+
+    // Bottom sheet — imgUrl has been validated by sanitizeImageUrl()
+    // (new URL() parse + https: protocol check) before assignment to img.src
+    if (document.getElementById('bottom-sheet').classList.contains('open')) {
+        if (imgUrl) document.getElementById('sheet-cover').src = imgUrl;
+        document.getElementById('sheet-artist').textContent = artist;
+        document.getElementById('sheet-song').textContent = title;
+        document.getElementById('sheet-program').textContent = program;
+    }
+
+    // Lyrics from data
+    if (data.lyrics) {
+        lyricsLines = Array.isArray(data.lyrics) ? data.lyrics : data.lyrics.split('\n');
+        startLyrics();
+    } else if (title) {
+        document.getElementById('lyrics-text').textContent = title;
+    }
+}
+
+function sanitizeImageUrl(raw) {
+    if (!raw) return '';
+    // Take only the first value when comma-separated, then remove
+    // control characters (U+0000–U+001F), DEL+C1 (U+007F–U+009F) and quotes.
+    const clean = raw.split(',')[0].replace(/[\x00-\x1F\x7F-\x9F"']/g, '').trim();
+    try {
+        const parsed = new URL(clean);
+        // Only HTTPS image URLs are accepted (prevents mixed-content and
+        // open-redirect via data: / javascript: / blob: schemes)
+        if (parsed.protocol !== 'https:') return '';
+        return parsed.href;
+    } catch {
+        return '';
+    }
+}
+
+/* ============================================================
+   LYRICS ENGINE
+   ============================================================ */
+function startLyrics() {
+    stopLyrics();
+    currentLyricsIdx = 0;
+    renderLyricLine();
+    lyricsTimer = setInterval(() => {
+        currentLyricsIdx = (currentLyricsIdx + 1) % lyricsLines.length;
+        renderLyricLine();
+    }, LYRICS_INTERVAL_MS + lyricsOffset * 1000);
+}
+
+function stopLyrics() {
+    if (lyricsTimer) { clearInterval(lyricsTimer); lyricsTimer = null; }
+}
+
+function renderLyricLine() {
+    const container = document.getElementById('lyrics-text');
+    if (!lyricsLines.length) {
+        container.textContent = 'Ingen tekst tilgjengelig.';
+        return;
+    }
+    container.innerHTML = lyricsLines.map((line, i) => {
+        const active = i === currentLyricsIdx ? ' active' : '';
+        return `<div class="lyrics-line${active}" onclick="seekLyric(${i})">${escapeHtml(line)}</div>`;
+    }).join('');
+    // Scroll active into view
+    const activeEl = container.querySelector('.active');
+    if (activeEl) activeEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+function seekLyric(idx) {
+    currentLyricsIdx = idx;
+    renderLyricLine();
+}
+
+function adjustOffset(delta) {
+    lyricsOffset = Math.max(MIN_LYRICS_OFFSET, Math.min(MAX_LYRICS_OFFSET, lyricsOffset + delta));
+    localStorage.setItem('lyricsOffset', lyricsOffset);
+    document.getElementById('offset-value').textContent = `${lyricsOffset}s`;
+    if (lyricsLines.length) startLyrics();
+}
+
+/* ============================================================
+   FAVOURITES
+   ============================================================ */
+function isFavorite(url) {
+    const favs = JSON.parse(localStorage.getItem('favorites') || '[]');
+    return favs.some(f => f.url === url);
+}
+
+function toggleFavorite(url, category) {
+    let favs = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const idx = favs.findIndex(f => f.url === url);
+    if (idx !== -1) {
+        favs.splice(idx, 1);
+    } else {
+        favs.push({ url, category });
+    }
+    localStorage.setItem('favorites', JSON.stringify(favs));
+}
+
+function toggleFavFromSheet() {
+    if (!currentStation) return;
+    toggleFavorite(currentStation.url, currentCategory);
+    const isFav = isFavorite(currentStation.url);
+    const btn = document.getElementById('sheet-fav-btn');
+    if (btn) {
+        btn.textContent = isFav ? '★' : '☆';
+        btn.className = 'sheet-fav-btn' + (isFav ? ' active' : '');
+    }
+    // Also update card
+    const card = document.querySelector(`.station-card[data-url="${CSS.escape(currentStation.url)}"]`);
+    if (card) {
+        const fb = card.querySelector('.fav-btn');
+        if (fb) {
+            fb.textContent = isFav ? '★' : '☆';
+            fb.className = 'fav-btn' + (isFav ? ' active' : '');
+        }
+    }
+}
+
+/* ============================================================
+   DAY / NIGHT MODE
+   ============================================================ */
+function toggleDayMode() {
+    const isDark = !document.body.classList.toggle('day-mode');
+    localStorage.setItem('nightMode', isDark ? '1' : '0');
+}
+
+function applySystemTheme() {
+    const pref = localStorage.getItem('nightMode');
+    if (pref === '0') {
+        document.body.classList.add('day-mode');
+    } else if (pref === null) {
+        // follow system
+        if (!window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.classList.add('day-mode');
+        }
+    }
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+</script>
+</body>
+</html>
