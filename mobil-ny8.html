@@ -118,6 +118,35 @@
     border-color: var(--accent-primary);
     color: var(--text-primary);
 }
+.header-menu-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.header-scroll-btn {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0;
+    transition: all 0.2s ease;
+}
+
+.header-scroll-btn:hover {
+    border-color: var(--accent-primary);
+}
+
 .header-more-btn {
     background: var(--glass);
     border: 1px solid var(--glass-border);
@@ -509,7 +538,11 @@
 </head>
 <body>
     <div class="header">
-        <div class="header-menu" id="header-menu"></div>
+        <div class="header-menu-wrapper">
+            <button class="header-scroll-btn" id="scroll-left" onclick="scrollHeaderLeft()" style="display:none;">&#x2039;</button>
+            <div class="header-menu" id="header-menu"></div>
+            <button class="header-scroll-btn" id="scroll-right" onclick="scrollHeaderRight()" style="display:none;">&#x203a;</button>
+        </div>
         <button class="header-more-btn" onclick="toggleHeaderMenu()">⋮</button>
         <div class="header-more-menu" id="header-more-menu">
             <button class="switch-button" onclick="toggleDayMode(); closeHeaderMenu();">☀️ Bytt</button>
@@ -768,6 +801,33 @@
             ],
         };
 
+        function scrollHeaderLeft() {
+            const menu = document.getElementById('header-menu');
+            menu.scrollLeft -= 100;
+            updateHeaderScrollButtons();
+        }
+
+        function scrollHeaderRight() {
+            const menu = document.getElementById('header-menu');
+            menu.scrollLeft += 100;
+            updateHeaderScrollButtons();
+        }
+
+        function updateHeaderScrollButtons() {
+            const menu = document.getElementById('header-menu');
+            const leftBtn = document.getElementById('scroll-left');
+            const rightBtn = document.getElementById('scroll-right');
+            if (!menu || !leftBtn || !rightBtn) return;
+
+            const SCROLL_END_THRESHOLD = 5;
+            const isScrollable = menu.scrollWidth > menu.clientWidth;
+            const isAtStart = menu.scrollLeft === 0;
+            const isAtEnd = menu.scrollLeft >= (menu.scrollWidth - menu.clientWidth - SCROLL_END_THRESHOLD);
+
+            leftBtn.style.display = isScrollable && !isAtStart ? 'flex' : 'none';
+            rightBtn.style.display = isScrollable && !isAtEnd ? 'flex' : 'none';
+        }
+
         function loadMenu(menuName) {
             updateHeaderMenu(menuName);
         }
@@ -807,6 +867,9 @@
                 btn.onclick = () => showStations(cat.category);
                 headerMenu.appendChild(btn);
             });
+
+            // Defer to allow layout to settle after DOM updates
+            setTimeout(updateHeaderScrollButtons, 0);
         }
 
         let stationsData = {};
@@ -1119,7 +1182,10 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             loadMenu('main');
+            updateHeaderScrollButtons();
         });
+
+        window.addEventListener('resize', updateHeaderScrollButtons);
     </script>
     <script src="sonos-ui.js"></script>
 </body>
