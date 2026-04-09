@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Radioportal</title>
     <meta name="theme-color" content="#0a0a0f">
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.18"></script>
     <style>
         /* ============================================================
            DESIGN TOKENS & RESET
@@ -709,8 +709,8 @@
 <header class="top-header">
     <img class="logo-img" src="moffaradio.png" alt="Radioportal">
     <span class="title">RADIOPORTAL</span>
-    <button class="btn-icon" id="btn-day-mode" title="Bytt design" aria-label="Bytt design">☀️</button>
-    <button class="btn-icon" id="btn-favorites" title="Favoritter" aria-label="Vis favoritter">★</button>
+    <button class="btn-icon" id="btn-day-mode" title="Bytt til dagmodus" aria-label="Bytt til dagmodus">☀️</button>
+    <button class="btn-icon" id="btn-favorites" title="Vis favoritter" aria-label="Vis favoritter">★</button>
 </header>
 
 <!-- ================================================================
@@ -987,7 +987,10 @@ function renderGrid() {
         logo.src = station.logo || '';
         logo.alt = station.name || '';
         logo.loading = 'lazy';
-        logo.onerror = () => { logo.style.display = 'none'; };
+        logo.onerror = () => {
+            // Replace broken image with a text-only fallback so alt text remains accessible
+            logo.style.display = 'none';
+        };
 
         const name = document.createElement('div');
         name.className = 'card-name';
@@ -1105,7 +1108,11 @@ function togglePlayback() {
         updatePlayButtons(false);
     } else {
         if (state.audio) {
-            state.audio.play().catch(() => startStation(state.currentStation));
+            state.audio.play().catch(err => {
+                // If resume fails, log and restart rather than silently retrying
+                console.warn('Kunne ikke gjenoppta avspilling:', err);
+                startStation(state.currentStation);
+            });
         } else {
             startStation(state.currentStation);
         }
@@ -1196,9 +1203,9 @@ function setupWebSocket(url, station) {
         try {
             const data = JSON.parse(event.data);
 
-            // Update page title
+            // Update page title with stream title and app name for context
             if (data.StreamTitle) {
-                document.title = data.StreamTitle;
+                document.title = `${data.StreamTitle} – Radioportal`;
             }
 
             // Sanitize image
@@ -1359,10 +1366,14 @@ function initSonosUI() {
 ================================================================ */
 function sanitizeImageUrl(input) {
     if (!input || typeof input !== 'string') return '';
-    input = input.split(',')[0].replace(/[\x00-\x1F\x7F-\x9F"]/g, '').trim();
-    // Keep only up to .jpg / .png / .webp / .jpeg
-    const m = input.match(/(https?:\/\/[^\s]+?\.(jpg|jpeg|png|webp|avif))/i);
-    return m ? m[1] : input;
+    // ICY/Icecast metadata sometimes sends multiple comma-separated URLs; take the first
+    input = input.split(',')[0]
+        // Strip ASCII control characters and quotes that may be embedded in the string
+        .replace(/[\x00-\x1F\x7F-\x9F"]/g, '')
+        .trim();
+    // Match only HTTPS image URLs to avoid mixed-content warnings
+    const m = input.match(/(https:\/\/[^\s]+?\.(jpg|jpeg|png|webp|avif))/i);
+    return m ? m[1] : '';
 }
 
 /* ================================================================
@@ -1442,7 +1453,11 @@ $('btn-favorites').addEventListener('click', () => selectCategory('_favorites'))
 // Day mode toggle
 $('btn-day-mode').addEventListener('click', () => {
     document.body.classList.toggle('day-mode');
-    $('btn-day-mode').textContent = document.body.classList.contains('day-mode') ? '🌙' : '☀️';
+    const isDayMode = document.body.classList.contains('day-mode');
+    const btn = $('btn-day-mode');
+    btn.textContent = isDayMode ? '🌙' : '☀️';
+    btn.setAttribute('aria-label', isDayMode ? 'Bytt til nattmodus' : 'Bytt til dagmodus');
+    btn.setAttribute('title', isDayMode ? 'Bytt til nattmodus' : 'Bytt til dagmodus');
 });
 
 // Favorite in sheet
