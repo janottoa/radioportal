@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Radioportal</title>
+    <meta name="theme-color" content="#0a0a0f">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        /* ============================================================
+           DESIGN TOKENS & RESET
+        ============================================================ */
+        :root {
+            --bg-primary:      #0a0a0f;
+            --bg-secondary:    #12121a;
+            --bg-card:         rgba(255,255,255,0.06);
+            --bg-card-hover:   rgba(255,255,255,0.10);
+            --glass-bg:        rgba(18,18,26,0.85);
+            --glass-border:    rgba(255,255,255,0.10);
+            --accent:          #7c4dff;
+            --accent-light:    #b388ff;
+            --accent-glow:     rgba(124,77,255,0.35);
+            --text-primary:    #f0f0f8;
+            --text-secondary:  #8888aa;
+            --text-dim:        #555575;
+            --mini-height:     70px;
+            --radius-card:     16px;
+            --radius-sm:       8px;
+            --transition:      0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        /* Day mode overrides */
+        body.day-mode {
+            --bg-primary:    #f4f4f8;
+            --bg-secondary:  #eaeaf2;
+            --bg-card:       rgba(0,0,0,0.05);
+            --bg-card-hover: rgba(0,0,0,0.09);
+            --glass-bg:      rgba(244,244,248,0.90);
+            --glass-border:  rgba(0,0,0,0.10);
+            --text-primary:  #111118;
+            --text-secondary:#555570;
+            --text-dim:      #aaaacc;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overscroll-behavior: none;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        /* ============================================================
+           TOP HEADER
+        ============================================================ */
+        .top-header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 56px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            z-index: 100;
+            gap: 12px;
+        }
+
+        .top-header .logo-img {
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .top-header .title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            flex: 1;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: var(--radius-sm);
+            transition: color var(--transition), background var(--transition);
+            line-height: 1;
+        }
+        .btn-icon:hover, .btn-icon:active {
+            color: var(--text-primary);
+            background: var(--bg-card-hover);
+        }
+
+        /* ============================================================
+           CATEGORY NAV TABS
+        ============================================================ */
+        .cat-nav {
+            position: fixed;
+            top: 56px; left: 0; right: 0;
+            height: 44px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            gap: 4px;
+            padding: 0 12px;
+            z-index: 99;
+        }
+        .cat-nav::-webkit-scrollbar { display: none; }
+
+        .cat-tab {
+            flex-shrink: 0;
+            background: none;
+            border: 1px solid transparent;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            padding: 5px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+        .cat-tab:hover {
+            color: var(--text-primary);
+            border-color: var(--glass-border);
+        }
+        .cat-tab.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        /* ============================================================
+           MAIN SCROLL AREA (THE GRID)
+        ============================================================ */
+        .main-scroll {
+            position: fixed;
+            top: 100px;   /* header + cat-nav */
+            left: 0; right: 0;
+            bottom: var(--mini-height);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 16px 12px 20px;
+        }
+
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 14px;
+        }
+
+        /* ============================================================
+           STATION CARD (grid item)
+        ============================================================ */
+        .station-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-card);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 8px 10px;
+            cursor: pointer;
+            transition: all var(--transition);
+            position: relative;
+            aspect-ratio: 1;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .station-card:active {
+            transform: scale(0.94);
+        }
+
+        .station-card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255,255,255,0.18);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+
+        .station-card.playing {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-glow), 0 8px 24px rgba(0,0,0,0.3);
+        }
+
+        .station-card .card-logo {
+            width: 70%;
+            height: 55%;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .station-card .card-name {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-align: center;
+            line-height: 1.2;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 0 4px;
+        }
+
+        .station-card.playing .card-name {
+            color: var(--accent-light);
+        }
+
+        .station-card .fav-btn {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: none;
+            border: none;
+            font-size: 0.85rem;
+            cursor: pointer;
+            color: var(--text-dim);
+            transition: color var(--transition), transform var(--transition);
+            padding: 2px;
+            line-height: 1;
+        }
+        .station-card .fav-btn.is-fav {
+            color: #ffcc00;
+        }
+        .station-card .fav-btn:active {
+            transform: scale(1.3);
+        }
+
+        /* Playing pulse dot */
+        .station-card.playing::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.5; transform: translateX(-50%) scale(0.6); }
+        }
+
+        /* ============================================================
+           MINI-PLAYER (bottom bar)
+        ============================================================ */
+        .mini-player {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: var(--mini-height);
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 12px;
+            z-index: 100;
+            cursor: pointer;
+            transition: opacity var(--transition), transform var(--transition);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .mini-player.hidden {
+            transform: translateY(100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .mini-player .mp-logo {
+            width: 46px;
+            height: 46px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: var(--bg-card);
+            padding: 4px;
+            flex-shrink: 0;
+        }
+
+        .mini-player .mp-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .mini-player .mp-station {
+            font-size: 0.85rem;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .mini-player .mp-song {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 2px;
+        }
+
+        .mini-player .mp-play-btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: transform var(--transition), box-shadow var(--transition);
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+        .mini-player .mp-play-btn:active {
+            transform: scale(0.88);
+        }
+
+        .mini-player .mp-progress {
+            position: absolute;
+            bottom: 0; left: 0;
+            height: 2px;
+            background: var(--accent);
+            width: 0%;
+            transition: width 1s linear;
+            border-radius: 0 1px 1px 0;
+        }
+
+        /* ============================================================
+           BOTTOM SHEET
+        ============================================================ */
+        .sheet-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+        }
+        .sheet-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .bottom-sheet {
+            position: fixed;
+            left: 0; right: 0;
+            bottom: 0;
+            height: 100dvh;
+            background: var(--bg-primary);
+            border-radius: 20px 20px 0 0;
+            z-index: 201;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+            overflow: hidden;
+        }
+
+        .bottom-sheet.open {
+            transform: translateY(0);
+        }
+
+        /* drag handle */
+        .sheet-handle {
+            width: 36px;
+            height: 4px;
+            background: var(--text-dim);
+            border-radius: 2px;
+            margin: 12px auto 4px;
+            flex-shrink: 0;
+            cursor: grab;
+        }
+
+        /* cover area */
+        .sheet-cover-wrap {
+            position: relative;
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .sheet-cover-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            filter: blur(40px) brightness(0.4);
+            transform: scale(1.15);
+            transition: background-image 0.6s ease;
+        }
+
+        .sheet-cover-img {
+            display: block;
+            width: min(260px, 70vw);
+            height: min(260px, 70vw);
+            object-fit: cover;
+            border-radius: 18px;
+            margin: 16px auto 0;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            position: relative;
+            z-index: 1;
+            transition: opacity 0.4s;
+        }
+
+        /* scrollable content inside sheet */
+        .sheet-body {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 20px 24px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* metadata */
+        .sheet-meta {
+            text-align: center;
+        }
+        .sheet-meta .meta-station {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent-light);
+            margin-bottom: 6px;
+        }
+        .sheet-meta .meta-song {
+            font-size: 1.3rem;
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 4px;
+        }
+        .sheet-meta .meta-artist {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+        }
+        .sheet-meta .meta-program {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        /* playback controls in sheet */
+        .sheet-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 28px;
+        }
+        .sheet-controls .ctrl-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.6rem;
+            cursor: pointer;
+            padding: 8px;
+            transition: color var(--transition), transform var(--transition);
+            line-height: 1;
+        }
+        .sheet-controls .ctrl-btn:active { transform: scale(0.85); }
+        .sheet-controls .ctrl-btn.active { color: var(--text-primary); }
+
+        .sheet-controls .play-btn-large {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 24px var(--accent-glow);
+            transition: transform var(--transition);
+        }
+        .sheet-controls .play-btn-large:active { transform: scale(0.88); }
+
+        /* separator */
+        .sheet-divider {
+            height: 1px;
+            background: var(--glass-border);
+        }
+
+        /* lyrics section */
+        .lyrics-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .lyrics-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .lyrics-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+        .lyrics-offset-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .lyrics-offset-controls span {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            min-width: 36px;
+            text-align: center;
+        }
+        .offset-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background var(--transition);
+        }
+        .offset-btn:active { background: var(--bg-card-hover); }
+
+        .lyrics-display {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-card);
+            padding: 16px;
+            min-height: 100px;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            white-space: pre-wrap;
+        }
+        .lyrics-display .lyric-line {
+            display: block;
+            transition: opacity 0.3s, transform 0.3s;
+            padding: 2px 0;
+        }
+        .lyrics-display .lyric-line.active {
+            color: var(--accent-light);
+            font-weight: 700;
+        }
+        .lyrics-display .no-lyrics {
+            color: var(--text-dim);
+            font-style: italic;
+            text-align: center;
+        }
+
+        /* output mode section */
+        .output-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .output-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+        .output-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .output-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .output-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .output-btn:active { transform: scale(0.93); }
+
+        /* sonos section */
+        .sonos-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .sonos-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+        #sonos-ui-container {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-card);
+            padding: 12px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* ============================================================
+           EMPTY STATE
+        ============================================================ */
+        .empty-state {
+            grid-column: 1/-1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            color: var(--text-dim);
+            gap: 10px;
+        }
+        .empty-state .empty-icon { font-size: 2.5rem; }
+        .empty-state p { font-size: 0.9rem; }
+
+        /* ============================================================
+           LOADING SKELETON
+        ============================================================ */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton {
+            background: linear-gradient(
+                90deg,
+                var(--bg-card) 25%,
+                var(--bg-card-hover) 50%,
+                var(--bg-card) 75%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: var(--radius-card);
+            aspect-ratio: 1;
+        }
+
+        /* ============================================================
+           SCROLLBAR STYLING
+        ============================================================ */
+        .main-scroll::-webkit-scrollbar,
+        .sheet-body::-webkit-scrollbar {
+            width: 3px;
+        }
+        .main-scroll::-webkit-scrollbar-track,
+        .sheet-body::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .main-scroll::-webkit-scrollbar-thumb,
+        .sheet-body::-webkit-scrollbar-thumb {
+            background: var(--text-dim);
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ================================================================
+     TOP HEADER
+================================================================ -->
+<header class="top-header">
+    <img class="logo-img" src="moffaradio.png" alt="Radioportal">
+    <span class="title">RADIOPORTAL</span>
+    <button class="btn-icon" id="btn-day-mode" title="Bytt design" aria-label="Bytt design">☀️</button>
+    <button class="btn-icon" id="btn-favorites" title="Favoritter" aria-label="Vis favoritter">★</button>
+</header>
+
+<!-- ================================================================
+     CATEGORY NAVIGATION
+================================================================ -->
+<nav class="cat-nav" id="cat-nav" role="navigation" aria-label="Kategorier">
+    <!-- Populated dynamically -->
+</nav>
+
+<!-- ================================================================
+     THE GRID (main scroll area)
+================================================================ -->
+<main class="main-scroll" id="main-scroll">
+    <div class="stations-grid" id="stations-grid">
+        <!-- Skeleton loaders -->
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+    </div>
+</main>
+
+<!-- ================================================================
+     MINI-PLAYER
+================================================================ -->
+<div class="mini-player hidden" id="mini-player" role="region" aria-label="Mini-spiller">
+    <div class="mp-progress" id="mp-progress"></div>
+    <img class="mp-logo" id="mp-logo" src="" alt="Stasjonslogo">
+    <div class="mp-info">
+        <div class="mp-station" id="mp-station">—</div>
+        <div class="mp-song" id="mp-song">Tap for å åpne</div>
+    </div>
+    <button class="mp-play-btn" id="mp-play-btn" aria-label="Play/Pause">▶</button>
+</div>
+
+<!-- ================================================================
+     SHEET OVERLAY
+================================================================ -->
+<div class="sheet-overlay" id="sheet-overlay"></div>
+
+<!-- ================================================================
+     BOTTOM SHEET
+================================================================ -->
+<div class="bottom-sheet" id="bottom-sheet" role="dialog" aria-modal="true" aria-label="Stasjons-panel">
+    <div class="sheet-handle" id="sheet-handle"></div>
+
+    <!-- Cover art area -->
+    <div class="sheet-cover-wrap" id="sheet-cover-wrap">
+        <div class="sheet-cover-bg" id="sheet-cover-bg"></div>
+        <img class="sheet-cover-img" id="sheet-cover-img" src="" alt="Cover art">
+    </div>
+
+    <!-- Scrollable body -->
+    <div class="sheet-body">
+
+        <!-- Metadata -->
+        <div class="sheet-meta">
+            <div class="meta-station" id="meta-station">—</div>
+            <div class="meta-song" id="meta-song">—</div>
+            <div class="meta-artist" id="meta-artist"></div>
+            <div class="meta-program" id="meta-program"></div>
+        </div>
+
+        <!-- Playback controls -->
+        <div class="sheet-controls">
+            <button class="ctrl-btn" id="ctrl-fav" title="Favoritt" aria-label="Legg til favoritter">☆</button>
+            <button class="play-btn-large" id="sheet-play-btn" aria-label="Play/Pause">▶</button>
+            <button class="ctrl-btn" id="ctrl-output" title="Output" aria-label="Output-modus">🔊</button>
+        </div>
+
+        <div class="sheet-divider"></div>
+
+        <!-- Lyrics section -->
+        <div class="lyrics-section">
+            <div class="lyrics-header">
+                <span class="lyrics-title">🎵 Lyrics</span>
+                <div class="lyrics-offset-controls">
+                    <button class="offset-btn" id="offset-minus" aria-label="Offset minus">−</button>
+                    <span id="offset-display">0s</span>
+                    <button class="offset-btn" id="offset-plus" aria-label="Offset pluss">+</button>
+                </div>
+            </div>
+            <div class="lyrics-display" id="lyrics-display">
+                <span class="no-lyrics">Ingen lyrics tilgjengelig</span>
+            </div>
+        </div>
+
+        <div class="sheet-divider"></div>
+
+        <!-- Output mode -->
+        <div class="output-section">
+            <div class="output-label">🔊 Output</div>
+            <div class="output-options">
+                <button class="output-btn active" data-mode="browser" aria-pressed="true">Nettleser</button>
+                <button class="output-btn" data-mode="sonos" aria-pressed="false">Sonos</button>
+                <button class="output-btn" data-mode="chromecast" aria-pressed="false">Chromecast</button>
+            </div>
+        </div>
+
+        <!-- Sonos integration container -->
+        <div class="sonos-section" id="sonos-section" style="display:none">
+            <div class="sonos-label">🔈 Sonos</div>
+            <div id="sonos-ui-container">
+                <p>Kobler til Sonos…</p>
+            </div>
+        </div>
+
+    </div><!-- /sheet-body -->
+</div><!-- /bottom-sheet -->
+
+<script>
+/* ================================================================
+   STATE
+================================================================ */
+const state = {
+    stationsData: {},          // { category: [station, ...] }
+    currentCategory: 'NRK',
+    currentStation: null,      // station object
+    currentUrl: null,
+    isPlaying: false,
+    audio: null,               // HTMLAudioElement or video for HLS
+    ws: null,
+    lyricsLines: [],
+    lyricsOffset: 0,           // seconds offset for lyrics
+    lyricsIndex: 0,
+    lyricsTimer: null,
+    outputMode: 'browser',     // 'browser' | 'sonos' | 'chromecast'
+    sheetOpen: false,
+    favorites: JSON.parse(localStorage.getItem('rp_favorites') || '[]'),
+    lastStation: JSON.parse(localStorage.getItem('rp_lastStation') || 'null'),
+};
+
+/* Base URL detection */
+const BASE_URL = (
+    window.location.hostname.startsWith('192.168.') ||
+    window.location.hostname === 'localhost'
+) ? 'http://192.168.0.11' : 'http://anthonsen.net:2222';
+
+const WS_URL = 'ws://anthonsen.net:3080';
+
+/* ================================================================
+   DOM REFERENCES
+================================================================ */
+const $ = id => document.getElementById(id);
+const catNav       = $('cat-nav');
+const stationsGrid = $('stations-grid');
+const miniPlayer   = $('mini-player');
+const mpLogo       = $('mp-logo');
+const mpStation    = $('mp-station');
+const mpSong       = $('mp-song');
+const mpPlayBtn    = $('mp-play-btn');
+const sheetOverlay = $('sheet-overlay');
+const bottomSheet  = $('bottom-sheet');
+const sheetHandle  = $('sheet-handle');
+const sheetCoverBg = $('sheet-cover-bg');
+const sheetCoverImg= $('sheet-cover-img');
+const metaStation  = $('meta-station');
+const metaSong     = $('meta-song');
+const metaArtist   = $('meta-artist');
+const metaProgram  = $('meta-program');
+const sheetPlayBtn = $('sheet-play-btn');
+const ctrlFav      = $('ctrl-fav');
+const lyricsDisplay= $('lyrics-display');
+const offsetDisplay= $('offset-display');
+const mpProgress   = $('mp-progress');
+
+/* ================================================================
+   CATEGORY DEFINITIONS
+================================================================ */
+const CATEGORIES = [
+    { key: 'NRK',         label: 'NRK' },
+    { key: 'P4',          label: 'P4' },
+    { key: 'Radio Norge', label: 'Radio Norge' },
+    { key: 'Metro',       label: 'Metro' },
+    { key: 'Lokale',      label: 'Lokale' },
+    { key: 'Internet',    label: 'Internett' },
+    { key: 'Latinske',    label: 'Latinske' },
+    { key: '1fm',         label: '1FM' },
+    { key: '181fm',       label: '181FM' },
+    { key: 'utland',      label: 'UK' },
+    { key: 'se',          label: 'Sverige' },
+    { key: 'dk',          label: 'Danmark' },
+    { key: 'de',          label: 'Tyskland' },
+    { key: 'us',          label: 'USA' },
+    { key: 'middelhavet', label: 'Middelhavet' },
+    { key: '_favorites',  label: '★ Favoritter' },
+];
+
+/* ================================================================
+   INIT: build category nav
+================================================================ */
+function buildCatNav() {
+    catNav.innerHTML = '';
+    CATEGORIES.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'cat-tab' + (cat.key === state.currentCategory ? ' active' : '');
+        btn.textContent = cat.label;
+        btn.dataset.key = cat.key;
+        btn.addEventListener('click', () => selectCategory(cat.key));
+        catNav.appendChild(btn);
+    });
+}
+
+function selectCategory(key) {
+    state.currentCategory = key;
+    // update tabs
+    catNav.querySelectorAll('.cat-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.key === key);
+    });
+    renderGrid();
+}
+
+/* ================================================================
+   FETCH STATIONS
+================================================================ */
+async function loadStations() {
+    try {
+        const resp = await fetch(`${BASE_URL}/stations.json`);
+        if (!resp.ok) throw new Error('Network error');
+        state.stationsData = await resp.json();
+    } catch (err) {
+        console.error('Feil ved lasting av stasjoner:', err);
+    }
+
+    buildCatNav();
+    renderGrid();
+
+    // Resume last station
+    if (state.lastStation) {
+        const { category, url } = state.lastStation;
+        const cat = state.stationsData[category];
+        if (cat) {
+            const st = cat.find(s => s.url === url);
+            if (st) {
+                selectCategory(category);
+                setTimeout(() => startStation(st), 800);
+            }
+        }
+    }
+}
+
+/* ================================================================
+   RENDER GRID
+================================================================ */
+function renderGrid() {
+    stationsGrid.innerHTML = '';
+
+    let stations = [];
+    if (state.currentCategory === '_favorites') {
+        stations = getFavoriteStations();
+    } else {
+        stations = state.stationsData[state.currentCategory] || [];
+    }
+
+    if (stations.length === 0) {
+        stationsGrid.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📻</div>
+                <p>Ingen stasjoner i denne kategorien</p>
+            </div>`;
+        return;
+    }
+
+    stations.forEach(station => {
+        const card = document.createElement('div');
+        card.className = 'station-card';
+        if (state.currentUrl === station.url) card.classList.add('playing');
+        card.dataset.url = station.url;
+
+        const logo = document.createElement('img');
+        logo.className = 'card-logo';
+        logo.src = station.logo || '';
+        logo.alt = station.name || '';
+        logo.loading = 'lazy';
+        logo.onerror = () => { logo.style.display = 'none'; };
+
+        const name = document.createElement('div');
+        name.className = 'card-name';
+        name.textContent = station.name || '';
+
+        const favBtn = document.createElement('button');
+        favBtn.className = 'fav-btn' + (isFavorite(station.url) ? ' is-fav' : '');
+        favBtn.textContent = isFavorite(station.url) ? '★' : '☆';
+        favBtn.setAttribute('aria-label', 'Favoritt');
+        favBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            toggleFavorite(station);
+            favBtn.classList.toggle('is-fav', isFavorite(station.url));
+            favBtn.textContent = isFavorite(station.url) ? '★' : '☆';
+        });
+
+        card.appendChild(logo);
+        card.appendChild(name);
+        card.appendChild(favBtn);
+
+        card.addEventListener('click', () => {
+            if (state.currentUrl === station.url) {
+                // Same station — open bottom sheet
+                openSheet();
+            } else {
+                startStation(station);
+            }
+        });
+
+        stationsGrid.appendChild(card);
+    });
+}
+
+/* ================================================================
+   AUDIO PLAYBACK
+================================================================ */
+function startStation(station) {
+    if (!station || !station.url) return;
+
+    // Stop previous
+    stopAudio();
+
+    state.currentStation = station;
+    state.currentUrl = station.url;
+    state.currentCategory = state.currentCategory || findCategory(station.url);
+    state.isPlaying = true;
+
+    // Save to localStorage
+    localStorage.setItem('rp_lastStation', JSON.stringify({
+        category: state.currentCategory,
+        url: station.url
+    }));
+
+    // Update grid highlight
+    document.querySelectorAll('.station-card').forEach(c => {
+        c.classList.toggle('playing', c.dataset.url === station.url);
+    });
+
+    // Update mini player
+    updateMiniPlayer(station);
+
+    // Setup WebSocket first
+    setupWebSocket(station.url, station);
+
+    // Start audio
+    if (station.url.endsWith('.m3u8') && Hls.isSupported()) {
+        const video = document.createElement('video');
+        video.style.display = 'none';
+        document.body.appendChild(video);
+        const hls = new Hls();
+        hls.loadSource(station.url);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            video.play().catch(e => console.error('HLS play error:', e));
+        });
+        state.audio = video;
+    } else {
+        const audio = new Audio(station.url);
+        audio.play().catch(e => console.error('Audio play error:', e));
+        state.audio = audio;
+    }
+
+    updatePlayButtons(true);
+
+    // Update sheet if open
+    if (state.sheetOpen) {
+        updateSheet(station, {});
+    }
+}
+
+function stopAudio() {
+    if (state.audio) {
+        state.audio.pause();
+        if (state.audio.tagName === 'VIDEO') {
+            state.audio.remove();
+        }
+        state.audio = null;
+    }
+    if (state.ws) {
+        state.ws.close();
+        state.ws = null;
+    }
+    clearLyricsTimer();
+    state.isPlaying = false;
+    state.currentUrl = null;
+    updatePlayButtons(false);
+    document.querySelectorAll('.station-card').forEach(c => c.classList.remove('playing'));
+}
+
+function togglePlayback() {
+    if (!state.currentStation) return;
+    if (state.isPlaying) {
+        if (state.audio) state.audio.pause();
+        state.isPlaying = false;
+        updatePlayButtons(false);
+    } else {
+        if (state.audio) {
+            state.audio.play().catch(() => startStation(state.currentStation));
+        } else {
+            startStation(state.currentStation);
+        }
+        state.isPlaying = true;
+        updatePlayButtons(true);
+    }
+}
+
+function updatePlayButtons(playing) {
+    const icon = playing ? '⏸' : '▶';
+    mpPlayBtn.textContent = icon;
+    sheetPlayBtn.textContent = icon;
+}
+
+function findCategory(url) {
+    for (const [cat, stations] of Object.entries(state.stationsData)) {
+        if (stations.find(s => s.url === url)) return cat;
+    }
+    return 'NRK';
+}
+
+/* ================================================================
+   MINI-PLAYER
+================================================================ */
+function updateMiniPlayer(station, meta = {}) {
+    miniPlayer.classList.remove('hidden');
+    mpLogo.src = meta.imageUrl || station.logo || '';
+    mpLogo.onerror = () => { mpLogo.src = station.logo || ''; };
+    mpStation.textContent = station.name || '—';
+    mpSong.textContent = meta.title || meta.StreamTitle || 'Spiller nå…';
+}
+
+/* ================================================================
+   BOTTOM SHEET
+================================================================ */
+function openSheet() {
+    state.sheetOpen = true;
+    bottomSheet.classList.add('open');
+    sheetOverlay.classList.add('visible');
+    if (state.currentStation) {
+        updateSheet(state.currentStation, {});
+    }
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSheet() {
+    state.sheetOpen = false;
+    bottomSheet.classList.remove('open');
+    sheetOverlay.classList.remove('visible');
+    document.body.style.overflow = '';
+}
+
+function updateSheet(station, meta) {
+    const cover = sanitizeImageUrl(meta.imageUrl) || station.logo || '';
+    sheetCoverImg.src = cover;
+    sheetCoverImg.onerror = () => { sheetCoverImg.src = station.logo || ''; };
+    sheetCoverBg.style.backgroundImage = cover ? `url('${cover}')` : '';
+    metaStation.textContent = station.name || '—';
+    metaSong.textContent = meta.title || meta.StreamTitle || meta.songTitle || '—';
+    metaArtist.textContent = meta.artist || '';
+    metaProgram.textContent = meta.program ? `Program: ${meta.program}` : station.songInfo || '';
+    ctrlFav.textContent = isFavorite(station.url) ? '★' : '☆';
+
+    // Lyrics
+    if (meta.lyrics && meta.lyrics.hasLyrics && meta.lyrics.lyricsLines && meta.lyrics.lyricsLines.length > 0) {
+        state.lyricsLines = meta.lyrics.lyricsLines;
+        renderLyrics();
+    }
+}
+
+/* ================================================================
+   WEBSOCKET METADATA
+================================================================ */
+function setupWebSocket(url, station) {
+    if (state.ws) {
+        try { state.ws.close(); } catch (_) {}
+        state.ws = null;
+    }
+
+    const ws = new WebSocket(WS_URL);
+    state.ws = ws;
+
+    ws.onopen = () => {
+        ws.send(url);
+    };
+
+    ws.onmessage = event => {
+        try {
+            const data = JSON.parse(event.data);
+
+            // Update page title
+            if (data.StreamTitle) {
+                document.title = data.StreamTitle;
+            }
+
+            // Sanitize image
+            if (data.imageUrl) {
+                data.imageUrl = sanitizeImageUrl(data.imageUrl);
+            }
+
+            // Update mini player
+            updateMiniPlayer(station, data);
+
+            // Update sheet if open
+            if (state.sheetOpen) {
+                updateSheet(station, data);
+            }
+
+            // Handle lyrics from server
+            if (data.lyrics && data.lyrics.hasLyrics) {
+                state.lyricsLines = data.lyrics.lyricsLines || [];
+                state.lyricsIndex = 0;
+                clearLyricsTimer();
+                if (state.lyricsLines.length > 0) {
+                    startLyricsRotation();
+                }
+            }
+
+            // Update card cover if image changed
+            const playingCard = document.querySelector('.station-card.playing');
+            if (playingCard && data.imageUrl) {
+                const logo = playingCard.querySelector('.card-logo');
+                if (logo) logo.src = data.imageUrl;
+            }
+
+        } catch (e) {
+            console.error('WS parse error:', e);
+        }
+    };
+
+    ws.onerror = e => console.error('WebSocket error:', e);
+    ws.onclose = () => console.log('WebSocket closed');
+}
+
+/* ================================================================
+   LYRICS ENGINE
+================================================================ */
+function renderLyrics() {
+    if (!state.lyricsLines || state.lyricsLines.length === 0) {
+        lyricsDisplay.innerHTML = '<span class="no-lyrics">Ingen lyrics tilgjengelig</span>';
+        return;
+    }
+
+    lyricsDisplay.innerHTML = '';
+    state.lyricsLines.forEach((line, i) => {
+        const span = document.createElement('span');
+        span.className = 'lyric-line' + (i === state.lyricsIndex ? ' active' : '');
+        span.textContent = line;
+        lyricsDisplay.appendChild(span);
+    });
+
+    // Scroll active into view
+    const activeLine = lyricsDisplay.querySelector('.lyric-line.active');
+    if (activeLine) {
+        activeLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
+
+function startLyricsRotation() {
+    clearLyricsTimer();
+    state.lyricsTimer = setInterval(() => {
+        if (state.lyricsLines.length === 0) return;
+        state.lyricsIndex = (state.lyricsIndex + 1) % state.lyricsLines.length;
+        const lines = lyricsDisplay.querySelectorAll('.lyric-line');
+        lines.forEach((el, i) => el.classList.toggle('active', i === state.lyricsIndex));
+        const activeLine = lyricsDisplay.querySelector('.lyric-line.active');
+        if (activeLine) activeLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 5000 + state.lyricsOffset * 1000);
+}
+
+function clearLyricsTimer() {
+    if (state.lyricsTimer) {
+        clearInterval(state.lyricsTimer);
+        state.lyricsTimer = null;
+    }
+}
+
+/* ================================================================
+   FAVORITES
+================================================================ */
+function isFavorite(url) {
+    return state.favorites.some(f => f.url === url);
+}
+
+function toggleFavorite(station) {
+    const idx = state.favorites.findIndex(f => f.url === station.url);
+    if (idx !== -1) {
+        state.favorites.splice(idx, 1);
+    } else {
+        state.favorites.push({ url: station.url, category: state.currentCategory, name: station.name });
+    }
+    localStorage.setItem('rp_favorites', JSON.stringify(state.favorites));
+
+    // Update fav button in sheet
+    if (state.currentStation && state.currentStation.url === station.url) {
+        ctrlFav.textContent = isFavorite(station.url) ? '★' : '☆';
+    }
+}
+
+function getFavoriteStations() {
+    const result = [];
+    state.favorites.forEach(fav => {
+        const cat = state.stationsData[fav.category];
+        if (cat) {
+            const st = cat.find(s => s.url === fav.url);
+            if (st) result.push(st);
+        }
+    });
+    return result;
+}
+
+/* ================================================================
+   OUTPUT MODE
+================================================================ */
+function setOutputMode(mode) {
+    state.outputMode = mode;
+    document.querySelectorAll('.output-btn').forEach(btn => {
+        const isActive = btn.dataset.mode === mode;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', String(isActive));
+    });
+
+    const sonosSection = $('sonos-section');
+    if (mode === 'sonos') {
+        sonosSection.style.display = 'flex';
+        initSonosUI();
+    } else {
+        sonosSection.style.display = 'none';
+    }
+
+    if (mode !== 'browser' && state.audio) {
+        state.audio.pause();
+        state.isPlaying = false;
+        updatePlayButtons(false);
+    } else if (mode === 'browser' && state.currentStation && !state.isPlaying) {
+        startStation(state.currentStation);
+    }
+}
+
+function initSonosUI() {
+    const container = $('sonos-ui-container');
+    if (typeof SonosUI !== 'undefined') {
+        SonosUI.init(container, state.currentStation);
+    } else {
+        container.innerHTML = '<p style="color:var(--text-dim)">Sonos-integrasjon ikke tilgjengelig</p>';
+    }
+}
+
+/* ================================================================
+   UTILITIES
+================================================================ */
+function sanitizeImageUrl(input) {
+    if (!input || typeof input !== 'string') return '';
+    input = input.split(',')[0].replace(/[\x00-\x1F\x7F-\x9F"]/g, '').trim();
+    // Keep only up to .jpg / .png / .webp / .jpeg
+    const m = input.match(/(https?:\/\/[^\s]+?\.(jpg|jpeg|png|webp|avif))/i);
+    return m ? m[1] : input;
+}
+
+/* ================================================================
+   SWIPE TO CLOSE (bottom sheet)
+================================================================ */
+(function setupSwipe() {
+    let startY = 0;
+    let currentY = 0;
+    let dragging = false;
+
+    function onStart(y) {
+        startY = y;
+        currentY = y;
+        dragging = true;
+        bottomSheet.style.transition = 'none';
+    }
+    function onMove(y) {
+        if (!dragging) return;
+        currentY = y;
+        const dy = Math.max(0, y - startY);
+        bottomSheet.style.transform = `translateY(${dy}px)`;
+    }
+    function onEnd() {
+        if (!dragging) return;
+        dragging = false;
+        bottomSheet.style.transition = '';
+        const dy = currentY - startY;
+        if (dy > 120) {
+            closeSheet();
+            bottomSheet.style.transform = '';
+        } else {
+            bottomSheet.style.transform = '';
+        }
+    }
+
+    // Touch events
+    sheetHandle.addEventListener('touchstart', e => onStart(e.touches[0].clientY), { passive: true });
+    bottomSheet.addEventListener('touchstart', e => {
+        // Only drag from top area (cover + handle)
+        if (e.target.closest('.sheet-body')) return;
+        onStart(e.touches[0].clientY);
+    }, { passive: true });
+    document.addEventListener('touchmove', e => {
+        if (!dragging) return;
+        onMove(e.touches[0].clientY);
+    }, { passive: true });
+    document.addEventListener('touchend', onEnd, { passive: true });
+
+    // Mouse drag (for desktop testing)
+    sheetHandle.addEventListener('mousedown', e => onStart(e.clientY));
+    document.addEventListener('mousemove', e => { if (dragging) onMove(e.clientY); });
+    document.addEventListener('mouseup', onEnd);
+})();
+
+/* ================================================================
+   EVENT LISTENERS
+================================================================ */
+// Mini-player: click info area opens sheet, click play toggles
+miniPlayer.addEventListener('click', e => {
+    if (e.target === mpPlayBtn || mpPlayBtn.contains(e.target)) return;
+    if (state.currentStation) openSheet();
+});
+mpPlayBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    togglePlayback();
+});
+
+// Sheet overlay click closes sheet
+sheetOverlay.addEventListener('click', closeSheet);
+
+// Sheet play button
+sheetPlayBtn.addEventListener('click', togglePlayback);
+
+// Favorites button in header
+$('btn-favorites').addEventListener('click', () => selectCategory('_favorites'));
+
+// Day mode toggle
+$('btn-day-mode').addEventListener('click', () => {
+    document.body.classList.toggle('day-mode');
+    $('btn-day-mode').textContent = document.body.classList.contains('day-mode') ? '🌙' : '☀️';
+});
+
+// Favorite in sheet
+ctrlFav.addEventListener('click', () => {
+    if (state.currentStation) {
+        toggleFavorite(state.currentStation);
+        renderGrid(); // refresh favorite state in grid
+    }
+});
+
+// Output buttons
+document.querySelectorAll('.output-btn').forEach(btn => {
+    btn.addEventListener('click', () => setOutputMode(btn.dataset.mode));
+});
+
+// Lyrics offset controls
+$('offset-minus').addEventListener('click', () => {
+    state.lyricsOffset = Math.max(-30, state.lyricsOffset - 1);
+    offsetDisplay.textContent = `${state.lyricsOffset}s`;
+    if (state.lyricsLines.length > 0) {
+        clearLyricsTimer();
+        startLyricsRotation();
+    }
+    localStorage.setItem('rp_lyricsOffset', state.lyricsOffset);
+});
+$('offset-plus').addEventListener('click', () => {
+    state.lyricsOffset = Math.min(30, state.lyricsOffset + 1);
+    offsetDisplay.textContent = `${state.lyricsOffset}s`;
+    if (state.lyricsLines.length > 0) {
+        clearLyricsTimer();
+        startLyricsRotation();
+    }
+    localStorage.setItem('rp_lyricsOffset', state.lyricsOffset);
+});
+
+// Output button in sheet controls (shortcut)
+$('ctrl-output').addEventListener('click', () => {
+    // Scroll to output section in sheet
+    const outputSection = document.querySelector('.output-section');
+    if (outputSection) outputSection.scrollIntoView({ behavior: 'smooth' });
+});
+
+/* ================================================================
+   INIT
+================================================================ */
+// Restore lyrics offset
+state.lyricsOffset = parseInt(localStorage.getItem('rp_lyricsOffset') || '0', 10);
+offsetDisplay.textContent = `${state.lyricsOffset}s`;
+
+// Load stations
+loadStations();
+</script>
+</body>
+</html>
