@@ -4,6 +4,10 @@ config.env
 
 # Ignorer avhengigheter
 node_modules/
+react-app/node_modules/
+
+# Ignorer byggeartefakter
+react-app/dist/
 
 # Ignorer midlertidige filer
 *.log
