@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import { SonosDevice } from '../types';
 
 const SONOS_API = 'https://anthonsen.net:3738';
+const SONOS_DEBOUNCE_MS = 1000;
 
 interface SonosState {
   devices: SonosDevice[];
@@ -73,7 +74,7 @@ export function useSonos(onSetLocalVolume: (v: number) => void, onStopLocal: () 
 
   const sendToSonos = useCallback(async (url: string) => {
     const now = Date.now();
-    if (now - lastCallRef.current < 1000) return;
+    if (now - lastCallRef.current < SONOS_DEBOUNCE_MS) return;
     if (inProgressRef.current) return;
 
     // Check if same URL already playing on Sonos
