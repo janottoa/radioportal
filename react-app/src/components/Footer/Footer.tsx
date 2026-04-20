@@ -51,9 +51,12 @@ export default function Footer({
     ? syncedLines[currentLineIndex + 1]?.text || ''
     : plainLines[1] || '';
 
+  // Only allow http/https URLs to prevent XSS via javascript: or data: URLs
+  const safeLogo = logoSrc && /^https?:\/\//i.test(logoSrc) ? logoSrc : '';
+
   const LogoEl = ({ cls, size }: { cls: string; size: number }) =>
-    logoSrc ? (
-      <img className={cls} src={logoSrc} alt={station.name} onError={e => { (e.target as HTMLImageElement).src = ''; }} style={{ width: size, height: size }} />
+    safeLogo ? (
+      <img className={cls} src={safeLogo} alt={station.name} onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} style={{ width: size, height: size }} />
     ) : (
       <div className={cls} style={{ width: size, height: size, background: 'var(--accent-gradient)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: size * 0.3 }}>
         {station.name.slice(0, 2).toUpperCase()}

@@ -64,7 +64,7 @@ export default function App() {
     useCallback(() => audio.stop(), [audio])
   );
 
-  const { metadata, isConnected } = useWebSocket(
+  const { metadata, isConnected: _isConnected } = useWebSocket(
     currentStation?.url || null,
     currentStation?.app
   );
@@ -130,11 +130,6 @@ export default function App() {
   }, [sonos, audio, currentStation]);
 
   const isFavorite = currentStation ? favorites.includes(currentStation.url) : false;
-  const hasLyrics = !!(metadata?.lyrics?.hasLyrics);
-
-  // Suppress unused variable warning for isConnected/hasLyrics
-  void isConnected;
-  void hasLyrics;
 
   return (
     <div className="app">
