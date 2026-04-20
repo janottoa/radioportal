@@ -10,16 +10,26 @@ interface Props {
 export default function StationCard({ station, isPlaying, onClick }: Props) {
   const initials = station.name.slice(0, 2).toUpperCase();
 
+  const safeLogo = (() => {
+    if (!station.logo) return '';
+    try {
+      const u = new URL(station.logo, window.location.href);
+      return (u.protocol === 'http:' || u.protocol === 'https:') ? u.href : '';
+    } catch {
+      return '';
+    }
+  })();
+
   return (
     <div
       className={`station-card${isPlaying ? ' playing' : ''}`}
       onClick={() => onClick(station)}
       title={station.name}
     >
-      {station.logo ? (
+      {safeLogo ? (
         <img
           className="station-logo"
-          src={station.logo}
+          src={safeLogo}
           alt={station.name}
           loading="lazy"
           onError={e => {
@@ -32,7 +42,7 @@ export default function StationCard({ station, isPlaying, onClick }: Props) {
       ) : null}
       <div
         className="station-logo-placeholder"
-        style={{ display: station.logo ? 'none' : 'flex' }}
+        style={{ display: safeLogo ? 'none' : 'flex' }}
       >
         {initials}
       </div>

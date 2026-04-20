@@ -52,7 +52,14 @@ export default function Footer({
     : plainLines[1] || '';
 
   // Only allow http/https URLs to prevent XSS via javascript: or data: URLs
-  const safeLogo = logoSrc && /^https?:\/\//i.test(logoSrc) ? logoSrc : '';
+  const safeLogo = (() => {
+    try {
+      const u = new URL(logoSrc);
+      return (u.protocol === 'http:' || u.protocol === 'https:') ? u.href : '';
+    } catch {
+      return '';
+    }
+  })();
 
   const LogoEl = ({ cls, size }: { cls: string; size: number }) =>
     safeLogo ? (

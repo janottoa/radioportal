@@ -76,12 +76,7 @@ export function useSonos(onSetLocalVolume: (v: number) => void, onStopLocal: () 
     if (now - lastCallRef.current < 1000) return;
     if (inProgressRef.current) return;
 
-    setState(prev => {
-      if (prev.outputMode === 'sonos' && prev.isPlaying && lastUrlRef.current === url) return prev;
-      return prev;
-    });
-
-    // Check if same URL already playing
+    // Check if same URL already playing on Sonos
     if (lastUrlRef.current === url && state.isPlaying) return;
 
     lastCallRef.current = now;
