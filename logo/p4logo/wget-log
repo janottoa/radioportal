@@ -1,0 +1,15 @@
+--2024-12-05 17:46:02--  https://www.google.no/imgres?q=p4%20norge
+Resolving www.google.no (www.google.no)... 142.250.74.131, 2a00:1450:400f:804::2003
+Connecting to www.google.no (www.google.no)|142.250.74.131|:443... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://www.google.no/imghp [following]
+--2024-12-05 17:46:02--  https://www.google.no/imghp
+Reusing existing connection to www.google.no:443.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [text/html]
+Saving to: ‘imgres?q=p4 norge’
+
+imgres?q=p4 norge       [<=>                 ]       0  --.-KB/s               imgres?q=p4 norge       [ <=>                ]  17,89K  --.-KB/s    in 0,002s  
+
+2024-12-05 17:46:03 (8,81 MB/s) - ‘imgres?q=p4 norge’ saved [18322]
+
