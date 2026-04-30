@@ -1,0 +1,2508 @@
+{
+  "NRK": [
+    {
+      "name": "NRK P1 Rogaland",
+      "url": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/p1_dk9_mp3_h",
+      "ffmpegUrl": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/p1_dk9_mp3_h",
+      "logo": "https://anthonsen.net/logo/nrklogo/rogaland.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "NRK P1 Sørlandet",
+      "url": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/p1_dk10_mp3_h",
+      "ffmpegUrl": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/p1_dk10_mp3_h",
+      "logo": "https://anthonsen.net/logo/nrklogo/sor.avif",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "NRK P1 Østfold",
+      "url": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/p1_dk15_mp3_h",
+      "ffmpegUrl": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/p1_dk15_mp3_h",
+      "logo": "https://anthonsen.net/logo/nrklogo/ostfold.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "NRK P1+",
+      "url": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/p1pluss_mp3_h",
+      "ffmpegUrl": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/p1pluss_mp3_h",
+      "logo": "https://anthonsen.net/logo/nrklogo/p1pluss.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "NRK P2",
+      "url": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/p2_mp3_h",
+      "ffmpegUrl": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/p2_mp3_h",
+      "logo": "https://anthonsen.net/logo/nrklogo/p2.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "NRK P3",
+      "url": "https://lyd.nrk.no/nrk_radio_p3_mp3_m",
+      "ffmpegUrl": "https://lyd.nrk.no/nrk_radio_mp3_mp3_h?_hdr=0",
+      "logo": "https://anthonsen.net/logo/nrklogo/p3.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "NRK P3 Musikk",
+      "url": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/p3musikk_mp3_h",
+      "ffmpegUrl": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/p3musikk_mp3_h",
+      "logo": "https://gfx.nrk.no/F4h3WlHK4YUujwYdbFsM5QxewgfRHwvMUvznIYSiBGsw",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "NRK MP3",
+      "url": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/mp3_mp3_h",
+      "ffmpegUrl": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/mp3_mp3_h",
+      "logo": "https://anthonsen.net/logo/nrklogo/mp3.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "NRK Alltid Nyheter",
+      "url": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/nyheter_mp3_h",
+      "ffmpegUrl": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/nyheter_mp3_h",
+      "logo": "https://anthonsen.net/logo/nrklogo/nyheter.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "NRK P13",
+      "url": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/mp3_mp3_h",
+      "ffmpegUrl": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/mp3_mp3_h",
+      "logo": "https://anthonsen.net/logo/nrklogo/p13.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "NRK Sport",
+      "url": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/sport_mp3_h",
+      "ffmpegUrl": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/sport_mp3_h",
+      "logo": "https://anthonsen.net/logo/nrklogo/sport.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "NRK Jazz",
+      "url": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/jazz_mp3_h",
+      "ffmpegUrl": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/jazz_mp3_h",
+      "logo": "https://anthonsen.net/logo/nrklogo/jazz.avif",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "NRK Klassisk",
+      "url": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/klassisk_mp3_h",
+      "ffmpegUrl": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/klassisk_mp3_h",
+      "logo": "https://anthonsen.net/logo/nrklogo/klassisk.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "NRK P3X",
+      "url": "https://lyd.nrk.no/nrk_radio_p3x_mp3_h",
+      "ffmpegUrl": "https://lyd.nrk.no/nrk_radio_p3x_mp3_h",
+      "logo": "https://anthonsen.net/logo/nrklogo/p3x.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "NRK Folkemusikk",
+      "url": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/folkemusikk_mp3_h",
+      "ffmpegUrl": "https://cdn0-47115-liveicecast0.dna.contentdelivery.net/folkemusikk_mp3_h",
+      "logo": "https://anthonsen.net/logo/nrklogo/folkemusikk.png",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "P4": [
+    {
+      "name": "P4 Direkte",
+      "url": "https://p4.p4groupaudio.com/P04_AH",
+      "ffmpegUrl": "https://p4.p4groupaudio.com/P04_AH",
+      "logo": "https://anthonsen.net/logo/p4logo/p4.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "P5 Nonstop",
+      "url": "https://p5n.p4groupaudio.com/P05AAH",
+      "ffmpegUrl": "https://p5n.p4groupaudio.com/P05AAH",
+      "logo": "https://anthonsen.net/logo/p4logo/p5nonstop.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "P6 Rock",
+      "url": "https://p6.p4groupaudio.com/P06_MH",
+      "ffmpegUrl": "https://p6.p4groupaudio.com/P06_MH",
+      "logo": "https://anthonsen.net/logo/p4logo/p6.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "P7 Klem",
+      "url": "https://p7.p4groupaudio.com/P07_AH",
+      "ffmpegUrl": "https://p7.p4groupaudio.com/P07_AH",
+      "logo": "https://anthonsen.net/logo/p4logo/p7.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "P8 Pop",
+      "url": "https://p8.p4groupaudio.com/P08_AH",
+      "ffmpegUrl": "https://p8.p4groupaudio.com/P08_AH",
+      "logo": "https://anthonsen.net/logo/p4logo/p8.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "P9 Retro",
+      "url": "https://p9.p4groupaudio.com/P09_AH",
+      "ffmpegUrl": "https://p9.p4groupaudio.com/P09_AH",
+      "logo": "https://anthonsen.net/logo/p4logo/p9.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "P10 Country",
+      "url": "https://p10.p4groupaudio.com/P10_AH",
+      "ffmpegUrl": "https://p10.p4groupaudio.com/P10_AH",
+      "logo": "https://anthonsen.net/logo/p4logo/p10.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "P11 Dance",
+      "url": "https://p12.p4groupaudio.com/BAN_MM?args=3rdparty_01&distributor=radioplayer",
+      "ffmpegUrl": "https://p12.p4groupaudio.com/BAN_MM?args=3rdparty_01&distributor=radioplayer",
+      "logo": "https://anthonsen.net/logo/p4logo/p11d.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "P12 HitMix",
+      "url": "https://p12.p4groupaudio.com/P12_AH",
+      "ffmpegUrl": "https://p12.p4groupaudio.com/P12_AH",
+      "logo": "https://anthonsen.net/logo/p4logo/p12.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "NRJ",
+      "url": "https://nrj.p4groupaudio.com/NRJ_MH",
+      "ffmpegUrl": "https://nrj.p4groupaudio.com/NRJ_MH",
+      "logo": "https://anthonsen.net/logo/p4logo/nrj.png",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "Radio Norge": [
+    {
+      "name": "Radio Norge",
+      "url": "https://live-bauerno.sharp-stream.com/radionorge_no_mp3",
+      "ffmpegUrl": "https://live-bauerno.sharp-stream.com/radionorge_no_mp3",
+      "logo": "https://anthonsen.net/logo/norgelogo/norge.png",
+      "songInfo": "",
+      "channelUrl": "https://listenapi.planetradio.co.uk/api9.2/nowplaying/rno"
+    },
+    {
+      "name": "P24/7 Mix",
+      "url": "https://live-bauerno.sharp-stream.com/p247mix_no_mp3",
+      "ffmpegUrl": "https://live-bauerno.sharp-stream.com/p247mix_no_mp3",
+      "logo": "https://anthonsen.net/logo/norgelogo/p24-7mix.png",
+      "songInfo": "",
+      "channelUrl": "https://listenapi.planetradio.co.uk/api9.2/nowplaying/ptf"
+    },
+    {
+      "name": "p24/7 Kos",
+      "url": "https://live-bauerno.sharp-stream.com/p247kos_no_mp3",
+      "ffmpegUrl": "https://live-bauerno.sharp-stream.com/p247kos_no_mp3",
+      "logo": "https://anthonsen.net/logo/norgelogo/p24-7kos.png",
+      "songInfo": "",
+      "channelUrl": "https://listenapi.planetradio.co.uk/api9.2/nowplaying/kos"
+    },
+    {
+      "name": "p24/7 Fun",
+      "url": "https://live-bauerno.sharp-stream.com/station10_no_hq",
+      "ffmpegUrl": "https://live-bauerno.sharp-stream.com/station10_no_hq",
+      "logo": "https://anthonsen.net/logo/norgelogo/p24-7fun.png",
+      "songInfo": "",
+      "channelUrl": "https://listenapi.planetradio.co.uk/api9.2/nowplaying/pf7"
+    },
+    {
+      "name": "Kiss",
+      "url": "https://live-bauerno.sharp-stream.com/kiss_no_mp3",
+      "ffmpegUrl": "https://live-bauerno.sharp-stream.com/kiss_no_mp3",
+      "logo": "https://anthonsen.net/logo/norgelogo/kiss.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Topp 40 Unplugged Hits",
+      "url": "https://edge-bauerno-03-gos2.sharp-stream.com/top40_no_mp3",
+      "ffmpegUrl": "https://edge-bauerno-03-gos2.sharp-stream.com/top40_no_mp3",
+      "logo": "https://anthonsen.net/logo/norgelogo/topp40.png",
+      "songInfo": "",
+      "channelUrl": "https://listenapi.planetradio.co.uk/api9.2/nowplaying/jzr"
+    },
+    {
+      "name": "Vinyl",
+      "url": "https://live-bauerno.sharp-stream.com/vinyl_no_aac",
+      "ffmpegUrl": "https://live-bauerno.sharp-stream.com/vinyl_no_aac",
+      "logo": "https://anthonsen.net/logo/norgelogo/vinyl.png",
+      "songInfo": "",
+      "channelUrl": "https://listenapi.planetradio.co.uk/api9.2/nowplaying/vin"
+    },
+    {
+      "name": "Radio 1",
+      "url": "https://live-bauerno.sharp-stream.com/radio1_no_mp3",
+      "ffmpegUrl": "https://live-bauerno.sharp-stream.com/radio1_no_mp3",
+      "logo": "https://anthonsen.net/logo/norgelogo/radio1.png",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "Metro": [
+    {
+      "name": "Metro Sørlandet",
+      "url": "https://live-nors.sharp-stream.com/nors13.mp3",
+      "ffmpegUrl": "https://live-nors.sharp-stream.com/nors13.mp3",
+      "logo": "https://anthonsen.net/logo/metrologo/metro.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "The Beat",
+      "url": "https://live-nors.sharp-stream.com/nors14.mp3",
+      "ffmpegUrl": "https://live-nors.sharp-stream.com/nors14.mp3",
+      "logo": "https://anthonsen.net/logo/metrologo/beat.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Rox",
+      "url": "https://live-nors.sharp-stream.com/nors13.mp3",
+      "ffmpegUrl": "https://live-nors.sharp-stream.com/nors13.mp3",
+      "logo": "https://anthonsen.net/logo/metrologo/rox.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Metro Classic",
+      "url": "https://live-nors.sharp-stream.com/nors3.mp3",
+      "ffmpegUrl": "https://live-nors.sharp-stream.com/nors3.mp3",
+      "logo": "https://dinlyd.no/wp-content/uploads/2025/06/Metro-Classic_300x300.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Dansband",
+      "url": "https://live-nors.sharp-stream.com/nors1.mp3",
+      "ffmpegUrl": "https://live-nors.sharp-stream.com/nors1.mp3",
+      "logo": "https://anthonsen.net/logo/metrologo/dansband.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Heart",
+      "url": "https://live-nors.sharp-stream.com/nors15.mp3",
+      "ffmpegUrl": "https://live-nors.sharp-stream.com/nors15.mp3",
+      "logo": "https://dinlyd.no/wp-content/uploads/2025/06/Heart_300x300.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Hit Radio",
+      "url": "https://live-nors.sharp-stream.com/nors2.mp3",
+      "ffmpegUrl": "https://live-nors.sharp-stream.com/nors2.mp3",
+      "logo": "https://dinlyd.no/wp-content/uploads/2025/06/Hit-Radio_300x300.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "LatinAmerika Oslo",
+      "url": "https://stream.radiolatinamerika.no/latam_mq?_ic2=1730456890618",
+      "ffmpegUrl": "https://stream.radiolatinamerika.no/latam_mq?_ic2=1730456890618",
+      "logo": "https://anthonsen.net/logo/metrologo/latin.png",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "Lokale": [
+    {
+      "name": "Radio Vest",
+      "url": "https://anthonsen.net/radiovest",
+      "ffmpegUrl": "https://anthonsen.net/radiovest",
+      "logo": "https://anthonsen.net/logo/lokallogo/vest.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Jærradioen",
+      "url": "https://audio.radionordsjo.no/jaerradioen_hq",
+      "ffmpegUrl": "https://audio.radionordsjo.no/jaerradioen_hq",
+      "logo": "https://anthonsen.net/logo/lokallogo/jr.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Toesberg",
+      "url": "https://audio.radiogrenland.no/tonsberg_hq",
+      "ffmpegUrl": "https://audio.radiogrenland.no/tonsberg_hq",
+      "logo": "https://anthonsen.net/logo/lokallogo/tonsberg.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Grenland",
+      "url": "https://audio.rehoboth.no/grenland_hq",
+      "ffmpegUrl": "https://audio.rehoboth.no/grenland_hq",
+      "logo": "https://anthonsen.net/logo/lokallogo/rg.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Like it a Lot Norge",
+      "url": "https://lial.radioca.st/stream",
+      "ffmpegUrl": "https://lial.radioca.st/stream",
+      "logo": "https://anthonsen.net/logo/internettlogo/likeitalot.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "5000 Bergen",
+      "url": "https://bergen5000.radioca.st/stream",
+      "ffmpegUrl": "https://bergen5000.radioca.st/stream",
+      "logo": "https://anthonsen.net/logo/lokallogo/5000.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Nano Hit",
+      "url": "https://s2.yesstreaming.net:7157/streamStream",
+      "ffmpegUrl": "https://s2.yesstreaming.net:7157/streamStream",
+      "logo": "https://anthonsen.net/logo/internettlogo/nano.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Sørlandsradioen",
+      "url": "https://anthonsen.net/sorlandsradioen_hq",
+      "ffmpegUrl": "https://anthonsen.net/sorlandsradioen_hq",
+      "logo": "https://anthonsen.net/logo/lokallogo/sorlandsradioen.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Molde",
+      "url": "https://s2.radio.co/s914ffa700/listen",
+      "ffmpegUrl": "https://s2.radio.co/s914ffa700/listen",
+      "logo": "https://anthonsen.net/logo/lokallogo/1fm.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Duen Radio",
+      "url": "https://streams.radio.co/s07e510a23/listen",
+      "ffmpegUrl": "https://streams.radio.co/s07e510a23/listen",
+      "logo": "https://anthonsen.net/logo/lokallogo/duen.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Scansat",
+      "url": "https://audio.clasico.no/scansat_hq?_ic2=1730463516438",
+      "ffmpegUrl": "https://audio.clasico.no/scansat_hq?_ic2=1730463516438",
+      "logo": "https://anthonsen.net/logo/internettlogo/scansat.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Bø, Straume",
+      "url": "https://nettradio.radiobo.com/radiobo-high",
+      "ffmpegUrl": "https://nettradio.radiobo.com/radiobo-high",
+      "logo": "https://anthonsen.net/logo/lokallogo/rb.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Tromsø Radio Karlsøy",
+      "url": "https://stream.radio3.no/radiotromso",
+      "ffmpegUrl": "https://stream.radio3.no/radiotromso",
+      "logo": "https://anthonsen.net/logo/lokallogo/rt.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Øst, Voice of Norway",
+      "url": "https://stream.radio-ost.no/radioost_hq",
+      "ffmpegUrl": "https://stream.radio-ost.no/radioost_hq",
+      "logo": "https://anthonsen.net/logo/lokallogo/rost.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Haugaland Gull",
+      "url": "https://anthonsen.net/gull88",
+      "ffmpegUrl": "https://anthonsen.net/gull88",
+      "logo": "https://anthonsen.net/logo/lokallogo/rhg.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Gylne Hits Radio",
+      "url": "https://anthonsen.net/gyldnehit",
+      "ffmpegUrl": "https://anthonsen.net/gyldnehit",
+      "logo": "https://anthonsen.net/logo/lokallogo/ghits.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Musikk for godt voksne",
+      "url": "https://anthonsen.net/voksne",
+      "ffmpegUrl": "https://anthonsen.net/voksne",
+      "logo": "https://anthonsen.net/logo/lokallogo/mfgv.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "RadioSignal",
+      "url": "https://streamer.radio.co/sd0ae56707/listen",
+      "ffmpegUrl": "https://streamer.radio.co/sd0ae56707/listen",
+      "logo": "https://anthonsen.net/logo/lokallogo/rs.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "Internet": [
+    {
+      "name": "Like it a Lot",
+      "url": "https://lial.radioca.st/stream",
+      "ffmpegUrl": "https://lial.radioca.st/stream",
+      "logo": "https://anthonsen.net/logo/internettlogo/likeitalot.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Ordentlig Radio",
+      "url": "https://lyd.hjalar.no/oradio_hq?_ic2=1730461590919",
+      "ffmpegUrl": "https://lyd.hjalar.no/oradio_hq?_ic2=1730461590919",
+      "logo": "https://anthonsen.net/logo/internettlogo/ordentlig.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Nano Hits",
+      "url": "https://s2.yesstreaming.net:7157/streamStream",
+      "ffmpegUrl": "https://s2.yesstreaming.net:7157/streamStream",
+      "logo": "https://anthonsen.net/logo/internettlogo/nano.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "100% No. 1",
+      "url": "https://gb25.streamgates.net/radios-audio/100Number1/icecast.audio",
+      "ffmpegUrl": "https://gb25.streamgates.net/radios-audio/100Number1/icecast.audio",
+      "logo": "https://anthonsen.net/logo/internettlogo/1hit.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "100% Britpop",
+      "url": "https://gb25.streamgates.net/radios-audio/100Britpop/icecast.audio",
+      "ffmpegUrl": "https://gb25.streamgates.net/radios-audio/100Britpop/icecast.audio",
+      "logo": "https://anthonsen.net/logo/internettlogo/brit.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "100% Chillout",
+      "url": "https://gb25.streamgates.net/radios-audio/100Chillout/icecast.audio",
+      "ffmpegUrl": "https://gb25.streamgates.net/radios-audio/100Chillout/icecast.audio",
+      "logo": "https://anthonsen.net/logo/internettlogo/chill.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Gylne Hit",
+      "url": "https://anthonsen.net/gyldnehit",
+      "ffmpegUrl": "https://anthonsen.net/gyldnehit",
+      "logo": "https://anthonsen.net/logo/internettlogo/gylne.png",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "Latinske": [
+    {
+      "name": "Radio HD Tropical",
+      "url": "https://c25.radioboss.fm:8290/live",
+      "ffmpegUrl": "https://c25.radioboss.fm:8290/live",
+      "logo": "https://anthonsen.net/logo/latin/proxy-image.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Estéreo Latino",
+      "url": "https://server9.emitironline.com:8028/;",
+      "ffmpegUrl": "https://server9.emitironline.com:8028/;",
+      "logo": "https://anthonsen.net/logo/spanialogo/estereo.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Top Merengue",
+      "url": "https://radio.dominiserver.com/proxy/topmerengueradio?mp=/stream",
+      "ffmpegUrl": "https://radio.dominiserver.com/proxy/topmerengueradio?mp=/stream",
+      "logo": "https://anthonsen.net/logo/latin/merenge.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Cibaeña FM",
+      "url": "https://anthonsen.net/cibaenafm",
+      "ffmpegUrl": "https://anthonsen.net/cibaenafm",
+      "logo": "https://anthonsen.net/logo/latin/cibaena.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "123 Vallenato",
+      "url": "https://anthonsen.net/123vallenato",
+      "ffmpegUrl": "https://anthonsen.net/123vallenato",
+      "logo": "https://anthonsen.net/logo/co/123.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Bar Latina, UK",
+      "url": "https://s2.citrus3.com:8330/stream",
+      "ffmpegUrl": "https://s2.citrus3.com:8330/stream",
+      "logo": "https://anthonsen.net/logo/utland/cropped-barlatina-radio-round.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "La Fieste",
+      "url": "https://latinafiesta.ice.infomaniak.ch/latinafiesta.mp3",
+      "ffmpegUrl": "https://latinafiesta.ice.infomaniak.ch/latinafiesta.mp3",
+      "logo": "https://anthonsen.net/logo/latin/lafieste.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Amomundo",
+      "url": "https://anthonsen.net/amomundo",
+      "ffmpegUrl": "https://anthonsen.net/amomundo",
+      "logo": "https://anthonsen.net/logo/us/amond.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Brava FM",
+      "url": "https://anthonsen.net/bravafm",
+      "ffmpegUrl": "https://anthonsen.net/bravafm",
+      "logo": "https://anthonsen.net/logo/us/brava.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Canela Usa FM",
+      "url": "https://sp.oyotunstream.com:10975/; ",
+      "ffmpegUrl": "https://sp.oyotunstream.com:10975/; ",
+      "logo": "https://anthonsen.net/logo/us/canela.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "1fm": [
+    {
+      "name": "1FM Topp 40 Hits",
+      "url": "https://anthonsen.net/1fm40",
+      "ffmpegUrl": "https://anthonsen.net/1fm40",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmtopp40.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Tropical House",
+      "url": "https://anthonsen.net/1fmtropic",
+      "ffmpegUrl": "https://anthonsen.net/1fmtropic",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmtropicalhouse.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Reggae",
+      "url": "https://anthonsen.net/1fmreggea",
+      "ffmpegUrl": "https://anthonsen.net/1fmreggea",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmreggae.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Blues",
+      "url": "https://anthonsen.net/1fmblues",
+      "ffmpegUrl": "https://anthonsen.net/1fmblues",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmblues.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Back To The 50's & 60's",
+      "url": "https://anthonsen.net/1fmbto50and60",
+      "ffmpegUrl": "https://anthonsen.net/1fmbto50and60",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmbacktothe50sand60s.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Disco 70-80s",
+      "url": "https://anthonsen.net/1FMDisco70and80",
+      "ffmpegUrl": "https://anthonsen.net/1FMDisco70and80",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmdiscoballs70sto80s.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM 70s",
+      "url": "https://anthonsen.net/1FM70",
+      "ffmpegUrl": "https://anthonsen.net/1FM70",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fm70s.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Magic 80s",
+      "url": "https://anthonsen.net/1FMMagic80s",
+      "ffmpegUrl": "https://anthonsen.net/1FMMagic80s",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmmagic80.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM All Europe 80s",
+      "url": "https://anthonsen.net/1FMAllEurope80s",
+      "ffmpegUrl": "https://anthonsen.net/1FMAllEurope80s",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmalleuro80s.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM A list of 80s",
+      "url": "https://anthonsen.net/1fm-alist80s",
+      "ffmpegUrl": "https://anthonsen.net/1fm-alist80s",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmalistof80.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Absolute 90s",
+      "url": "https://anthonsen.net/1fm-90s",
+      "ffmpegUrl": "https://anthonsen.net/1fm-90s",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fm90s.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM 2yk 2000s",
+      "url": "https://anthonsen.net/1fm-2000s",
+      "ffmpegUrl": "https://anthonsen.net/1fm-2000s",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmy2k.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Sunshine",
+      "url": "https://anthonsen.net/1fm-sunshine",
+      "ffmpegUrl": "https://anthonsen.net/1fm-sunshine",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmsunshine.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Cafe",
+      "url": "https://anthonsen.net/1fm-cafe",
+      "ffmpegUrl": "https://anthonsen.net/1fm-cafe",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmcafe.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Beloved Ballads",
+      "url": "https://anthonsen.net/1fm-ballads",
+      "ffmpegUrl": "https://anthonsen.net/1fm-ballads",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmbolovedballads.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Filmmusikk",
+      "url": "https://anthonsen.net/1fm-film",
+      "ffmpegUrl": "https://anthonsen.net/1fm-film",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmmoviesoundtrackshits.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Spa",
+      "url": "https://anthonsen.net/1fm-spa",
+      "ffmpegUrl": "https://anthonsen.net/1fm-spa",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmspa.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Deep House",
+      "url": "https://anthonsen.net/1fm-deephouse",
+      "ffmpegUrl": "https://anthonsen.net/1fm-deephouse",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmdeephouse.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Classical Rock",
+      "url": "https://anthonsen.net/1fm-classicrock",
+      "ffmpegUrl": "https://anthonsen.net/1fm-classicrock",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmclassicrock.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Latino",
+      "url": "https://anthonsen.net/1fm-latino",
+      "ffmpegUrl": "https://anthonsen.net/1fm-latino",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmlatin.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM RnB Lovesongs",
+      "url": "https://anthonsen.net/1fm-rnb",
+      "ffmpegUrl": "https://anthonsen.net/1fm-rnb",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmrnblovesongs.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Reggeaton",
+      "url": "https://anthonsen.net/1fm-reggaeton",
+      "ffmpegUrl": "https://anthonsen.net/1fm-reggaeton",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmreggaetonheat.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Italia on Air",
+      "url": "https://anthonsen.net/1fm-italia",
+      "ffmpegUrl": "https://anthonsen.net/1fm-italia",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmitaliaonair.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Christmas",
+      "url": "https://strm112.1.fm/christmas_mobile_mp3",
+      "ffmpegUrl": "https://strm112.1.fm/christmas_mobile_mp3",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmallwayschristmas.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Adore Jazz",
+      "url": "https://anthonsen.net/1fm-jazz",
+      "ffmpegUrl": "https://anthonsen.net/1fm-jazz",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmadorejazz.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Bay Smooth Jazz",
+      "url": "https://anthonsen.net/1fm-smoothjazz",
+      "ffmpegUrl": "https://anthonsen.net/1fm-smoothjazz",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmbayshoothjazz.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Chillout Lounge",
+      "url": "https://anthonsen.net/1fm-chillout",
+      "ffmpegUrl": "https://anthonsen.net/1fm-chillout",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmchilloutlounge.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Classic Country",
+      "url": "https://anthonsen.net/1fm-classiccountry",
+      "ffmpegUrl": "https://anthonsen.net/1fm-classiccountry",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmclassiccountry.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Country Range",
+      "url": "https://anthonsen.net/1fm-country",
+      "ffmpegUrl": "https://anthonsen.net/1fm-country",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmcountryrange.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Hot Country",
+      "url": "https://anthonsen.net/1fm-hotcountry",
+      "ffmpegUrl": "https://anthonsen.net/1fm-hotcountry",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmhotcountry.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Costa Del Mar",
+      "url": "https://anthonsen.net/1fm-costadelmar",
+      "ffmpegUrl": "https://anthonsen.net/1fm-costadelmar",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmcostadelmar.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Topp40 - Ballader",
+      "url": "https://anthonsen.net/1fm-ballader",
+      "ffmpegUrl": "https://anthonsen.net/1fm-ballader",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmconfortpop.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Dance One",
+      "url": "https://anthonsen.net/1fm-dance",
+      "ffmpegUrl": "https://anthonsen.net/1fm-dance",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmdanceone.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1FM Deep House",
+      "url": "https://anthonsen.net/1fm-deephouse",
+      "ffmpegUrl": "https://anthonsen.net/1fm-deephouse",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmdeephouse.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1fm Essential Klassisk",
+      "url": "https://anthonsen.net/1fm-klassisk",
+      "ffmpegUrl": "https://anthonsen.net/1fm-klassisk",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmessentialclassical.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1fm Gentle beats",
+      "url": "https://anthonsen.net/1fm-gentle",
+      "ffmpegUrl": "https://anthonsen.net/1fm-gentle",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmlo-fi.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1fm Love classics",
+      "url": "https://anthonsen.net/1fm-love",
+      "ffmpegUrl": "https://anthonsen.net/1fm-love",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmloveclassics.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1fm Melenium Nostalgia Eurovisjon",
+      "url": "https://anthonsen.net/1fm-eurovision",
+      "ffmpegUrl": "https://anthonsen.net/1fm-eurovision",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmmillennialnostalgia.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1fm Ottos's opera house musikk radio",
+      "url": "https://strm112.1.fm/opera_mobile_mp3",
+      "ffmpegUrl": "https://strm112.1.fm/opera_mobile_mp3",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmottosoperahousemusic.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1fm Favoritt RnB i dag.",
+      "url": "https://anthonsen.net/1fm-rnbfav",
+      "ffmpegUrl": "https://anthonsen.net/1fm-rnbfav",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmournb.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "1fm Latinsk Pop",
+      "url": "https://anthonsen.net/1fm-latino",
+      "ffmpegUrl": "https://anthonsen.net/1fm-latino",
+      "logo": "https://anthonsen.net/logo/musikklogo/1fmlatinopop.png",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "181fm": [
+    {
+      "name": "Power 181 (Top 40)",
+      "url": "https://anthonsen.net/181power",
+      "ffmpegUrl": "https://anthonsen.net/181power",
+      "logo": "https://anthonsen.net/logo/musikklogo/181fm/power.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "The Mix",
+      "url": "https://anthonsen.net/themix",
+      "ffmpegUrl": "https://anthonsen.net/themix",
+      "logo": "https://anthonsen.net/logo/musikklogo/181fm/themix.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "The Office",
+      "url": "https://anthonsen.net/thoffice",
+      "ffmpegUrl": "https://anthonsen.net/thoffice",
+      "logo": "https://anthonsen.net/logo/musikklogo/181fm/theoffice.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "UK top 40",
+      "url": "https://anthonsen.net/uktop40",
+      "ffmpegUrl": "https://anthonsen.net/uktop40",
+      "logo": "https://anthonsen.net/logo/musikklogo/181fm/uktop40.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "The Heart",
+      "url": "https://anthonsen.net/theheart",
+      "ffmpegUrl": "https://anthonsen.net/theheart",
+      "logo": "https://anthonsen.net/logo/musikklogo/181fm/heart.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "The Vibe of Vegas",
+      "url": "https://anthonsen.net/vibeofvegas",
+      "ffmpegUrl": "https://anthonsen.net/vibeofvegas",
+      "logo": "https://anthonsen.net/logo/musikklogo/181fm/vegas.png",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "utland": [
+    {
+      "name": "BBC 1",
+      "url": "https://anthonsen.net:3444/bbc_radio_one.mp3",
+      "ffmpegUrl": "https://anthonsen.net:3444/bbc_radio_one.mp3",
+      "logo": "https://anthonsen.net/logo/utland/bbc1.png",
+      "songInfo": "",
+      "channelUrl": "",
+      "app": "bbc.js"
+    },
+    {
+      "name": "Virgin",
+      "url": "https://anthonsen.net/virgin",
+      "ffmpegUrl": "https://anthonsen.net/virgin",
+      "logo": "https://anthonsen.net/logo/utland/virgin.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Capital Radio",
+      "url": "https://ice-sov.musicradio.com/Capital",
+      "ffmpegUrl": "https://ice-sov.musicradio.com/Capital",
+      "logo": "https://anthonsen.net/logo/utland/capital.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Caroline",
+      "url": "https://anthonsen.net/caroline",
+      "ffmpegUrl": "https://anthonsen.net/caroline",
+      "logo": "https://anthonsen.net/logo/utland/caroline.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Beam UK Hits",
+      "url": "https://ice1.streeemer.com:8030/radio.mp3",
+      "ffmpegUrl": "https://ice1.streeemer.com:8030/radio.mp3",
+      "logo": "https://anthonsen.net/logo/utland/beamuk.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Bar Latina Radio",
+      "url": "https://s2.citrus3.com:8330/stream",
+      "ffmpegUrl": "https://s2.citrus3.com:8330/stream",
+      "logo": "https://anthonsen.net/logo/utland/cropped-barlatina-radio-round.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Gold",
+      "url": "https://ice-sov.musicradio.com/GoldMP3",
+      "ffmpegUrl": "https://ice-sov.musicradio.com/GoldMP3",
+      "logo": "https://anthonsen.net/logo/utland/gold.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "The Voice - UK",
+      "url": "https://secure.mystreaming.net/thevoice/live128/icecast.audio",
+      "ffmpegUrl": "https://secure.mystreaming.net/thevoice/live128/icecast.audio",
+      "logo": "https://anthonsen.net/logo/utland/voice.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Original FM",
+      "url": "https://listen-original.sharp-stream.com/original106.mp3",
+      "ffmpegUrl": "https://listen-original.sharp-stream.com/original106.mp3",
+      "logo": "https://anthonsen.net/logo/utland/original.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Matryoshka Radio",
+      "url": "https://anthonsen.net/matryoshka",
+      "ffmpegUrl": "https://anthonsen.net/matryoshka",
+      "logo": "https://anthonsen.net/logo/utland/proxy-image.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Rewind Radio 320kb",
+      "url": "https://streaming.broadcastradio.com:11735/rewind",
+      "ffmpegUrl": "https://streaming.broadcastradio.com:11735/rewind",
+      "logo": "https://anthonsen.net/logo/utland/rewind.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Manx Radio FM",
+      "url": "https://tx.sharp-stream.com/http_live.php?i=manxradiofm.mp3",
+      "ffmpegUrl": "https://tx.sharp-stream.com/http_live.php?i=manxradiofm.mp3",
+      "logo": "https://anthonsen.net/logo/utland/manx.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Carmarthenshire",
+      "url": "https://listen-nation.sharp-stream.com/tccarmarthenshire.mp3",
+      "ffmpegUrl": "https://listen-nation.sharp-stream.com/tccarmarthenshire.mp3",
+      "logo": "https://anthonsen.net/logo/utland/cam.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Happy Radio UK 256kb",
+      "url": "https://stream.aiir.com/yofqmvmgihuuv",
+      "ffmpegUrl": "https://stream.aiir.com/yofqmvmgihuuv",
+      "logo": "https://anthonsen.net/logo/utland/happy.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "This Is The Coast",
+      "url": "https://streaming.broadcastradio.com:10765/thisisthecoast",
+      "ffmpegUrl": "https://streaming.broadcastradio.com:10765/thisisthecoast",
+      "logo": "https://anthonsen.net/logo/utland/kyst.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Kingdom FM",
+      "url": "https://listen-kingdomfm.sharp-stream.com/kingdomfm.mp3",
+      "ffmpegUrl": "https://listen-kingdomfm.sharp-stream.com/kingdomfm.mp3",
+      "logo": "https://anthonsen.net/logo/utland/kingdom.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "More Radio Retro",
+      "url": "https://s2.xrad.io:9730/listen.mp3",
+      "ffmpegUrl": "https://s2.xrad.io:9730/listen.mp3",
+      "logo": "https://anthonsen.net/logo/utland/more.avif",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Swansea Bay Radio",
+      "url": "https://listen-nation.sharp-stream.com/tcbay.mp3",
+      "ffmpegUrl": "https://listen-nation.sharp-stream.com/tcbay.mp3",
+      "logo": "https://anthonsen.net/logo/utland/swanseybay.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Bayside Radio North Wales 256kb",
+      "url": "https://stream2.hippynet.co.uk/stream/8202",
+      "ffmpegUrl": "https://stream2.hippynet.co.uk/stream/8202",
+      "logo": "https://anthonsen.net/logo/utland/bayside.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Lite Radio 160kb",
+      "url": "https://ais-sa2.cdnstream1.com/2382_128.mp3",
+      "ffmpegUrl": "https://ais-sa2.cdnstream1.com/2382_128.mp3",
+      "logo": "https://anthonsen.net/logo/utland/lite.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Nation Radio",
+      "url": "https://listen-nation.sharp-stream.com/tcceredigion.mp3",
+      "ffmpegUrl": "https://listen-nation.sharp-stream.com/tcceredigion.mp3",
+      "logo": "https://anthonsen.net/logo/utland/nationw.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "GO Radio",
+      "url": "https://streaming.broadcastradio.com:8250/goradio",
+      "ffmpegUrl": "https://streaming.broadcastradio.com:8250/goradio",
+      "logo": "https://anthonsen.net/logo/utland/go.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "York Mix Radio",
+      "url": "https://sslproxy.hippynet.co.uk/yorkmix/stream",
+      "ffmpegUrl": "https://sslproxy.hippynet.co.uk/yorkmix/stream",
+      "logo": "https://anthonsen.net/logo/utland/ym.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Your Harrogate",
+      "url": "https://ukwesta.streaming.broadcast.radio/yourharrogate",
+      "ffmpegUrl": "https://ukwesta.streaming.broadcast.radio/yourharrogate",
+      "logo": "https://anthonsen.net/logo/utland/yh.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Channel FM - Jersey 320kb",
+      "url": "https://stream.rcs.revma.com/1b7wddebanzuv",
+      "ffmpegUrl": "https://stream.rcs.revma.com/1b7wddebanzuv",
+      "logo": "https://anthonsen.net/logo/utland/103.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Cuillin FM SCO",
+      "url": "https://anthonsen.net/cuillinfm",
+      "ffmpegUrl": "https://anthonsen.net/cuillinfm",
+      "logo": "https://anthonsen.net/logo/utland/cullin.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Island FM 320kb",
+      "url": "https://stream.rcs.revma.com/epatpyebanzuv",
+      "ffmpegUrl": "https://stream.rcs.revma.com/epatpyebanzuv",
+      "logo": "https://anthonsen.net/logo/utland/ifm.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Pure West Radio 256kb",
+      "url": "https://streaming.broadcastradio.com:8580/purewest",
+      "ffmpegUrl": "https://streaming.broadcastradio.com:8580/purewest",
+      "logo": "https://anthonsen.net/logo/utland/pw.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Soleil Radio 192kb",
+      "url": "https://stream.rcs.revma.com/sa3ccwa9yy8uv",
+      "ffmpegUrl": "https://stream.rcs.revma.com/sa3ccwa9yy8uv",
+      "logo": "https://anthonsen.net/logo/utland/sradio.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Sibc Shetland 192kb",
+      "url": "https://anthonsen.net/sibc",
+      "ffmpegUrl": "http://tx9.zetcast.net:8100/stream",
+      "logo": "https://anthonsen.net/logo/utland/sibc.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Switch Radio 320kb",
+      "url": "https://listen.switchradio.co.uk/switchradio_high",
+      "ffmpegUrl": "https://listen.switchradio.co.uk/switchradio_high",
+      "logo": "https://anthonsen.net/logo/utland/switch.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Bradley Stoke Radio 192kb",
+      "url": "https://anthonsen.net/bradley",
+      "ffmpegUrl": "http://centovacast.galaxywebsolutions.com:7400/stream",
+      "logo": "https://anthonsen.net/logo/utland/bsr.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "The Buzz MCR 320kb",
+      "url": "https://streaming05.liveboxstream.uk/proxy/kookyinc/stream",
+      "ffmpegUrl": "https://streaming05.liveboxstream.uk/proxy/kookyinc/stream",
+      "logo": "https://anthonsen.net/logo/utland/tbm.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Voice FM 320kb",
+      "url": "https://anthonsen.net/voiceukfm",
+      "ffmpegUrl": "http://live.voicefmradio.co.uk:8000/live",
+      "logo": "https://anthonsen.net/logo/utland/vfm.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Somer Valley FM 192kb",
+      "url": "https://stream4.hippynet.co.uk:8014/stream",
+      "ffmpegUrl": "https://stream4.hippynet.co.uk:8014/stream",
+      "logo": "https://anthonsen.net/logo/utland/svra.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Bailiwick Radio Classic 192kb",
+      "url": "https://streaming.radio.co/s20224a067/listen",
+      "ffmpegUrl": "https://streaming.radio.co/s20224a067/listen",
+      "logo": "https://anthonsen.net/logo/utland/brcl.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Vibe FM 192kb",
+      "url": "https://anthonsen.net/vibefm",
+      "ffmpegUrl": "http://stream.cotswoldgrp.com:8001/main",
+      "logo": "https://anthonsen.net/logo/utland/vifm.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Great Driffield Radio 192kb",
+      "url": "https://stream1.superstreaming.co.uk/proxy/greatdriffield/stream",
+      "ffmpegUrl": "https://stream1.superstreaming.co.uk/proxy/greatdriffield/stream",
+      "logo": "https://anthonsen.net/logo/utland/gdrr.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Jorvik Radio 320kb",
+      "url": "https://uksoutha.streaming.broadcast.radio:24780/jorvikradio",
+      "ffmpegUrl": "https://uksoutha.streaming.broadcast.radio:24780/jorvikradio",
+      "logo": "https://anthonsen.net/logo/utland/jvik.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "se": [
+    {
+      "name": "SVT P3",
+      "url": "https://http-live.sr.se/p3-mp3-192",
+      "ffmpegUrl": "https://http-live.sr.se/p3-mp3-192",
+      "logo": "https://anthonsen.net/logo/se/svtp3.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "RIXFm",
+      "url": "https://fm01-ice.stream.khz.se/fm01_mp3",
+      "ffmpegUrl": "https://fm01-ice.stream.khz.se/fm01_mp3",
+      "logo": "https://anthonsen.net/logo/se/rixfm.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Mix Megapol",
+      "url": "https://tx-bauerse.sharp-stream.com/http_live.php?i=mixmegapolgbg_instream_se_mp3",
+      "ffmpegUrl": "https://tx-bauerse.sharp-stream.com/http_live.php?i=mixmegapolgbg_instream_se_mp3",
+      "logo": "https://anthonsen.net/logo/se/mixmegapol.svg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "RIX Lugna Favoritter",
+      "url": "https://fm03-ice.stream.khz.se/fm03_mp3",
+      "ffmpegUrl": "https://fm03-ice.stream.khz.se/fm03_mp3",
+      "logo": "https://anthonsen.net/logo/se/lugna.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "RIXFm Fresh",
+      "url": "https://wr04-ice.stream.khz.se/wr04_mp3",
+      "ffmpegUrl": "https://wr04-ice.stream.khz.se/wr04_mp3",
+      "logo": "https://anthonsen.net/logo/se/fresh.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "STARFm Playlist",
+      "url": "https://fm05-ice.stream.khz.se/fm05_mp3",
+      "ffmpegUrl": "https://fm05-ice.stream.khz.se/fm05_mp3",
+      "logo": "https://anthonsen.net/logo/se/star.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Disco 54",
+      "url": "https://wr15-ice.stream.khz.se/wr15_mp3",
+      "ffmpegUrl": "https://wr15-ice.stream.khz.se/wr15_mp3",
+      "logo": "https://anthonsen.net/logo/se/disco54.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Go Country",
+      "url": "https://wr14-ice.stream.khz.se/wr14_mp3",
+      "ffmpegUrl": "https://wr14-ice.stream.khz.se/wr14_mp3",
+      "logo": "https://anthonsen.net/logo/se/gocountry.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "HitMix 90´s",
+      "url": "https://wr19-ice.stream.khz.se/wr19_mp3",
+      "ffmpegUrl": "https://wr19-ice.stream.khz.se/wr19_mp3",
+      "logo": "https://anthonsen.net/logo/se/hitmix90s.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Soul Classics",
+      "url": "https://wr08-ice.stream.khz.se/wr08_mp3",
+      "ffmpegUrl": "https://wr08-ice.stream.khz.se/wr08_mp3",
+      "logo": "https://anthonsen.net/logo/se/soulclassics.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Lugna Klassikere",
+      "url": "https://live-bauerse-fm.sharp-stream.com/lugnaklassiker_instream_se_aacp",
+      "ffmpegUrl": "https://live-bauerse-fm.sharp-stream.com/lugnaklassiker_instream_se_aacp",
+      "logo": "https://anthonsen.net/logo/se/lugnaklassikere.svg",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "dk": [
+    {
+      "name": "Radio Nova",
+      "url": "https://live-bauerdk.sharp-stream.com/nova128.mp3",
+      "ffmpegUrl": "https://live-bauerdk.sharp-stream.com/nova128.mp3",
+      "logo": "https://anthonsen.net/logo/dk/nova.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Pop FM",
+      "url": "https://edge-bauerdk-05-gos2.sharp-stream.com/popfm_dk_mp3?",
+      "ffmpegUrl": "https://edge-bauerdk-05-gos2.sharp-stream.com/popfm_dk_mp3?",
+      "logo": "https://anthonsen.net/logo/dk/popfm.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "The Voice",
+      "url": "https://live-bauerdk.sharp-stream.com/voice128.mp3",
+      "ffmpegUrl": "https://live-bauerdk.sharp-stream.com/voice128.mp3",
+      "logo": "https://anthonsen.net/logo/dk/thevoice.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Soft",
+      "url": "https://edge-bauerdk-05-gos2.sharp-stream.com/radiosoft_dk_mp3",
+      "ffmpegUrl": "https://edge-bauerdk-05-gos2.sharp-stream.com/radiosoft_dk_mp3",
+      "logo": "https://anthonsen.net/logo/dk/radiosoft.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio 100",
+      "url": "https://tx-bauerdk.sharp-stream.com/http_live.php?i=radio100_dk_tunein_mp3",
+      "ffmpegUrl": "https://tx-bauerdk.sharp-stream.com/http_live.php?i=radio100_dk_tunein_mp3",
+      "logo": "https://anthonsen.net/logo/dk/radio100.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "2000 Hits",
+      "url": "https://live-bauerdk.sharp-stream.com/DK_HQ_RP07.aac",
+      "ffmpegUrl": "https://live-bauerdk.sharp-stream.com/DK_HQ_RP07.aac",
+      "logo": "https://anthonsen.net/logo/dk/00hits.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Meditasjon",
+      "url": "https://live-bauerdk.sharp-stream.com/DK_HQ_RP12.aac",
+      "ffmpegUrl": "https://live-bauerdk.sharp-stream.com/DK_HQ_RP12.aac",
+      "logo": "https://anthonsen.net/logo/dk/meditasjon.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Mix 7",
+      "url": "https://live-bauerdk.sharp-stream.com/Mix7.mp3?",
+      "ffmpegUrl": "https://live-bauerdk.sharp-stream.com/Mix7.mp3?",
+      "logo": "https://anthonsen.net/logo/dk/mix.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "DR P3",
+      "url": "https://live-icy.gss.dr.dk:8000/A/A05L.mp3",
+      "ffmpegUrl": "https://live-icy.gss.dr.dk:8000/A/A05L.mp3",
+      "logo": "https://anthonsen.net/logo/dk/dr3.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "de": [
+    {
+      "name": "Radio Schlagerparadies",
+      "url": "https://kuschelfm.schlagerparadies.de/schlagerparadies128k.mp3",
+      "ffmpegUrl": "https://kuschelfm.schlagerparadies.de/schlagerparadies128k.mp3",
+      "logo": "https://anthonsen.net/logo/utland/sp.svg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Big FM",
+      "url": "https://streams.bigfm.de/bigfm-deutschland-128-mp3",
+      "ffmpegUrl": "https://streams.bigfm.de/bigfm-deutschland-128-mp3",
+      "logo": "https://anthonsen.net/logo/utland/bfm.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "RTL Radio",
+      "url": "https://stream.rtlradio.de/rtl-de-ukw/mp3-192",
+      "ffmpegUrl": "https://stream.rtlradio.de/rtl-de-ukw/mp3-192",
+      "logo": "https://anthonsen.net/logo/utland/rtl.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Ballermann Radio",
+      "url": "https://radio-player.bmr-radio.de/ballermann-radio.mp3",
+      "ffmpegUrl": "https://radio-player.bmr-radio.de/ballermann-radio.mp3",
+      "logo": "https://anthonsen.net/logo/utland/ballermann.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Arabella - Kult",
+      "url": "https://edge09.stream.radioarabella.de/radioarabella-bayern/stream/mp3",
+      "ffmpegUrl": "https://edge09.stream.radioarabella.de/radioarabella-bayern/stream/mp3",
+      "logo": "https://anthonsen.net/logo/utland/radioarabellakult.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "RPR1 - Festival",
+      "url": "https://streams.rpr1.de/rpr-festival-128-mp3",
+      "ffmpegUrl": "https://streams.rpr1.de/rpr-festival-128-mp3",
+      "logo": "https://anthonsen.net/logo/utland/rpr1.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "HR 3",
+      "url": "https://dispatcher.rndfnk.com/hr/hr3/live/mp3/128/stream.mp3",
+      "ffmpegUrl": "https://dispatcher.rndfnk.com/hr/hr3/live/mp3/128/stream.mp3",
+      "logo": "https://anthonsen.net/logo/utland/hr3.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Hitradio Antenne 1",
+      "url": "https://stream.antenne1.de/a1pf/livestream2.mp3",
+      "ffmpegUrl": "https://stream.antenne1.de/a1pf/livestream2.mp3",
+      "logo": "https://anthonsen.net/logo/utland/hr1.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Energi Stuttgart",
+      "url": "https://edge66.streamonkey.net/energy-stuttgart/stream/mp3",
+      "ffmpegUrl": "https://edge66.streamonkey.net/energy-stuttgart/stream/mp3",
+      "logo": "https://anthonsen.net/logo/utland/energis.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Paloma",
+      "url": "https://icepool.silvacast.com/RADIOPALOMA.mp3",
+      "ffmpegUrl": "https://icepool.silvacast.com/RADIOPALOMA.mp3",
+      "logo": "https://anthonsen.net/logo/utland/radiopaloma.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Ostseewelle",
+      "url": "https://ostseewelle-nord.cast.addradio.de/ostseewelle/nord/mp3/high",
+      "ffmpegUrl": "https://ostseewelle-nord.cast.addradio.de/ostseewelle/nord/mp3/high",
+      "logo": "https://anthonsen.net/logo/utland/osterwelle.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Planet Radio",
+      "url": "https://mp3.planetradio.de/planetradio/hqlivestream.mp3",
+      "ffmpegUrl": "https://mp3.planetradio.de/planetradio/hqlivestream.mp3",
+      "logo": "https://anthonsen.net/logo/utland/planetradio.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radioferie",
+      "url": "https://stream.radiogroup.de/radio-holiday/mp3-192",
+      "ffmpegUrl": "https://stream.radiogroup.de/radio-holiday/mp3-192",
+      "logo": "https://anthonsen.net/logo/utland/radioholiday_001-1.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Topp FM",
+      "url": "https://topfm--di--nacs-ais-lgc--07--cdn.cast.addradio.de/topfm/live/mp3/high",
+      "ffmpegUrl": "https://topfm--di--nacs-ais-lgc--07--cdn.cast.addradio.de/topfm/live/mp3/high",
+      "logo": "https://anthonsen.net/logo/utland/toppfm.png",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "pl": [
+    {
+      "name": "RMF - Maxxx",
+      "url": "https://anthonsen.net/rmfmaxxx",
+      "ffmpegUrl": "https://anthonsen.net/rmfmaxxx",
+      "logo": "https://anthonsen.net/logo/pl/rfmmax.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Bia Oruskie Radio Racja",
+      "url": "https://anthonsen.net/racja",
+      "ffmpegUrl": "https://anthonsen.net/racja",
+      "logo": "https://anthonsen.net/logo/pl/logo-by.svg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Vox FM",
+      "url": "https://waw.ic.smcdn.pl/3040-1.mp3",
+      "ffmpegUrl": "https://waw.ic.smcdn.pl/3040-1.mp3",
+      "logo": "https://anthonsen.net/logo/pl/LogoVoxFM-2024.svg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Muzyczne Radio",
+      "url": "https://stream3.technologicznie.net/muzyczne_radio_192.mp3",
+      "ffmpegUrl": "https://stream3.technologicznie.net/muzyczne_radio_192.mp3",
+      "logo": "https://anthonsen.net/logo/pl/muzyczneradio.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Mega Radio",
+      "url": "https://stream.rcs.revma.com/q18ty3qhwzzuv",
+      "ffmpegUrl": "https://stream.rcs.revma.com/q18ty3qhwzzuv",
+      "logo": "https://anthonsen.net/logo/pl/Radio-MEGA-LOGO.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Disco",
+      "url": "https://stream.rcs.revma.com/cvswvmyewzzuv",
+      "ffmpegUrl": "https://stream.rcs.revma.com/cvswvmyewzzuv",
+      "logo": "https://anthonsen.net/logo/pl/LOGO-DISCO.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Nuta",
+      "url": "https://stream.rcs.revma.com/0004tehdxzzuv",
+      "ffmpegUrl": "https://stream.rcs.revma.com/0004tehdxzzuv",
+      "logo": "https://anthonsen.net/logo/pl/Radio-NUTA-LOGO.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Twoje Radio",
+      "url": "https://anthonsen.net/twojeradio",
+      "ffmpegUrl": "https://anthonsen.net/twojeradio",
+      "logo": "https://anthonsen.net/logo/pl/cropped-Projekt-bez-tytulu.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Vanessa",
+      "url": "https://s1.slotex.pl/shoutcast/7358/stream",
+      "ffmpegUrl": "https://s1.slotex.pl/shoutcast/7358/stream",
+      "logo": "https://anthonsen.net/logo/pl/vanessa.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Gniezno",
+      "url": "https://anthonsen.net/gniezno",
+      "ffmpegUrl": "https://anthonsen.net/gniezno",
+      "logo": "https://anthonsen.net/logo/pl/logo_rg-1.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Starogard",
+      "url": "https://stream.rcs.revma.com/5wegfyrra2zuv",
+      "ffmpegUrl": "https://stream.rcs.revma.com/5wegfyrra2zuv",
+      "logo": "https://anthonsen.net/logo/pl/starogard.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Italo Dance pl",
+      "url": "https://anthonsen.net/italodance",
+      "ffmpegUrl": "https://anthonsen.net/italodance",
+      "logo": "https://anthonsen.net/logo/pl/italodance.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio One Live 80 90",
+      "url": "https://anthonsen.net/radioone",
+      "ffmpegUrl": "https://anthonsen.net/radioone",
+      "logo": "https://anthonsen.net/logo/pl/logo-no-background-3.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio ZET - Latino",
+      "url": "https://ch03.cdn.eurozet.pl/ZETLTN.mp3",
+      "ffmpegUrl": "https://ch03.cdn.eurozet.pl/ZETLTN.mp3",
+      "logo": "https://anthonsen.net/logo/pl/latinska.svg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "DiscoParty.pl",
+      "url": "https://anthonsen.net/discoparty",
+      "ffmpegUrl": "https://anthonsen.net/discoparty",
+      "logo": "https://anthonsen.net/logo/pl/discoparty.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Disco Polo",
+      "url": "https://panel.radiombox.pl/radio/8030/DiscoPolo320kbps",
+      "ffmpegUrl": "https://panel.radiombox.pl/radio/8030/DiscoPolo320kbps",
+      "logo": "https://anthonsen.net/logo/pl/discopolo.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Italo Disco New Generation",
+      "url": "https://cast1.torontocast.com:1330/stream",
+      "ffmpegUrl": "https://cast1.torontocast.com:1330/stream",
+      "logo": "https://anthonsen.net/logo/pl/italo-disco-800-300x150.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "World Hits Po",
+      "url": "https://stream.zeno.fm/112uztfkb8zuv",
+      "ffmpegUrl": "https://stream.zeno.fm/112uztfkb8zuv",
+      "logo": "https://anthonsen.net/logo/pl/76736.v12.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Mbox - Chillout",
+      "url": "https://panel.radiombox.pl/radio/8100/Chill320kbps",
+      "ffmpegUrl": "https://panel.radiombox.pl/radio/8100/Chill320kbps",
+      "logo": "https://anthonsen.net/logo/pl/chillout.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Sami Swoi Radio, London",
+      "url": "https://s2.radio.co/s0dc6b5c9b/listen",
+      "ffmpegUrl": "https://s2.radio.co/s0dc6b5c9b/listen",
+      "logo": "https://anthonsen.net/logo/pl/sami-pl.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Polish Radio London",
+      "url": "https://go-audio.toya.net.pl/373",
+      "ffmpegUrl": "https://go-audio.toya.net.pl/373",
+      "logo": "https://anthonsen.net/logo/pl/prl.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "hotmix": [
+    {
+      "name": "Hotmix - Hits",
+      "url": "https://streaming.hotmixradio.fr/hotmix-hits-fr-pre",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-hits-fr-pre",
+      "logo": "https://anthonsen.net/logo/hotmix/hits.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Hits International",
+      "url": "https://streaming.hotmixradio.fr/hotmix-hits-en-mp3",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-hits-en-mp3",
+      "logo": "https://anthonsen.net/logo/hotmix/inthits.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Happy",
+      "url": "https://streaming.hotmixradio.fr/hotmix-happy-en-pre",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-happy-en-pre",
+      "logo": "https://anthonsen.net/logo/hotmix/happy.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Frenchy",
+      "url": "https://streaming.hotmixradio.fr/hotmix-frenchy-fr-pre",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-frenchy-fr-pre",
+      "logo": "https://anthonsen.net/logo/hotmix/frenchy.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Zen",
+      "url": "https://streaming.hotmixradio.com/hotmix-zen-en-pre",
+      "ffmpegUrl": "https://streaming.hotmixradio.com/hotmix-zen-en-pre",
+      "logo": "https://anthonsen.net/logo/hotmix/zen.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Disco Fever",
+      "url": "https://streaming.hotmixradio.fr/hotmix-disco_fever-en-pre",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-disco_fever-en-pre",
+      "logo": "https://anthonsen.net/logo/hotmix/discofever.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Disco Funk",
+      "url": "https://streaming.hotmixradio.fr/hotmix-disco_funk-en-aac",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-disco_funk-en-aac",
+      "logo": "https://anthonsen.net/logo/hotmix/discofunk.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Greece",
+      "url": "https://streaming.hotmixradio.fr/hotmix-greece-en-pre",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-greece-en-pre",
+      "logo": "https://anthonsen.net/logo/hotmix/hellas.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "NU Disco",
+      "url": "https://streaming.hotmixradio.fr/hotmix-nu_disco-en-pre",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-nu_disco-en-pre",
+      "logo": "https://anthonsen.net/logo/hotmix/nudisco.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Platinum 80-90",
+      "url": "https://streaming.hotmixradio.fr/hotmixradio-platinium-128.mp3",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmixradio-platinium-128.mp3",
+      "logo": "https://anthonsen.net/logo/hotmix/platinum.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Platinum International",
+      "url": "https://streaming.hotmixradio.fr/hotmix-platinum-en-mp3",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-platinum-en-mp3",
+      "logo": "https://anthonsen.net/logo/hotmix/platinumint.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "On the road",
+      "url": "https://streaming.hotmixradio.fr/hotmix-on_the_road-en-pre",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-on_the_road-en-pre",
+      "logo": "https://anthonsen.net/logo/hotmix/ontheroad.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "80s International",
+      "url": "https://streaming.hotmixradio.fr/hotmix-80s-en-mp3",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-80s-en-mp3",
+      "logo": "https://anthonsen.net/logo/hotmix/80.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "80´s",
+      "url": "https://streaming.hotmixradio.fr/hotmix-80s-fr-mp3",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-80s-fr-mp3",
+      "logo": "https://anthonsen.net/logo/hotmix/80.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "90s International",
+      "url": "https://streaming.hotmixradio.fr/hotmix-90s-en-mp3",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-90s-en-mp3",
+      "logo": "https://anthonsen.net/logo/hotmix/90.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "90´s",
+      "url": "https://streaming.hotmixradio.fr/hotmix-90s-fr-pre",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-90s-fr-pre",
+      "logo": "https://anthonsen.net/logo/hotmix/90.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "2000s",
+      "url": "https://streaming.hotmixradio.fr/hotmix-2000s-en-mp3",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-2000s-en-mp3",
+      "logo": "https://anthonsen.net/logo/hotmix/2000.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "2010s",
+      "url": "https://streaming.hotmixradio.fr/hotmix-2010-en-mp3",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-2010-en-mp3",
+      "logo": "https://anthonsen.net/logo/hotmix/2010.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Spain",
+      "url": "https://streaming.hotmixradio.fr/hotmix-spain-en-pre",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-spain-en-pre",
+      "logo": "https://anthonsen.net/logo/hotmix/spain.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Salsa",
+      "url": "https://streaming.hotmixradio.fr/hotmix-salsa-en-pre",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-salsa-en-pre",
+      "logo": "https://anthonsen.net/logo/hotmix/salsa.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "K-pop",
+      "url": "https://streaming.hotmixradio.fr/hotmix-k-pop-en-mp3",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-k-pop-en-mp3",
+      "logo": "https://anthonsen.net/logo/hotmix/kpop.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Sport Workout",
+      "url": "https://streaming.hotmixradio.fr/hotmix-sport-plus-en-mp3",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-sport-plus-en-mp3",
+      "logo": "https://anthonsen.net/logo/hotmix/workout.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Sport",
+      "url": "https://streaming.hotmixradio.fr/hotmix-sport_plus-en-mp3",
+      "ffmpegUrl": "https://streaming.hotmixradio.fr/hotmix-sport_plus-en-mp3",
+      "logo": "https://anthonsen.net/logo/hotmix/sporthits.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "Colombia": [
+    {
+      "name": "La Pachanguera FM",
+      "url": "https://radiolatina.info:10887/; ",
+      "ffmpegUrl": "https://radiolatina.info:10887/; ",
+      "logo": "https://anthonsen.net/logo/co/lapung.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Ecos del Catatumbo",
+      "url": "https://radiohd.streaminghd.co:7706/stream",
+      "ffmpegUrl": "https://radiohd.streaminghd.co:7706/stream",
+      "logo": "https://anthonsen.net/logo/spanialogo/catatumbo.png",
+      "songInfo": "",
+      "channelUrl": "",
+      "app": "ecos.js"
+    },
+    {
+      "name": "Los40",
+      "url": "https://stream.zeno.fm/5trmrgchyeruv",
+      "ffmpegUrl": "https://stream.zeno.fm/5trmrgchyeruv",
+      "logo": "https://anthonsen.net/logo/spanialogo/los40.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Tropicana Cucuta",
+      "url": "https://27323.live.streamtheworld.com/TR_CUCUTA.mp3",
+      "ffmpegUrl": "https://27323.live.streamtheworld.com/TR_CUCUTA.mp3",
+      "logo": "https://anthonsen.net/logo/spanialogo/tropicana.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Fiesta Cúcuta",
+      "url": "https://us-b4-p-e-pb13-audio.cdn.mdstrm.com/live-audio-aw/632ccc1b660fef03fe385c8b",
+      "ffmpegUrl": "https://us-b4-p-e-pb13-audio.cdn.mdstrm.com/live-audio-aw/632ccc1b660fef03fe385c8b",
+      "logo": "https://anthonsen.net/logo/co/fiesta.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Colombia Crossover",
+      "url": "https://radio35.virtualtronics.com/proxy/colombiacrossover?mp=/stream",
+      "ffmpegUrl": "https://radio35.virtualtronics.com/proxy/colombiacrossover?mp=/stream",
+      "logo": "https://anthonsen.net/logo/co/crossover.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Colombia Vallenata",
+      "url": "https://anthonsen.net/colvallenata",
+      "ffmpegUrl": "https://anthonsen.net/colvallenata",
+      "logo": "https://anthonsen.net/logo/co/co_vallenata.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Pop Rock Crossover",
+      "url": "https://stream-174.zeno.fm/nr0u82banodvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJucjB1ODJiYW5vZHZ2IiwiaG9zdCI6InN0cmVhbS0xNzQuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IjBRSDVWM3lMUXFDc3JuWkpqYzZLeEEiLCJpYXQiOjE3NDE2Mzk5MzUsImV4cCI6MTc0MTYzOTk5NX0.1qYdmacbd0h0CqzJ14wLnLOASALp7RaMgu3Zs8pYToI",
+      "ffmpegUrl": "https://stream-174.zeno.fm/nr0u82banodvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJucjB1ODJiYW5vZHZ2IiwiaG9zdCI6InN0cmVhbS0xNzQuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IjBRSDVWM3lMUXFDc3JuWkpqYzZLeEEiLCJpYXQiOjE3NDE2Mzk5MzUsImV4cCI6MTc0MTYzOTk5NX0.1qYdmacbd0h0CqzJ14wLnLOASALp7RaMgu3Zs8pYToI",
+      "logo": "https://anthonsen.net/logo/co/poprock.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Akctiva",
+      "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_ACTIVA.mp3",
+      "ffmpegUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_ACTIVA.mp3",
+      "logo": "https://anthonsen.net/logo/co/ RADIOACKTIV.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Carbon Stereo",
+      "url": "https://play8.tikast.com:20004/stream",
+      "ffmpegUrl": "https://play8.tikast.com:20004/stream",
+      "logo": "https://anthonsen.net/logo/co/carbon.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Colombia Romantica",
+      "url": "https://play10.tikast.com/proxy/colromantica?mp=/stream",
+      "ffmpegUrl": "https://play10.tikast.com/proxy/colromantica?mp=/stream",
+      "logo": "https://anthonsen.net/logo/co/romantica.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Colombia Salsa Rosa",
+      "url": "https://play10.tikast.com/proxy/colsalsarosa?mp=/stream",
+      "ffmpegUrl": "https://play10.tikast.com/proxy/colsalsarosa?mp=/stream",
+      "logo": "https://anthonsen.net/logo/co/salsa-rosa-nueva.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Colombia Bohemia",
+      "url": "https://play10.tikast.com/proxy/colbohemia?mp=/stream",
+      "ffmpegUrl": "https://play10.tikast.com/proxy/colbohemia?mp=/stream",
+      "logo": "https://anthonsen.net/logo/co/Colombia-Bohemia.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Viejoteca de Richy",
+      "url": "https://play10.tikast.com/proxy/viejotecarichy?mp=/stream",
+      "ffmpegUrl": "https://play10.tikast.com/proxy/viejotecarichy?mp=/stream",
+      "logo": "https://anthonsen.net/logo/co/Richy-caricatura.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Colombia Lounge Colombia",
+      "url": "https://play10.tikast.com/proxy/collounge?mp=/stream",
+      "ffmpegUrl": "https://play10.tikast.com/proxy/collounge?mp=/stream",
+      "logo": "https://anthonsen.net/logo/co/Colombia-Lounge.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Colombia Salsa Duro",
+      "url": "https://play10.tikast.com/proxy/colsalsadura?mp=/stream",
+      "ffmpegUrl": "https://play10.tikast.com/proxy/colsalsadura?mp=/stream",
+      "logo": "https://anthonsen.net/logo/co/salsa-dura.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Colombia Urbana",
+      "url": "https://play10.tikast.com/proxy/colurbana?mp=/stream",
+      "ffmpegUrl": "https://play10.tikast.com/proxy/colurbana?mp=/stream",
+      "logo": "https://anthonsen.net/logo/co/Colombia-Urbana.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "La FM, Cucuta",
+      "url": "https://mdstrm.com/audio/632c9b23d1dcd7027f32f7fe/live.m3u8",
+      "ffmpegUrl": "https://mdstrm.com/audio/632c9b23d1dcd7027f32f7fe/live.m3u8",
+      "logo": "https://anthonsen.net/logo/co/lafm.svg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Caracol Radio, Cucuta",
+      "url": "https://anthonsen.net/caracol",
+      "ffmpegUrl": "https://anthonsen.net/caracol",
+      "logo": "https://anthonsen.net/logo/co/caracol.png",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "fr": [
+    {
+      "name": "NRJ France",
+      "url": "https://scdn.nrjaudio.fm/audio1/fr/30001/mp3_128.mp3",
+      "ffmpegUrl": "https://scdn.nrjaudio.fm/audio1/fr/30001/mp3_128.mp3",
+      "logo": "https://anthonsen.net/logo/fr/nrj-paris.jpeg",
+      "songInfo": "",
+      "channelUrl": "",
+      "app": "nrj-fr.js"
+    },
+    {
+      "name": "Cherie",
+      "url": "https://anthonsen.net/cherie",
+      "ffmpegUrl": "https://anthonsen.net/cherie",
+      "logo": "https://anthonsen.net/logo/fr/cherie.png",
+      "songInfo": "",
+      "channelUrl": "",
+      "app": "cherie.js"
+    },
+    {
+      "name": "Delta FM",
+      "url": "https://anthonsen.net/deltafm",
+      "ffmpegUrl": "https://anthonsen.net/deltafm",
+      "logo": "https://anthonsen.net/logo/fr/deltafm.webp",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Top Fm Normandie",
+      "url": "https://deltafmboulogne.ice.infomaniak.ch/deltafmboulogne-high.mp3",
+      "ffmpegUrl": "https://deltafmboulogne.ice.infomaniak.ch/deltafmboulogne-high.mp3",
+      "logo": "https://anthonsen.net/logo/fr/topfmnormandie.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "F. Hits Rouen",
+      "url": "https://listen.openstream.co/7437/audio",
+      "ffmpegUrl": "https://listen.openstream.co/7437/audio",
+      "logo": "https://anthonsen.net/logo/fr/fhits.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Méru, i love you",
+      "url": "https://listen.radioking.com/radio/222175/stream/265564",
+      "ffmpegUrl": "https://listen.radioking.com/radio/222175/stream/265564",
+      "logo": "https://anthonsen.net/logo/fr/meru.png",
+      "songInfo": "",
+      "channelUrl": "",
+      "app": "meru.js"
+    },
+    {
+      "name": "Radio EVA",
+      "url": "https://listen.radioking.com/radio/239650/stream/283603",
+      "ffmpegUrl": "https://listen.radioking.com/radio/239650/stream/283603",
+      "logo": "https://anthonsen.net/logo/fr/eva.png",
+      "songInfo": "",
+      "channelUrl": "",
+      "app": "eva-fr.js"
+    },
+    {
+      "name": "ShowSet",
+      "url": "https://stream.showset.tv:8000/radio.mp3",
+      "ffmpegUrl": "https://stream.showset.tv:8000/radio.mp3",
+      "logo": "https://anthonsen.net/logo/fr/showset.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Rwb",
+      "url": "https://stream4.vestaradio.com/Rwb",
+      "ffmpegUrl": "https://stream4.vestaradio.com/Rwb",
+      "logo": "https://anthonsen.net/logo/fr/rvb.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "WRG - WebRadio Grand'Ouest",
+      "url": "https://manager6.streamradio.fr:1185/stream",
+      "ffmpegUrl": "https://manager6.streamradio.fr:1185/stream",
+      "logo": "https://anthonsen.net/logo/fr/wrg.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "SunHits",
+      "url": "https://manager6.streamradio.fr:2575/stream",
+      "ffmpegUrl": "https://manager6.streamradio.fr:2575/stream",
+      "logo": "https://anthonsen.net/logo/fr/sunhit.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "RCM 98.4",
+      "url": "https://listen.radioking.com/radio/701249/stream/766511",
+      "ffmpegUrl": "https://listen.radioking.com/radio/701249/stream/766511",
+      "logo": "https://anthonsen.net/logo/fr/rcm.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "La1337",
+      "url": "https://stream.zeno.fm/3przegvllq9uv",
+      "ffmpegUrl": "https://stream.zeno.fm/3przegvllq9uv",
+      "logo": "https://anthonsen.net/logo/fr/la1337.png",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "us": [
+    {
+      "name": "100.3 The Edge",
+      "url": "https://stream.revma.ihrhls.com/zc89",
+      "ffmpegUrl": "https://stream.revma.ihrhls.com/zc89",
+      "logo": "https://anthonsen.net/logo/us/1003.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "D 100 Radio 160kb",
+      "url": "https://das-edge14-live365-dal02.cdnstream.com/a91285",
+      "ffmpegUrl": "https://das-edge14-live365-dal02.cdnstream.com/a91285",
+      "logo": "https://anthonsen.net/logo/us/d100.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Island Star Radio",
+      "url": "https://stream.rcs.revma.com/zfkwftp52wuvv",
+      "ffmpegUrl": "https://stream.rcs.revma.com/zfkwftp52wuvv",
+      "logo": "https://anthonsen.net/logo/us/islandstar.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Star Radio",
+      "url": "https://streaming.radio.co/saf5721deb/listen",
+      "ffmpegUrl": "https://streaming.radio.co/saf5721deb/listen",
+      "logo": "https://anthonsen.net/logo/us/starr.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "93.3 Lake FM lc193kb",
+      "url": "https://stream.aiir.com/o2n7gb8rsvnuv?_=486969",
+      "ffmpegUrl": "https://stream.aiir.com/o2n7gb8rsvnuv?_=486969",
+      "logo": "https://anthonsen.net/logo/us/933lake.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Best Radio 1 256kb",
+      "url": "https://radio12.pro-fhi.net/live/Hits1radio?ver=959286",
+      "ffmpegUrl": "https://radio12.pro-fhi.net/live/Hits1radio?ver=959286",
+      "logo": "https://anthonsen.net/logo/us/radiouno.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Capital 87.7 FM",
+      "url": "https://anthonsen.net/capital877",
+      "ffmpegUrl": "http://patmos.cdnstream.com:9599/stream",
+      "logo": "https://anthonsen.net/logo/us/capitalnyc.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Classic Vinyl HD",
+      "url": "https://icecast.walmradio.com:8443/classic",
+      "ffmpegUrl": "https://icecast.walmradio.com:8443/classic",
+      "logo": "https://anthonsen.net/logo/us/classicvinyl.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "KMSU-HD2",
+      "url": "https://stream.aiir.com/vtrrdk83knmuv",
+      "ffmpegUrl": "https://stream.aiir.com/vtrrdk83knmuv",
+      "logo": "https://anthonsen.net/logo/us/kmsum.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "KMOJ Minneapolis192kb",
+      "url": "https://kmojfm.streamguys1.com/live",
+      "ffmpegUrl": "https://kmojfm.streamguys1.com/live",
+      "logo": "https://anthonsen.net/logo/us/kmojm.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "KRSM 98.9 - 192kb",
+      "url": "https://noasrv.caster.fm:10069/stream",
+      "ffmpegUrl": "https://noasrv.caster.fm:10069/stream",
+      "logo": "https://anthonsen.net/logo/us/krsmm.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "WXKS 104.1",
+      "url": "https://anthonsen.net/WXKS1041",
+      "ffmpegUrl": "http://216.245.218.194:9022/stream",
+      "logo": "https://anthonsen.net/logo/us/wxksmin.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "The Border 106.7",
+      "url": "https://cb.streamguys1.com/wbdr.mp3",
+      "ffmpegUrl": "https://cb.streamguys1.com/wbdr.mp3",
+      "logo": "https://anthonsen.net/logo/us/b1067.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "FLY 92.3",
+      "url": "https://ais-sa1.streamon.fm/7817_128k.mp3",
+      "ffmpegUrl": "https://ais-sa1.streamon.fm/7817_128k.mp3",
+      "logo": "https://anthonsen.net/logo/us/fly923.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "96.7 Me TV FM",
+      "url": "https://ais-sa1.streamon.fm/7795_96k.mp3",
+      "ffmpegUrl": "https://ais-sa1.streamon.fm/7795_96k.mp3",
+      "logo": "https://anthonsen.net/logo/us/967me.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "93 Q",
+      "url": "https://streaming.live365.com/a16642",
+      "ffmpegUrl": "https://streaming.live365.com/a16642",
+      "logo": "https://anthonsen.net/logo/us/93q.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "101.7 The Beach L.Island",
+      "url": "https://prod-23-20-60-37.amperwave.net/longisland-wbeafmaac-hlsc1.m3u8",
+      "ffmpegUrl": "https://prod-23-20-60-37.amperwave.net/longisland-wbeafmaac-hlsc1.m3u8",
+      "logo": "https://radiomap.org/logos/101-7-the-beach.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "106.9 KROC",
+      "url": "https://prod-184-73-114-128.amperwave.net/townsquare-krocfmaac-hlsc3.m3u8",
+      "ffmpegUrl": "https://prod-184-73-114-128.amperwave.net/townsquare-krocfmaac-hlsc3.m3u8",
+      "logo": "https://radiomap.org/logos/106-9-kroc.png",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+      {
+      "name": "Island 106 FL",
+      "url": "https://dash.streamkast.co/proxy/magicbroadcasting2/wilnfm",
+      "ffmpegUrl": "https://dash.streamkast.co/proxy/magicbroadcasting2/wilnfm",
+      "logo": "https://anthonsen.net/logo/us/NewIsland106.jpg",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "it": [
+    {
+      "name": "RTL 102.5 - 320KB",
+      "url": "https://streamingv2.shoutcast.com/rtl-1025",
+      "ffmpegUrl": "https://streamcdnb4-dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S97044836/tbbP8T1ZRPBL/playlist_audio.m3u8",
+      "logo": "https://anthonsen.net/logo/it/rtl102-5.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "es": [
+    {
+      "name": "Cadena Dial",
+      "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/CADENADIAL.mp3",
+      "ffmpegUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CADENADIALAAC.aac",
+      "logo": "https://anthonsen.net/logo/es/cdial.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Los 40 Classic",
+      "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/LOS40_CLASSIC.mp3",
+      "ffmpegUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/LOS40_CLASSIC.mp3",
+      "logo": "https://anthonsen.net/logo/es/los40c.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Los 40",
+      "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/LOS40_ASO_CASTELLON.mp3",
+      "ffmpegUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/LOS40_ASO_CASTELLON.mp3",
+      "logo": "https://anthonsen.net/logo/es/los40.jpeg",
+      "songInfo": "",
+      "channelUrl": "",
+      "app": "los40.js"
+    },
+    {
+      "name": "Cadena 100",
+      "url": "https://cadena100-cope-rrcast.flumotion.com/cope/cadena100.mp3",
+      "ffmpegUrl": "https://cadena100-cope-rrcast.flumotion.com/cope/cadena100.mp3",
+      "logo": "https://anthonsen.net/logo/es/cadena100.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Hit FM",
+      "url": "https://hitfm.kissfmradio.cires21.com/hitfm.mp3",
+      "ffmpegUrl": "https://hitfm.kissfmradio.cires21.com/hitfm.mp3",
+      "logo": "https://anthonsen.net/logo/es/hitfmmadrid.jpeg",
+      "songInfo": "",
+      "channelUrl": "",
+      "app": "hitfm.js"
+    },
+    {
+      "name": "RADIOLE",
+      "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/RADIOLE.mp3",
+      "ffmpegUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/RADIOLE.mp3",
+      "logo": "https://anthonsen.net/logo/es/radiole.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Ràdio Flaixbac",
+      "url": "https://us-b4-p-e-zs14-audio.cdn.mdstrm.com/live-audio-aw/65afe517d47dc208abd053d2",
+      "ffmpegUrl": "https://us-b4-p-e-zs14-audio.cdn.mdstrm.com/live-audio-aw/65afe517d47dc208abd053d2",
+      "logo": "https://anthonsen.net/logo/es/Flaixbac.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Radio Plus",
+      "url": "https://anthonsen.net/plusbcn",
+      "ffmpegUrl": "https://anthonsen.net/plusbcn",
+      "logo": "https://anthonsen.net/logo/es/plusbcn.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Spectrum FM ENG",
+      "url": "https://eu8.fastcast4u.com/proxy/spectrumcalida2?mp=/1",
+      "ffmpegUrl": "https://eu8.fastcast4u.com/proxy/spectrumcalida2?mp=/1",
+      "logo": "https://anthonsen.net/logo/es/spectrumfm.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Máster FM",
+      "url": "https://radios.lamaster.es:8000/madrid",
+      "ffmpegUrl": "https://radios.lamaster.es:8000/madrid",
+      "logo": "https://anthonsen.net/logo/es/mastermad.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "MDT Radio - 90s",
+      "url": "https://streams1.mdtradio.com:8443/MDTradio90",
+      "ffmpegUrl": "https://streams1.mdtradio.com:8443/MDTradio90",
+      "logo": "https://anthonsen.net/logo/es/mtd90s.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "MDT Radio - 2000s",
+      "url": "https://streams1.mdtradio.com:8443/MDTradio2000",
+      "ffmpegUrl": "https://streams1.mdtradio.com:8443/MDTradio2000",
+      "logo": "https://anthonsen.net/logo/es/mdt2000.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Cadena Azul Lorca",
+      "url": "https://stream.zeno.fm/sxma7nk6azzuv",
+      "ffmpegUrl": "https://stream.zeno.fm/sxma7nk6azzuv",
+      "logo": "https://anthonsen.net/logo/es/cadenaazul.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    },
+    {
+      "name": "Voltaje Radio",
+      "url": "https://stream.tunerplay.com/listen/voltaje/voltaje.mp3",
+      "ffmpegUrl": "https://stream.tunerplay.com/listen/voltaje/voltaje.mp3",
+      "logo": "https://anthonsen.net/logo/es/votaje.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ],
+  "gr": [
+    {
+      "name": "Kiss 92.9 FM",
+      "url": "https://kissfm.live24.gr/kissfmathens",
+      "ffmpegUrl": "https://kissfm.live24.gr/kiss2111",
+      "logo": "https://anthonsen.net/logo/gr/kiss929.jpeg",
+      "songInfo": "",
+      "channelUrl": ""
+    }
+  ]
+}
